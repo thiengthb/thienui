@@ -199,6 +199,64 @@ describe('bộ chạy pattern-lock', () => {
     expect(r.error).toMatch(/không biết/);
   });
 
+  it('exclude loại đúng glob được nêu, phần còn lại vẫn bị quét', () => {
+    const dir = fixture({
+      'apps/docs/registry/base/vendor.tsx': 'const c = "#ff00aa";\n',
+      'apps/docs/registry/patterns/mine.tsx': 'const c = "#ff00aa";\n',
+    });
+    const r = runCheck(dir, {
+      id: 't',
+      check: { kind: 'forbid', pattern: '#[0-9a-fA-F]{6}\\b', exclude: ['apps/*/registry/base/**'] },
+    });
+    expect(r.violations.map((v) => v.file)).toEqual(['apps/docs/registry/patterns/mine.tsx']);
+  });
+
+  it('7 luật đã scope khỏi vendor VẪN bắt được vi phạm trong code ta viết', () => {
+    // Hẹp phạm vi một luật là chỗ dễ làm nó mù nhất: nó vẫn chạy, vẫn báo xanh, và không còn kiểm gì.
+    // Ca này dựng một file trong `patterns/` phạm đúng 7 luật đó và đòi cả 7 phải đỏ.
+    const dir = fixture({
+      'apps/docs/registry/patterns/bad.tsx': [
+        'export function Bad() {',
+        '  return (',
+        '    <div className="backdrop-blur-sm rounded-[7px] duration-[0.35s] focus:outline-none">',
+        '      <svg viewBox="0 0 24 24" />',
+        '      <input type="text" title="gõ vào đây" />',
+        '    </div>',
+        '  );',
+        '}',
+      ].join('\n'),
+    });
+    const r = runPatternLock(dir, registry);
+    const fired = new Set(r.byPattern.filter((p) => p.violations.length).map((p) => p.id));
+    for (const id of [
+      'lucide-icons-only',
+      'no-arbitrary-scale-values',
+      'no-raw-durations',
+      'focus-visible-never-removed',
+      'glass-only-on-chrome',
+      'input-clear-affordance',
+      'explain-is-the-only-tooltip',
+    ]) {
+      expect(fired.has(id), `luật "${id}" KHÔNG đỏ — scope đã làm nó mù`).toBe(true);
+    }
+  });
+
+  it('cùng file đó đặt trong registry/base/ thì 7 luật kia im, luật MÀU thì không', () => {
+    const dir = fixture({
+      'apps/docs/registry/base/vendor.tsx': [
+        'export function V() {',
+        '  return <div className="rounded-[7px] duration-[0.35s]" style={{ color: "#ff00aa" }} />;',
+        '}',
+      ].join('\n'),
+    });
+    const r = runPatternLock(dir, registry);
+    const fired = new Set(r.byPattern.filter((p) => p.violations.length).map((p) => p.id));
+    expect(fired.has('no-arbitrary-scale-values')).toBe(false);
+    expect(fired.has('no-raw-durations')).toBe(false);
+    // Màu là thứ quyết định theme có chạy không, nên nó áp khắp nơi kể cả code vendor.
+    expect(fired.has('no-hardcoded-colors'), 'luật màu PHẢI áp cả trong vendor').toBe(true);
+  });
+
   it('runPatternLock chạy được cả registry thật trên một repo sạch', () => {
     const dir = fixture({ 'src/clean.tsx': 'export const A = () => <div className="bg-card" />;\n' });
     const r = runPatternLock(dir, registry);

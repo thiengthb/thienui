@@ -14,15 +14,15 @@
   "rtl": false,
   "aliases": {
     "components": "@/registry",
-    "utils": "@/lib/utils",
+    "utils": "cn",
     "ui": "@/registry/base",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
+    "lib": "@/registry/base",
+    "hooks": "@/registry/base"
   },
   "menuColor": "default",
   "menuAccent": "subtle",
   "registries": {
-    "@thienui": "http://localhost:4321/r/{name}.json",
+    "@thienui": "https://thienui.vercel.app/r/{name}.json",
     "@seamui": "https://seamui.dev/r/{name}.json",
     "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
     "@niko-table": "https://niko-table.com/r/{name}.json",

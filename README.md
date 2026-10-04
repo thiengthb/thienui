@@ -26,18 +26,19 @@ Hai đường phát hành, và việc gì đi đường nào không phải chuy�
 ```
 apps/docs/                 Fumadocs sẽ vào đây — hiện là Next 16 + registry host
 ├─ registry/
-│  ├─ base/                primitive trên Base UI — tầng DUY NHẤT được import @base-ui/react
+│  ├─ base/                55 primitive trên Base UI + hook — RANH GIỚI VENDOR
 │  ├─ patterns/            generic đã ghép: data-table, confirm-dialog, empty-state
 │  ├─ shells/              khung app & layout
 │  ├─ blocks/              cả màn hình
 │  └─ _quarantine/         code vay, chưa soát — KHÔNG AI được import
+├─ registry.config.mjs     địa chỉ công khai của registry — MỘT chỗ duy nhất
 ├─ registry.json           SINH TỰ ĐỘNG từ cây thư mục, đừng sửa tay
 └─ public/r/*.json         registry công khai (`shadcn build`)
 
 packages/
 ├─ tokens/                 @thienui/tokens — DTCG ba tầng -> CSS + TS + JSON
 ├─ guards/                 @thienui/guards — cổng contrast, gamut, pattern-lock
-├─ ui-patterns/            @thienui/ui-patterns — 30 luật UI đã khoá
+├─ ui-patterns/            @thienui/ui-patterns — 32 luật UI đã khoá
 └─ tsconfig/
 ```
 
@@ -77,7 +78,7 @@ Khác hai điểm so với bản trong `sakubun`, và cả hai là sửa lỗi t
 
 **2 · Gamut** — token khai màu ngoài sRGB sẽ bị browser gamut-map, nên màu hiện ra khác màu đã khai, và tỉ số contrast đo được không phải tỉ số người dùng thấy. Mọi token đã clamp về trong gamut (lùi 2% khỏi biên).
 
-**3 · Pattern lock** — 30 luật, **14 máy kiểm** + 16 người review. Mỗi luật có `rule` · `why` · `canonical` · `check` · `allow`.
+**3 · Pattern lock** — 32 luật, **14 máy kiểm** + 18 người review. Mỗi luật có `rule` · `why` · `canonical` · `check` · `allow`.
 
 Hook `.claude/hooks/ui-pattern-lock.mjs` hiện toàn bộ luật trước **lần ghi UI đầu tiên của mỗi phiên** — luật đến vào lúc nó còn thay đổi được quyết định, không phải lúc test đã đỏ.
 
@@ -86,22 +87,44 @@ Người dùng sửa một mẫu UI? Khoá nó **ngay**, đừng đợi lần th
 ## Project sau tiêu thụ thế nào
 
 ```bash
-# 1 — dựng với preset Nền
+# 1 — dựng với preset Base UI của shadcn
 pnpm dlx shadcn@latest init -t next -b base -p nova
 
 # 2 — tầng quản trị: bắt buộc đồng nhất
 pnpm add -D @thienui/guards @thienui/tokens @thienui/ui-patterns
 
 # 3 — component: code được sao vào repo, bạn sở hữu và được quyền sửa
-pnpm dlx shadcn@latest add @thienui/theme-claude @thienui/button
+pnpm dlx shadcn@latest add @thienui/theme-claude @thienui/sidebar
+#     -> kéo theo button · input · separator · sheet · skeleton · tooltip + hook,
+#        vì registryDependencies được SUY từ import của chính file
 
 # 4 — nối cổng vào verify
 #     package.json → "verify": "... && thienui-guards"
 ```
 
+## `registry/base/` là ranh giới vendor
+
+`base/` chứa code kéo từ registry shadcn, và `shadcn add` **ghi đè file**. Trong lúc port 55 primitive,
+bản sửa `text-[0.8rem]` → `text-footnote` ở `button.tsx` bị chính lệnh đó xoá sau hai lô. Một cổng mà
+fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua.
+
+Nên phạm vi luật được chia theo *ai viết code*, không theo *luật nào nghe nghiêm hơn*:
+
+| | áp ở đâu | vì sao |
+|---|---|---|
+| **Luật màu** (`no-hardcoded-colors`, `no-tailwind-palette-colors`) | **khắp nơi, kể cả `base/`** | Màu quyết định theme có chạy không. 55 file vendor qua hết — shadcn token-hoá màu đúng chuẩn. |
+| **Luật văn phong** (7 luật: giá trị tuỳ ý, duration thô, vị trí glass, focus-visible, `title=`, `<input>` trần, svg tay) | **trừ `base/`** (`check.exclude`) | Sửa code vendor để thoả văn phong là làm việc sẽ bị xoá ở lần cập nhật sau — và xoá âm thầm, vì test vẫn xanh. |
+
+Mọi file vendor hạ cánh trong **đúng một thư mục**: `components.json` trỏ cả `ui`, `lib` và `hooks` vào
+`@/registry/base`. Ranh giới vendor là một thư mục, hoặc nó không phải ranh giới. (`use-mobile.ts` ban
+đầu nằm ở `hooks/` và đó là chỗ duy nhất lint còn đỏ — vì nó là vendor nằm ngoài ranh giới.)
+
+Patch có chủ ý lên vendor phải ghi vào `docs/vendor-patches.md`, cùng mục "đã cân nhắc và cố ý không
+patch". Luật `base-is-vendor` giữ hợp đồng này.
+
 ## Vay component từ ngoài — năm bước, không bỏ bước
 
-418 registry công khai đang tồn tại; data-table, chart, rich-text, kanban, AI chat đều có bản làm tốt rồi. Nhưng registry **chèn code vào repo và bạn sở hữu nó ngay** — gồm cả màu cứng, `<svg>` tự vẽ, `title=`, spacing tuỳ ý. Đúng những thứ 30 luật này cấm.
+418 registry công khai đang tồn tại; data-table, chart, rich-text, kanban, AI chat đều có bản làm tốt rồi. Nhưng registry **chèn code vào repo và bạn sở hữu nó ngay** — gồm cả màu cứng, `<svg>` tự vẽ, `title=`, spacing tuỳ ý. Đúng những thứ 32 luật này cấm.
 
 ```bash
 # 1 — hạ cánh vào khu cách ly, KHÔNG vào registry/base
@@ -124,10 +147,11 @@ Các namespace đã khai sẵn trong `components.json` (đã lọc sức khoẻ 
 | | trạng thái |
 |---|---|
 | Token ba tầng, hai theme, 4 mode | ✅ `pnpm tokens` |
-| Cổng contrast + gamut + pattern lock | ✅ `pnpm guards`, 25 test |
+| Cổng contrast + gamut + pattern lock | ✅ `pnpm guards`, 28 test |
 | Hook + skill `/ui-pattern-lock` | ✅ |
 | Monorepo + registry sinh tự động + `shadcn build` | ✅ `pnpm verify` |
-| Tầng base: còn 1/≈35 primitive (`button`) | ⬜ pha 2 |
+| Tầng base: **55 primitive + 1 hook** trên Base UI 1.8.0 | ✅ pha 2 |
+| Registry **công khai**, cài được từ project ngoài | ✅ đã kiểm end-to-end |
 | Fumadocs + `/preview/[name]` + ma trận 6 trạng thái | ⬜ pha 3 |
 | Thu hoạch `patterns/` + `shells/` từ sakubun | ⬜ pha 4 |
 | Tầng cảm giác từ `@seamui` -> motion token | ⬜ pha 5 |

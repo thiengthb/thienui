@@ -28,10 +28,17 @@ pnpm dev         # trang docs, cổng 4321
 - **pnpm 12 có chính sách `minimumReleaseAge`** chặn package vừa publish vài giờ. Đừng tắt chính sách —
   ghim version cũ hơn. `lucide-react` đang ghim chính xác `1.51.0` vì lý do này.
 - **pnpm 12 dùng khoá `allowBuilds`** trong `pnpm-workspace.yaml`, không phải `onlyBuiltDependencies`.
+- **`apps/docs/package.json` PHẢI có `packageManager`.** shadcn CLI dò package manager bằng lockfile;
+  trong monorepo pnpm lockfile ở gốc repo nên nó không thấy, rơi về `npm`, rồi vỡ ở `workspace:*` với
+  `EUNSUPPORTEDPROTOCOL`. Khai tường minh là xong.
+- **`registry/base/**` là RANH GIỚI VENDOR.** `shadcn add` ghi đè nó. 7 luật văn phong đã `exclude`
+  khỏi đây; luật màu thì vẫn áp. Patch có chủ ý phải ghi vào `docs/vendor-patches.md`.
+- **Địa chỉ registry công khai sống ở `apps/docs/registry.config.mjs`**, một chỗ duy nhất. Chưa deploy —
+  đổi `PUBLIC_URL` hoặc đặt `THIENUI_REGISTRY_URL`.
 
 ## Khi viết UI
 
-1. **Hook sẽ hiện 30 luật** trước lần ghi `.tsx`/`.css` đầu tiên của phiên. Đọc nó.
+1. **Hook sẽ hiện 32 luật** trước lần ghi `.tsx`/`.css` đầu tiên của phiên. Đọc nó.
 2. **Màu, khoảng cách, bán kính, cỡ chữ, thời lượng, easing đều lấy từ token.** Giá trị tuỳ ý chỉ
    được phép khi nó *trỏ token*: `rounded-[min(var(--radius-md),12px)]` được, `text-[0.8rem]` không.
 3. **Primitive (`@base-ui/react`) chỉ được import trong `registry/base/**`.** Luật
@@ -49,7 +56,7 @@ Khoá nó **ngay lần đầu**, đừng đợi lần thứ hai: skill `/ui-patt
 `.claude/skills/ui-pattern-lock/SKILL.md`.
 
 Luôn thử biến luật thành `check` máy chạy được trước khi hạ xuống `manual`. `sakubun` có 13/21 luật
-manual và đó là chỗ các luật âm thầm bị bỏ. Ở đây tỉ lệ là 14 máy / 16 người — mỗi lần một luật manual
+manual và đó là chỗ các luật âm thầm bị bỏ. Ở đây tỉ lệ là 14 máy / 18 người — mỗi lần một luật manual
 bị phạm là một lần nên thử lại xem có cách nào cưỡng chế được.
 
 ## Khi vay component từ registry ngoài
@@ -65,6 +72,7 @@ Cổng mà sửa cho nó im tiếng thì không còn là cổng:
 
 - Cặp contrast trượt → **sửa token**. Dùng `solveLightness()` trong `@thienui/guards` để giải L thay
   vì mò. Không chuyển một cặp chữ xuống bậc đồ hoạ hay `decor`.
+- Luật bắt oan code VENDOR trong `base/**` → thêm `check.exclude`, đừng sửa code vendor.
 - Regex bắt oan code đang đúng → **hẹp regex lại**, đừng thêm `allow`. Một regex quá rộng còn tệ hơn
   không có luật: nó dạy người ta cách bỏ qua cổng.
 - `allow` mới → lý do phải dài hơn 20 ký tự, có test cưỡng chế. "file sinh tự động" không đủ.

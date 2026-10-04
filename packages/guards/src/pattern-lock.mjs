@@ -34,11 +34,19 @@ function matchSimple(pattern, path) {
   return new RegExp('^' + rx + '$').test(path);
 }
 
-function filesFor(root, scope) {
+/**
+ * `exclude` tồn tại vì glob không diễn tả được "mọi nơi TRỪ một thư mục" — và đó là phạm vi đúng của
+ * phần lớn luật văn phong: chúng áp cho code TA VIẾT, không áp cho code vendor được kéo lại từ
+ * upstream. Không có nó thì mỗi luật phải liệt kê tay từng thư mục được phép, và lần thêm thư mục
+ * thứ tư là lần một luật âm thầm ngừng áp.
+ */
+function filesFor(root, scope, exclude = []) {
   const out = new Set();
   for (const pat of scope) {
     for (const f of globSync(pat, { cwd: root })) {
-      if (!IGNORE.some((i) => matchSimple(i, f))) out.add(f);
+      if (IGNORE.some((i) => matchSimple(i, f))) continue;
+      if (exclude.some((e) => matchSimple(e, f))) continue;
+      out.add(f);
     }
   }
   return [...out].sort();
@@ -51,17 +59,20 @@ function filesFor(root, scope) {
  *   forbid        — `pattern` KHÔNG được xuất hiện trong phạm vi
  *   require       — `pattern` PHẢI xuất hiện trong mỗi file thuộc phạm vi
  *   forbid-import — file trong `check.from` không được import đường dẫn khớp `check.pattern`
+ *
+ * `check.exclude` bỏ qua một số glob trong phạm vi — dùng để loại code vendor khỏi luật văn phong.
  */
 export function runCheck(root, pattern) {
   const chk = pattern.check;
   if (!chk) return { skipped: 'luật chỉ có chữ, không có check máy chạy được', violations: [] };
   const scope = chk.files ?? DEFAULT_SCOPE;
+  const exclude = chk.exclude ?? [];
   const allow = pattern.allow ?? {};
   const violations = [];
 
   if (chk.kind === 'forbid' || chk.kind === 'forbid-import') {
     const rx = new RegExp(chk.pattern);
-    const files = filesFor(root, chk.kind === 'forbid-import' ? (chk.from ?? scope) : scope);
+    const files = filesFor(root, chk.kind === 'forbid-import' ? (chk.from ?? scope) : scope, exclude);
     for (const f of files) {
       if (f in allow) continue;
       const lines = readFileSync(resolve(root, f), 'utf8').split('\n');
@@ -71,7 +82,7 @@ export function runCheck(root, pattern) {
     }
   } else if (chk.kind === 'require') {
     const rx = new RegExp(chk.pattern);
-    for (const f of filesFor(root, scope)) {
+    for (const f of filesFor(root, scope, exclude)) {
       if (f in allow) continue;
       if (!rx.test(readFileSync(resolve(root, f), 'utf8'))) {
         violations.push({ file: f, line: 0, excerpt: 'thiếu mẫu: ' + chk.pattern });
@@ -81,7 +92,7 @@ export function runCheck(root, pattern) {
     // Nếu `when` khớp trong một file thì `then` cũng phải khớp trong file đó.
     const when = new RegExp(chk.when);
     const then = new RegExp(chk.then);
-    for (const f of filesFor(root, scope)) {
+    for (const f of filesFor(root, scope, exclude)) {
       if (f in allow) continue;
       const text = readFileSync(resolve(root, f), 'utf8');
       if (when.test(text) && !then.test(text)) {

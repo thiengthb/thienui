@@ -7,12 +7,15 @@
     {
       "id": "lucide-icons-only",
       "rule": "Icon lấy từ lucide-react, không bao giờ tự vẽ <svg>, không dùng bộ icon khác, không dùng emoji làm icon.",
-      "why": "Một <svg> tự vẽ sẽ lệch khỏi stroke width, thang cỡ và hành vi currentColor của bộ icon, nên nó trông sai ở dark mode và ở các cỡ khác. Ngoại lệ DUY NHẤT là svg RENDER DỮ LIỆU (đường cong, sparkline) hoặc logo thương hiệu bên thứ ba không có bản lucide.",
+      "why": "Một <svg> tự vẽ sẽ lệch khỏi stroke width, thang cỡ và hành vi currentColor của bộ icon, nên nó trông sai ở dark mode và ở các cỡ khác. Ngoại lệ DUY NHẤT là svg RENDER DỮ LIỆU (đường cong, sparkline) hoặc logo thương hiệu bên thứ ba không có bản lucide. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không.",
       "canonical": "registry/shells/app-sidebar.tsx",
       "source": "sakubun · lockedOn 2026-07-23",
       "check": {
         "kind": "forbid",
-        "pattern": "<svg[\\s>]"
+        "pattern": "<svg[\\s>]",
+        "exclude": [
+          "apps/*/registry/base/**"
+        ]
       },
       "allow": {}
     },
@@ -91,13 +94,16 @@
     },
     {
       "id": "no-raw-durations",
-      "rule": "Thời lượng và easing của animation lấy từ token motion (--p-motion-duration-*, --p-motion-easing-*). Không viết 180ms / 0.7s / cubic-bezier(...) tại chỗ.",
-      "why": "DESIGN.md của sakubun KHAI duration_fast:120 / base:200 / easing cubic-bezier(.2,.8,.2,1), rồi globals.css rải 180ms, 0.7s, 1.4s, cubic-bezier(.2,.9,.25,1) tại chỗ — bản khai và thực tế lệch nhau mà không gì phát hiện. Hệ quả không phải thẩm mỹ: chuyển động không cùng nhịp đọc ra là giao diện rời rạc, và không thể điều chỉnh toàn hệ bằng một chỗ.",
+      "rule": "Thời lượng và easing lấy từ token motion. Không literal trần: duration-[0.35s], transition: 180ms, cubic-bezier(...) viết tay. Giá trị tuỳ ý CÓ trỏ token thì được — duration-[calc(var(--drawer-swipe-strength)*400ms)].",
+      "why": "DESIGN.md của sakubun KHAI duration_fast:120 / base:200 / easing cubic-bezier(.2,.8,.2,1), rồi globals.css rải 180ms, 0.7s, 1.4s, cubic-bezier(.2,.9,.25,1) tại chỗ — bản khai và thực tế lệch nhau mà không gì phát hiện. Regex phải phân biệt BA thứ: literal trần (`duration-[0.35s]` — chặn), giá trị tuỳ ý trỏ token (`duration-[calc(var(--x)*400ms)]` — cho qua), và class thang của Tailwind (`duration-300` — tạm cho qua, xem luật `tailwind-motion-scale-is-not-ours`). Hệ quả không phải thẩm mỹ: chuyển động không cùng nhịp đọc ra là giao diện rời rạc, và không thể điều chỉnh toàn hệ bằng một chỗ. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không.",
       "canonical": "packages/tokens/src/scale.json",
       "source": "thienui · 2026-10-04",
       "check": {
         "kind": "forbid",
-        "pattern": "(?:transition|animation)[^;:]*:[^;]*(?:\\d+m?s)|duration-\\[|ease-\\[|cubic-bezier\\("
+        "pattern": "(?:duration|ease|delay)-\\[(?![^\\]]*var\\(--)|(?:transition|animation)(?:-duration|-delay|-timing-function)?\\s*:\\s*[^;]*\\b\\d+(?:\\.\\d+)?m?s\\b|cubic-bezier\\(",
+        "exclude": [
+          "apps/*/registry/base/**"
+        ]
       },
       "allow": {
         "packages/tokens/dist/tokens.css": "File sinh tự động từ src/scale.json. Token motion được KHAI ở đây — đây là nguồn, không phải chỗ dùng.",
@@ -107,31 +113,37 @@
     {
       "id": "no-arbitrary-scale-values",
       "rule": "Không dùng LITERAL TRẦN cho bán kính, khoảng cách và cỡ chữ: rounded-[6px], p-[13px], text-[0.8rem]. Giá trị tuỳ ý CÓ trỏ token thì được — rounded-[min(var(--radius-md),12px)], bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_5%)].",
-      "why": "Một literal trần là một quyết định không được ghi ở đâu: nó không đổi theo theme, và không ai biết nó có chủ ý hay là gõ nhầm. Nhưng một giá trị tuỳ ý TRỎ TOKEN thì ngược lại — nó vẫn đi qua token, chỉ dùng cú pháp tuỳ ý để tính toán (min(), color-mix()). Chính button của shadcn làm vậy, và chặn nó sẽ là chặn đúng cách làm đúng. Ranh giới là 'có var(--) trong ngoặc không', không phải 'có ngoặc vuông không'.",
+      "why": "Một literal trần là một quyết định không được ghi ở đâu: nó không đổi theo theme, và không ai biết nó có chủ ý hay là gõ nhầm. Nhưng một giá trị tuỳ ý TRỎ TOKEN thì ngược lại — nó vẫn đi qua token, chỉ dùng cú pháp tuỳ ý để tính toán (min(), color-mix()). Chính button của shadcn làm vậy, và chặn nó sẽ là chặn đúng cách làm đúng. Ranh giới là 'có var(--) trong ngoặc không', không phải 'có ngoặc vuông không'. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không.",
       "canonical": "packages/tokens/src/scale.json",
       "source": "sakubun docs/DESIGN.md (mục Cấm) · thienui 2026-10-04",
       "check": {
         "kind": "forbid",
-        "pattern": "\\b(?:rounded|p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|space-[xy]|text|w|h|size|leading|tracking)-\\[(?![^\\]]*var\\(--)[\\d.]"
+        "pattern": "\\b(?:rounded|p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|space-[xy]|text|w|h|size|leading|tracking)-\\[(?![^\\]]*var\\(--)[\\d.]",
+        "exclude": [
+          "apps/*/registry/base/**"
+        ]
       },
       "allow": {}
     },
     {
       "id": "focus-visible-never-removed",
       "rule": "Không bao giờ tắt outline focus mà không thay bằng một focus ring thấy được. Cụ thể: không focus:outline-none, không outline-none trần.",
-      "why": "Focus bị tắt là điều kiện đủ để bàn phím thành vô dụng — và nó im lặng: chuột vẫn chạy, test vẫn xanh, chỉ người dùng bàn phím và trình đọc màn hình là mất đường. Hệ đã có --ring/--ring-width/--ring-offset và :focus-visible trong base.css, nên không có lý do nào để tắt.",
+      "why": "Focus bị tắt là điều kiện đủ để bàn phím thành vô dụng — và nó im lặng: chuột vẫn chạy, test vẫn xanh, chỉ người dùng bàn phím và trình đọc màn hình là mất đường. Hệ đã có --ring/--ring-width/--ring-offset và :focus-visible trong base.css, nên không có lý do nào để tắt. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không.",
       "canonical": "packages/tokens/dist/base.css",
       "source": "sakubun docs/DESIGN.md (quality floor) · thienui 2026-10-04",
       "check": {
         "kind": "forbid",
-        "pattern": "focus:outline-none|focus-visible:outline-none|outline:\\s*none"
+        "pattern": "focus:outline-none|focus-visible:outline-none|outline:\\s*none",
+        "exclude": [
+          "apps/*/registry/base/**"
+        ]
       },
       "allow": {}
     },
     {
       "id": "glass-only-on-chrome",
       "rule": "backdrop-filter / backdrop-blur CHỈ dùng cho chrome đè lên nội dung (header dính, nav rail, sheet, scrim). Không bao giờ sau chữ thân bài, và luôn có token nền đặc làm fallback.",
-      "why": "Trên web, glass là backdrop-filter — nó tốn compositing, và nó PHÁ VỠ MỌI BẢO ĐẢM CONTRAST, vì nền phía sau là nội dung không biết trước. Cổng contrast đo token, nên nó không thể đo một bề mặt mà màu do nội dung quyết định lúc runtime. Giới hạn vào chrome là cách giữ cái cảm giác Liquid Glass mà không biến một phần nội dung thành vùng không ai kiểm được.",
+      "why": "Trên web, glass là backdrop-filter — nó tốn compositing, và nó PHÁ VỠ MỌI BẢO ĐẢM CONTRAST, vì nền phía sau là nội dung không biết trước. Cổng contrast đo token, nên nó không thể đo một bề mặt mà màu do nội dung quyết định lúc runtime. Giới hạn vào chrome là cách giữ cái cảm giác Liquid Glass mà không biến một phần nội dung thành vùng không ai kiểm được. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không.",
       "canonical": "registry/shells/app-shell.tsx",
       "source": "thienui · 2026-10-04 (HIG Liquid Glass, WWDC25)",
       "check": {
@@ -141,6 +153,9 @@
           "apps/**/registry/base/**/*.tsx",
           "apps/**/registry/patterns/**/*.tsx",
           "apps/**/registry/blocks/**/*.tsx"
+        ],
+        "exclude": [
+          "apps/*/registry/base/**"
         ]
       },
       "allow": {}
@@ -148,12 +163,15 @@
     {
       "id": "input-clear-affordance",
       "rule": "Mọi ô chữ đi qua <Input> dùng chung, component này mang nút xoá (×) khi có nội dung. Không bao giờ dựng <input> trần.",
-      "why": "Người dùng xoá nội dung ô tìm kiếm/lọc liên tục. Thiếu nút xoá là bắt họ bôi đen rồi xoá — và nếu mỗi chỗ tự dựng input thì nút xoá chỉ có ở vài chỗ, nên hành vi không đoán được.",
+      "why": "Người dùng xoá nội dung ô tìm kiếm/lọc liên tục. Thiếu nút xoá là bắt họ bôi đen rồi xoá — và nếu mỗi chỗ tự dựng input thì nút xoá chỉ có ở vài chỗ, nên hành vi không đoán được. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không.",
       "canonical": "registry/base/input.tsx",
       "source": "sakubun · lockedOn 2026-07-25",
       "check": {
         "kind": "forbid",
-        "pattern": "<input\\b(?![^>]*type=\"(?:file|hidden|radio|checkbox)\")"
+        "pattern": "<input\\b(?![^>]*type=\"(?:file|hidden|radio|checkbox)\")",
+        "exclude": [
+          "apps/*/registry/base/**"
+        ]
       },
       "allow": {
         "apps/docs/registry/base/input.tsx": "chính component dùng chung — đây là chỗ <input> trần được phép tồn tại"
@@ -162,12 +180,15 @@
     {
       "id": "explain-is-the-only-tooltip",
       "rule": "Giải thích một phần tử bằng <Explain>. Không dùng thuộc tính title= trên thẻ DOM, và không dựng Tooltip primitive trực tiếp ngoài registry/patterns.",
-      "why": "title= không hiện trên thiết bị cảm ứng, không hiện cho bàn phím, trễ khoảng một giây, và không nhận style — nên nó trông như một lời giải thích mà thực tế một phần người dùng không bao giờ thấy. Dồn mọi lời giải thích qua MỘT component là cách duy nhất để sửa hành vi đó ở một chỗ.",
+      "why": "title= không hiện trên thiết bị cảm ứng, không hiện cho bàn phím, trễ khoảng một giây, và không nhận style — nên nó trông như một lời giải thích mà thực tế một phần người dùng không bao giờ thấy. Dồn mọi lời giải thích qua MỘT component là cách duy nhất để sửa hành vi đó ở một chỗ. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không.",
       "canonical": "registry/patterns/explain.tsx",
       "source": "sakubun · lockedOn 2026-07-28",
       "check": {
         "kind": "forbid",
-        "pattern": "<(?:span|div|button|a|p|li|td|th|section|header|figure|img|input|label|ul|ol|nav)\\b[^>]*\\stitle=\"|<TooltipTrigger\\b"
+        "pattern": "<(?:span|div|button|a|p|li|td|th|section|header|figure|img|input|label|ul|ol|nav)\\b[^>]*\\stitle=\"|<TooltipTrigger\\b",
+        "exclude": [
+          "apps/*/registry/base/**"
+        ]
       },
       "allow": {
         "apps/docs/registry/base/tooltip.tsx": "Chính primitive tooltip — đây là chỗ DUY NHẤT được phép dùng TooltipTrigger trực tiếp, vì mọi chỗ khác đi qua <Explain>.",
@@ -358,6 +379,26 @@
       "why": "Dạng thẻ là ẩn dụ vật lý: nếu nó trông như một chồng thẻ thì nó phải hành xử như một chồng thẻ. Phản hồi theo ngón tay là phần hay bị bỏ — chờ một ngưỡng rồi mới nhảy làm cử chỉ cảm giác như bị trễ dù thời gian tổng bằng nhau.",
       "canonical": "registry/patterns/card-deck.tsx",
       "source": "sakubun · lockedOn 2026-08-06 (đã tổng quát hoá khỏi flashcard)",
+      "check": {
+        "kind": "manual"
+      }
+    },
+    {
+      "id": "base-is-vendor",
+      "rule": "`registry/base/**` là code VENDOR. Đừng sửa tay nó để thoả một luật văn phong — sửa sẽ bị `shadcn add` ghi đè. Chỉ sửa khi đó là một quyết định thiết kế thật, và khi đó phải ghi lại vào `docs/vendor-patches.md`.",
+      "why": "`shadcn add -o` ghi đè file trong base/. Trong lúc dựng pha 2, bản sửa `text-[0.8rem]`→`text-footnote` ở button.tsx bị xoá đúng như vậy sau hai lô thêm component. Nếu không ghi lại chỗ nào đã patch thì mỗi lần cập nhật vendor là một lần âm thầm mất các quyết định đó — và không ai biết, vì test vẫn xanh.",
+      "canonical": "docs/vendor-patches.md",
+      "source": "thienui · 2026-10-04 (phát hiện trong lúc port 55 primitive)",
+      "check": {
+        "kind": "manual"
+      }
+    },
+    {
+      "id": "tailwind-motion-scale-is-not-ours",
+      "rule": "Trong code TA VIẾT, dùng token motion của thienui thay cho thang duration mặc định của Tailwind (`duration-150`, `duration-300`…).",
+      "why": "Thang của Tailwind là 75/100/150/200/300/500/700/1000; thang của ta là fast 120 / base 200 / slow 320 / deliberate 480. Hai thang khác nhau, nên trộn chúng làm chuyển động trong app không cùng nhịp — và điều chỉnh toàn hệ không còn làm được ở một chỗ. Chưa thành check máy vì `registry/base/**` (vendor) dùng thang Tailwind khắp nơi và ta không sửa code vendor; khi `patterns/` và `shells/` đã dựng xong thì nên nâng luật này lên `forbid` với `exclude` là base/.",
+      "canonical": "packages/tokens/src/scale.json",
+      "source": "thienui · 2026-10-04",
       "check": {
         "kind": "manual"
       }

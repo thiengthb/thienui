@@ -1,0 +1,34 @@
+# Patch trên code vendor
+
+`apps/docs/registry/base/**` là code vendor, kéo từ registry shadcn bằng `shadcn add`. Lệnh đó **ghi
+đè file**. Mọi sửa tay ở đó sẽ mất ở lần cập nhật vendor tiếp theo — và mất âm thầm, vì test vẫn xanh.
+
+File này là nơi ghi lại các patch đã chủ ý áp, để lần `shadcn add` sau còn biết phải áp lại gì.
+
+## Vì sao có file này
+
+Trong lúc dựng pha 2 (2026-10-04), bản sửa `text-[0.8rem]` → `text-footnote` ở `button.tsx` bị xoá
+đúng như vậy sau hai lô thêm component. Không có gì báo. Đó là lý do luật `base-is-vendor` tồn tại.
+
+## Quy trình
+
+1. Chỉ patch khi đó là **một quyết định thiết kế thật**, không phải để làm một luật văn phong im tiếng
+   — bảy luật văn phong đã được `exclude` khỏi `base/**` chính vì lý do này.
+2. Ghi vào bảng dưới: file · chỗ sửa · trước → sau · vì sao.
+3. Sau mỗi lần `shadcn add` trong `base/`, chạy lại `pnpm guards` rồi đối chiếu bảng này.
+
+## Bảng patch
+
+| file | chỗ | trước → sau | vì sao | ngày |
+|---|---|---|---|---|
+| — | — | — | *chưa có patch nào. `base/` đang đúng nguyên bản upstream.* | — |
+
+## Đã cân nhắc và CỐ Ý không patch
+
+| chỗ | vì sao để nguyên |
+|---|---|
+| `button.tsx`, `calendar.tsx` — `text-[0.8rem]` | 0.8rem nằm giữa `footnote` (0.8125) và `caption1` (0.75) của thang. Patch được, nhưng sẽ phải áp lại mỗi lần cập nhật vendor, cho một khác biệt 0.2px. Không đáng. |
+| `checkbox.tsx` — `rounded-[4px]`, `chart.tsx` — `rounded-[2px]` | Thang bán kính của ta nhỏ nhất là `sm` = 6px. 4px cho checkbox và 2px cho ô màu biểu đồ là nhu cầu thật mà thang chưa có. **Việc cần làm là thêm bậc `xs`/`2xs` vào thang**, không phải patch vendor. |
+| `dialog/alert-dialog/drawer/sheet` — `backdrop-blur-xs` trên overlay | Đây đúng là trường hợp luật `glass-only-on-chrome` CHO PHÉP: scrim của modal là chrome đè lên nội dung, không phải nền sau chữ thân bài. |
+| `navigation-menu.tsx` — `focus:outline-none` trên link | Base UI đặt vòng focus ở phần tử khác. Sửa ở đây sẽ phá cơ chế focus của chính primitive. |
+| `sidebar.tsx:14`, `carousel.tsx:98` — `react-hooks/set-state-in-effect` | Quan ngại THẬT về render lồng, nhưng là mẫu upstream của shadcn. Đã hạ xuống `warn` cho riêng `base/**` trong `eslint.config.mjs` — vẫn thấy trong output, không chặn `verify`. Nếu upstream sửa thì warn tự mất. |

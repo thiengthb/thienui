@@ -13,6 +13,7 @@
  * Cộng themes/ sinh từ token (registry:theme), và _quarantine/ KHÔNG BAO GIỜ được xuất bản.
  */
 import { readFileSync, writeFileSync, readdirSync, existsSync, mkdirSync } from 'node:fs';
+import { PUBLIC_URL } from '../registry.config.mjs';
 import { join, dirname, basename, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -38,6 +39,12 @@ for (const tier of TIERS) {
     const name = basename(f, extname(f));
     const src = readFileSync(join(dir, f), 'utf8');
 
+    // Hook có type RIÊNG trong schema của shadcn (`registry:hook`), và nó không chỉ là nhãn: CLI
+    // dùng type để quyết file hạ cánh ở alias nào bên project tiêu thụ. Gắn sai thì một hook sẽ
+    // được đặt vào thư mục ui/ của họ.
+    const isHook = extname(f) === '.ts' && name.startsWith('use-');
+    const type = isHook ? 'registry:hook' : tier.type;
+
     // registryDependencies: suy từ chính import của file, nên nó không thể lệch với code.
     const deps = new Set();
     for (const m of src.matchAll(/from\s+['"]@\/registry\/(?:base|patterns|shells)\/([\w-]+)['"]/g)) {
@@ -52,12 +59,12 @@ for (const tier of TIERS) {
 
     items.push({
       name,
-      type: tier.type,
+      type,
       title: name,
-      description: `${tier.note} · ${name}`,
+      description: `${isHook ? 'hook' : tier.note} · ${name}`,
       ...(npm.size ? { dependencies: [...npm].sort() } : {}),
       ...(deps.size ? { registryDependencies: [...deps].sort() } : {}),
-      files: [{ path: `registry/${tier.dir}/${f}`, type: tier.type }],
+      files: [{ path: `registry/${tier.dir}/${f}`, type }],
     });
   }
 }
@@ -81,7 +88,9 @@ for (const meta of tokens.meta) {
 const registry = {
   $schema: 'https://ui.shadcn.com/schema/registry.json',
   name: 'thienui',
-  homepage: 'http://localhost:4321',
+  // Registry CÔNG KHAI — homepage phải là URL thật, vì `shadcn add @thienui/x` ở máy người khác
+  // sẽ giải địa chỉ từ đây. Xem registry.config.mjs.
+  homepage: PUBLIC_URL,
   items,
 };
 
