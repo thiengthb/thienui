@@ -17,6 +17,15 @@ Trong lúc dựng pha 2 (2026-10-04), bản sửa `text-[0.8rem]` → `text-foot
 2. Ghi vào bảng dưới: file · chỗ sửa · trước → sau · vì sao.
 3. Sau mỗi lần `shadcn add` trong `base/`, chạy lại `pnpm guards` rồi đối chiếu bảng này.
 
+## Quyết định đã đảo ngược
+
+| quyết định | đảo ngày | vì sao |
+|---|---|---|
+| Ghim `@tanstack/react-table@^8` (pha 4) | 2026-10-05, pha 5 | Lý do đã viết ra — "`@niko-table` và `@data-table-filters` đều nhắm v8" — **không đúng**. Kiểm lại thì cả hai khai `@tanstack/react-table@^9`. Lập luận duy nhất chống đỡ cho v8 là một sự thật sai, trong khi nó có hai cái giá đã biết: React Compiler bỏ qua component, và cánh cửa vay thì đóng. Sau khi lên v9, cảnh báo "Compilation Skipped" biến mất. |
+
+Bài học giữ lại: **lý do đã viết ra vẫn có thể sai.** Nó chỉ lộ khi có người đi kiểm cái nguồn mà nó
+viện dẫn — ở đây là lúc thật sự mở `@niko-table` ra xem, chứ không phải lúc viết lý do.
+
 ## Bảng patch
 
 | file | chỗ | trước → sau | vì sao | ngày |

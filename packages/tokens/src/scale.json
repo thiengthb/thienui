@@ -275,30 +275,142 @@
           1
         ],
         "$description": "pop — dùng rất tiết chế"
+      },
+      "decelerate": {
+        "$value": [
+          0.32,
+          0.72,
+          0,
+          1
+        ],
+        "$description": "Giảm tốc mạnh, không vọt lố — sheet trượt lên, drawer. Vay từ @seamui qua khu cách ly."
       }
     },
     "spring": {
       "$type": "other",
-      "$description": "Cho motion/react. Spring đúng cho thao tác do NGƯỜI khởi phát (kéo, bấm, vuốt); easing đúng cho thứ do HỆ THỐNG khởi phát (toast, điều hướng).",
-      "press": {
-        "$value": {
-          "stiffness": 400,
-          "damping": 30,
-          "mass": 1
+      "$description": "Bốn TÍNH CÁCH, mỗi tính cách định nghĩa cùng bốn vai trò. Ý tưởng vay từ @seamui/motion và nó đáng vay: đổi MỘT dòng (`--motion-personality`) là cả hệ đổi cảm giác cùng nhau, không phải sửa file component nào. Bốn vai trò: press (phản hồi nhấn, gần như tức thì) · snappy (nhả tay, đổi trạng thái) · surface (lớp phủ vào) · bouncy (điểm nhấn vui, dùng rất tiết chế). Spring đúng cho thao tác do NGƯỜI khởi phát; easing đúng cho thứ do HỆ THỐNG khởi phát.",
+      "seam": {
+        "$description": "Mặc định — nhanh và vật lý, có một chút sức sống.",
+        "press": {
+          "$value": {
+            "stiffness": 600,
+            "damping": 40,
+            "mass": 0.5
+          }
+        },
+        "snappy": {
+          "$value": {
+            "stiffness": 420,
+            "damping": 30,
+            "mass": 0.7
+          }
+        },
+        "surface": {
+          "$value": {
+            "stiffness": 320,
+            "damping": 28,
+            "mass": 0.9
+          }
+        },
+        "bouncy": {
+          "$value": {
+            "stiffness": 380,
+            "damping": 18,
+            "mass": 0.9
+          }
         }
       },
-      "pop": {
-        "$value": {
-          "stiffness": 600,
-          "damping": 24,
-          "mass": 1
+      "brisk": {
+        "$description": "Chặt và nhanh hơn, không vọt lố — công cụ dày dữ liệu.",
+        "press": {
+          "$value": {
+            "stiffness": 800,
+            "damping": 50,
+            "mass": 0.4
+          }
+        },
+        "snappy": {
+          "$value": {
+            "stiffness": 560,
+            "damping": 40,
+            "mass": 0.55
+          }
+        },
+        "surface": {
+          "$value": {
+            "stiffness": 440,
+            "damping": 38,
+            "mass": 0.7
+          }
+        },
+        "bouncy": {
+          "$value": {
+            "stiffness": 500,
+            "damping": 26,
+            "mass": 0.7
+          }
         }
       },
-      "settle": {
-        "$value": {
-          "stiffness": 220,
-          "damping": 26,
-          "mass": 1
+      "relaxed": {
+        "$description": "Mềm và chậm hơn — bề mặt đọc, nội dung dài.",
+        "press": {
+          "$value": {
+            "stiffness": 420,
+            "damping": 36,
+            "mass": 0.7
+          }
+        },
+        "snappy": {
+          "$value": {
+            "stiffness": 280,
+            "damping": 28,
+            "mass": 0.9
+          }
+        },
+        "surface": {
+          "$value": {
+            "stiffness": 220,
+            "damping": 26,
+            "mass": 1.1
+          }
+        },
+        "bouncy": {
+          "$value": {
+            "stiffness": 260,
+            "damping": 18,
+            "mass": 1
+          }
+        }
+      },
+      "playful": {
+        "$description": "Vọt lố nhiều hơn ở mọi vai trò — app hướng người dùng cuối.",
+        "press": {
+          "$value": {
+            "stiffness": 620,
+            "damping": 30,
+            "mass": 0.5
+          }
+        },
+        "snappy": {
+          "$value": {
+            "stiffness": 420,
+            "damping": 20,
+            "mass": 0.8
+          }
+        },
+        "surface": {
+          "$value": {
+            "stiffness": 340,
+            "damping": 18,
+            "mass": 0.9
+          }
+        },
+        "bouncy": {
+          "$value": {
+            "stiffness": 400,
+            "damping": 12,
+            "mass": 1
+          }
         }
       }
     },
@@ -312,7 +424,8 @@
         "$value": "50ms"
       }
     },
-    "$note-tan-suat": "Tần suất và mới lạ: KHÔNG animation trên thao tác tần suất cao — command menu, context menu, chuyển tab. Animation lần thứ năm mươi không còn là duyên, nó là ma sát. Guards không kiểm được luật này; nó nằm trong ui-patterns và review."
+    "$note-tan-suat": "Tần suất và mới lạ: KHÔNG animation trên thao tác tần suất cao — command menu, context menu, chuyển tab. Animation lần thứ năm mươi không còn là duyên, nó là ma sát. Guards không kiểm được luật này; nó nằm trong ui-patterns và review.",
+    "$note-condense": "Thời lượng của lớp phủ Base UI đã được MAP VÀO thang này, không nhập thang của @seamui: surface vào 200ms -> `base`, ra 150ms -> `fast`, sheet 300ms -> `slow`, toast 500/350ms -> `deliberate`/`slow`. Tái-token-hoá nghĩa là ánh xạ vào thang của mình; chép số của người khác vào thì chỉ là đổi chỗ cất literal. Nó cũng khớp sẵn triết lý \"vào chậm hơn, ra nhanh hơn\"."
   },
   "elevation": {
     "$type": "shadow",

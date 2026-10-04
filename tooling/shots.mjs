@@ -27,6 +27,7 @@ const PAGES = [
   { name: 'button', path: '/components/button', full: true, onlyDefault: true },
   { name: 'data-table', path: '/components/data-table', full: true, onlyDefault: true },
   { name: 'card-deck', path: '/components/card-deck', full: true, onlyDefault: true },
+  { name: 'motion', path: '/components/motion', full: true, onlyDefault: true },
 ];
 
 const COMBOS = [

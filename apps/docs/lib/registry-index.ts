@@ -8,12 +8,16 @@ import { join, extname, basename } from 'node:path';
  * đọc nó sẽ làm trang showcase phụ thuộc vào thứ tự chạy của hai script — thêm một component rồi mở
  * trang mà chưa build registry thì nó biến mất, và không có lỗi nào giải thích tại sao.
  */
-export type Tier = 'base' | 'patterns' | 'shells' | 'blocks';
+export type Tier = 'base' | 'lib' | 'patterns' | 'shells' | 'blocks';
 
 export const TIER_LABEL: Record<Tier, { label: string; note: string }> = {
   base: {
     label: 'Primitive',
     note: 'Tầng DUY NHẤT được import @base-ui/react. Code vendor — shadcn add ghi đè nó.',
+  },
+  lib: {
+    label: 'Lib',
+    note: 'Thư viện dùng chung, không phải component: tầng cảm giác (spring, độ sâu, press depth).',
   },
   patterns: {
     label: 'Pattern',

@@ -36,6 +36,7 @@ import { InfoTooltip } from '@/registry/patterns/info-tooltip';
 import { DataTableDemo } from '@/registry/demos/data-table-demo';
 import { CardDeckDemo } from '@/registry/demos/card-deck-demo';
 import { ConfirmDialogDemo } from '@/registry/demos/confirm-dialog-demo';
+import { MotionDemo } from '@/registry/demos/motion-demo';
 
 export type StateName = 'default' | 'hover' | 'focus-visible' | 'active' | 'disabled' | 'loading';
 
@@ -148,6 +149,10 @@ export const DEMOS: Record<string, DemoSpec> = {
   'card-deck': {
     custom: CardDeckDemo,
     note: 'Phản hồi theo NGÓN TAY: thẻ đi theo con trỏ ngay, không chờ ngưỡng. Chờ ngưỡng làm cử chỉ cảm giác như bị trễ dù tổng thời gian bằng nhau.',
+  },
+  motion: {
+    custom: MotionDemo,
+    note: 'Tầng cảm giác, VAY từ @seamui/motion qua quy trình khu cách ly năm bước. Đã tái-token-hoá: mọi thời lượng và easing ánh xạ vào thang của thienui, không giữ số của seam. Cổng no-raw-durations bắt được đúng ba dòng cần sửa khi nó còn trong khu cách ly.',
   },
   'confirm-dialog': {
     custom: ConfirmDialogDemo,

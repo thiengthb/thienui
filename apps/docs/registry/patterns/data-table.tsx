@@ -2,11 +2,18 @@
 
 import * as React from 'react';
 import {
+  columnSizingFeature,
+  columnVisibilityFeature,
+  createSortedRowModel,
   flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
+  rowSelectionFeature,
+  rowSortingFeature,
+  sortFn_alphanumeric,
+  sortFn_basic,
+  tableFeatures,
+  useTable,
   type ColumnDef,
+  type RowData,
   type RowSelectionState,
   type SortingState,
 } from '@tanstack/react-table';
@@ -44,19 +51,50 @@ import { EmptyState, NoMatchState } from '@/registry/patterns/empty-state';
  * sắp xếp phía server, cuộn vô hạn. Chúng đáng vay từ `@niko-table` hoặc `@data-table-filters` qua
  * quy trình khu cách ly thay vì viết lại.
  *
- * GHIM `@tanstack/react-table@^8` CÓ CHỦ Ý, dù v9 đã là `latest`. v9 đổi sang kiến trúc feature-based
- * (`useTable` thay `useReactTable`, feature phải truyền tường minh) — một API khác hẳn. Lý do quyết
- * định không phải ngại đổi: HAI registry đã chọn để vay phần còn thiếu, `@niko-table` và
- * `@data-table-filters`, đều nhắm v8. Dùng v9 ở đây là tự cắt đúng con đường mà kế hoạch dựa vào.
- * Khi hệ sinh thái chuyển sang v9 thì đổi — và lúc đó chỉ phải sửa một file.
+ * DÙNG `@tanstack/react-table@^9`, kiến trúc feature-based: feature phải đăng ký tường minh, nên chỉ
+ * những gì bảng này thật sự dùng mới vào bundle.
  *
- * CHI PHÍ CỦA QUYẾT ĐỊNH ĐÓ, ghi ra để lần sau cân lại có dữ liệu: React Compiler bỏ qua component
- * này ("Compilation Skipped: Use of incompatible library"), vì `useReactTable()` của v8 trả về những
- * hàm không memo hoá an toàn được. Nghĩa là bảng không nhận được tối ưu tự động của compiler. Đó là
- * một trong những lý do v9 đổi sang kiến trúc feature-based. Hiện tại đây là cảnh báo, không phải
- * lỗi, và đổi lấy khả năng vay từ hệ sinh thái thì vẫn đáng — nhưng nếu bảng này thành chỗ nghẽn
- * hiệu năng thì đây là chỗ nhìn trước.
+ * SỬA MỘT QUYẾT ĐỊNH SAI Ở PHA 4. Lúc đó file này ghim v8, và lý do đã viết ra là "hai registry đã
+ * chọn để vay (@niko-table, @data-table-filters) đều nhắm v8". Điều đó KHÔNG ĐÚNG — kiểm lại ở pha 5
+ * thì cả hai đều khai `@tanstack/react-table@^9`. Nên lập luận duy nhất chống đỡ cho v8 là một sự
+ * thật sai, trong khi nó có hai cái giá đã biết: React Compiler bỏ qua component ("Use of
+ * incompatible library", vì `useReactTable()` của v8 trả về hàm không memo hoá an toàn được), và
+ * cánh cửa vay từ hệ sinh thái thì đóng chứ không mở.
+ *
+ * Bài học đáng giữ hơn cả bản migrate: lý do đã viết ra vẫn có thể sai. Nó chỉ lộ ra khi có người đi
+ * kiểm cái nguồn mà nó viện dẫn — ở đây là lúc thật sự mở `@niko-table` ra xem, chứ không phải lúc
+ * viết lý do.
  */
+/**
+ * Feature đăng ký TƯỜNG MINH — đây là điểm khác lớn nhất của v9. v8 gói sẵn mọi feature; v9 chỉ mở
+ * API khi feature có mặt ở đây, nên bundle chỉ mang thứ bảng này dùng.
+ *
+ * Khai NGOÀI component: nó là hằng số, dựng lại mỗi lần render là dựng lại cả bộ feature.
+ */
+const features = tableFeatures({
+  rowSortingFeature,
+  rowSelectionFeature,
+  // `columnSizingFeature` mở `column.size` / `header.getSize()`; `columnVisibilityFeature` mở
+  // `row.getVisibleCells()`. Ở v8 hai thứ này có sẵn nên không ai biết mình đang dùng feature gì —
+  // v9 bắt khai, và đó chính là cách nó cắt được bundle.
+  columnSizingFeature,
+  columnVisibilityFeature,
+  sortedRowModel: createSortedRowModel(),
+  // Chỉ đăng ký built-in mà cột thật sự gọi tới bằng tên chuỗi. Đăng ký cả registry thì bundle mang
+  // theo mọi hàm sắp xếp, kể cả những cái không ai dùng.
+  sortFns: { alphanumeric: sortFn_alphanumeric, basic: sortFn_basic },
+});
+
+/**
+ * Kiểu cột, đã gắn sẵn bộ feature của bảng này.
+ *
+ * v9 đưa `TFeatures` vào generic của `ColumnDef`, nên một `ColumnDef` khai với bộ feature khác sẽ
+ * không gán được. Xuất alias này để chỗ gọi không phải biết về `tableFeatures` — và để khi bảng thêm
+ * một feature, mọi file cột được TypeScript cập nhật theo chứ không âm thầm lệch.
+ */
+export type TableFeaturesUsed = typeof features;
+export type Column<T extends RowData> = ColumnDef<TableFeaturesUsed, T, unknown>;
+
 export type DataTableState = {
   loading?: boolean;
   /** Thông điệp lỗi. Phải nói chuyện gì sai và sửa thế nào, không chỉ "đã có lỗi xảy ra". */
@@ -72,7 +110,7 @@ export type DataTableState = {
   emptyDescription?: string;
 };
 
-export function DataTable<T>({
+export function DataTable<T extends RowData>({
   data,
   columns,
   getRowId,
@@ -84,7 +122,7 @@ export function DataTable<T>({
   className,
 }: {
   data: T[];
-  columns: ColumnDef<T, unknown>[];
+  columns: Column<T>[];
   getRowId?: (row: T, index: number) => string;
   selectable?: boolean;
   onSelectionChange?: (ids: string[]) => void;
@@ -97,9 +135,9 @@ export function DataTable<T>({
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({});
 
-  const allColumns = React.useMemo<ColumnDef<T, unknown>[]>(() => {
+  const allColumns = React.useMemo<Column<T>[]>(() => {
     if (!selectable) return columns;
-    const selectCol: ColumnDef<T, unknown> = {
+    const selectCol: Column<T> = {
       id: '__select',
       size: 36,
       header: ({ table }) => (
@@ -124,14 +162,13 @@ export function DataTable<T>({
     return [selectCol, ...columns];
   }, [columns, selectable]);
 
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data,
     columns: allColumns,
     state: { sorting, rowSelection },
     onSortingChange: setSorting,
     onRowSelectionChange: setRowSelection,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
     enableRowSelection: selectable,
     ...(getRowId ? { getRowId } : {}),
   });
@@ -144,9 +181,16 @@ export function DataTable<T>({
   );
 
   // Báo lựa chọn ra ngoài TRONG effect, không trong lúc render: gọi callback của cha giữa chừng
-  // render con là một lần setState lồng, và React sẽ cảnh báo đúng.
+  // render con là một lần setState lồng.
+  //
+  // Ref được cập nhật trong MỘT EFFECT RIÊNG, không gán thẳng trong thân component. Ghi vào ref lúc
+  // render là một side effect trong pha render — React có thể render lại mà không commit, và khi đó
+  // ref đã mang giá trị của một lần render bị vứt đi. Mẫu "latest ref" chỉ đúng khi phần ghi nằm
+  // trong effect; viết tắt ở thân component là chỗ nó âm thầm sai.
   const notify = React.useRef(onSelectionChange);
-  notify.current = onSelectionChange;
+  React.useEffect(() => {
+    notify.current = onSelectionChange;
+  });
   React.useEffect(() => {
     notify.current?.(selectedIds);
   }, [selectedIds]);

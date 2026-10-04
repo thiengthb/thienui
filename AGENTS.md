@@ -87,9 +87,17 @@ Năm bước trong `README.md`, không bỏ bước nào. Luật `no-quarantine-
 - **Đừng chép class giữa `PageShell` và `PageSkeleton`.** Phần chung nằm ở `shells/page-chrome.ts` và
   cả hai IMPORT nó. Ở sakubun hai file chép nhau rồi lệch: placeholder thanh trên di động bị thiếu,
   nên dưới `md` breadcrumb nhảy ~41px mỗi lần điều hướng. Chép thì lệch được; import thì không.
-- `data-table` ghim `@tanstack/react-table@^8` CÓ CHỦ Ý dù v9 đã là `latest` — hai registry đã chọn
-  để vay (`@niko-table`, `@data-table-filters`) đều nhắm v8. Chi phí đã biết: React Compiler bỏ qua
-  component đó. Lý do đầy đủ ghi trong chính file.
+- `data-table` dùng `@tanstack/react-table@^9`. **Feature phải đăng ký tường minh** trong
+  `tableFeatures({...})` — v8 gói sẵn mọi thứ, v9 chỉ mở API khi feature có mặt. Thêm một API mới
+  (ẩn cột, lọc, phân trang) nghĩa là thêm feature tương ứng, không phải chỉ gọi hàm.
+  Dùng alias `Column<T>` mà file đó xuất ra, đừng dùng `ColumnDef` thô: v9 đưa bộ feature vào generic
+  của `ColumnDef`, nên một cột khai với bộ feature khác sẽ không gán được.
+- **Mẫu "latest ref" chỉ đúng khi phần ghi nằm trong effect.** Gán `ref.current = x` thẳng trong thân
+  component là side effect trong pha render; React có thể render lại mà không commit, và ref sẽ mang
+  giá trị của một lần render bị vứt đi. Luật `react-hooks` bắt được điều này.
+- Tầng cảm giác ở `registry/lib/motion.ts`. KHÔNG dùng `Pressable` cho item trong composite của
+  Base UI (Toolbar, ToggleGroup, Tabs, Menubar) — chúng đăng ký qua ref và một lớp bọc phá đăng ký;
+  ở đó gọi thẳng `usePressDepth` trong prop `render`.
 - Component có HÀNH VI thật (bảng, dialog, chồng thẻ) dùng `custom` trong `registry/demos/index.tsx`
   + một file `*-demo.tsx` riêng. Spec `variants × sizes` không diễn tả được chúng.
 

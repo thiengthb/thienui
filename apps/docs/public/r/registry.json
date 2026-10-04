@@ -1019,6 +1019,22 @@
       ]
     },
     {
+      "name": "motion",
+      "type": "registry:lib",
+      "title": "motion",
+      "description": "thư viện dùng chung · motion",
+      "dependencies": [
+        "@thienui/tokens",
+        "motion"
+      ],
+      "files": [
+        {
+          "path": "registry/lib/motion.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
       "name": "bulk-action-button",
       "type": "registry:component",
       "title": "bulk-action-button",
@@ -1146,6 +1162,18 @@
       "files": [
         {
           "path": "registry/patterns/info-tooltip.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "pressable",
+      "type": "registry:component",
+      "title": "pressable",
+      "description": "generic đã ghép · pressable",
+      "files": [
+        {
+          "path": "registry/patterns/pressable.tsx",
           "type": "registry:component"
         }
       ]

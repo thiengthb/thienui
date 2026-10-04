@@ -30,6 +30,7 @@ apps/docs/                 Next 16 · trang showcase + registry host
 ├─ components/             chrome của site, bộ chuyển theme, ma trận demo
 ├─ registry/
 │  ├─ base/                55 primitive trên Base UI + hook — RANH GIỚI VENDOR
+│  ├─ lib/                 thư viện dùng chung: motion (tầng cảm giác)
 │  ├─ patterns/            10 generic đã ghép: data-table, confirm-dialog, empty-state,
 │  │                       explain, info-tooltip, search-input, tab-select, card-deck,
 │  │                       relative-time, bulk-action-button
@@ -169,6 +170,39 @@ Mọi file vendor hạ cánh trong **đúng một thư mục**: `components.json
 Patch có chủ ý lên vendor phải ghi vào `docs/vendor-patches.md`, cùng mục "đã cân nhắc và cố ý không
 patch". Luật `base-is-vendor` giữ hợp đồng này.
 
+## Tầng cảm giác
+
+`registry/lib/motion.ts` — **vay từ `@seamui/motion`** qua đúng quy trình năm bước, và là lần đầu khu
+cách ly được dùng thật. Vay vì nó mang ba thứ khó tự nghĩ ra:
+
+1. **Base UI giữ popup mounted suốt lúc thoát** và chờ CSS transition trước khi unmount — nó không
+   chờ được spring chạy trên rAF của motion. Nên lớp phủ phải animate bằng CSS keyed vào
+   `data-starting-style` / `data-ending-style`. Không biết điều này thì mọi hiệu ứng thoát bị cắt
+   phựt, và triệu chứng không chỉ về chỗ sai.
+2. **Composite của Base UI** (Toolbar, ToggleGroup, Tabs, Menubar) đăng ký item qua *ref* của phần
+   tử. Một motion component trong đường render đó phá đăng ký — kể cả `render={<motion.button/>}`
+   cũng để phím mũi tên chết.
+3. **Chính sách giảm chuyển động "không bao giờ chết"**: đổi chuyển động thành opacity để mọi tương
+   tác vẫn có phản hồi. Luật toàn cục trong `base.css` thì tắt hẳn animation; chính sách này tốt hơn.
+
+**Bốn tính cách × bốn vai trò** (`press` · `snappy` · `surface` · `bouncy`) nằm trong token tầng 1.
+Đổi một dòng `PERSONALITY` là cả hệ đổi cảm giác cùng nhau.
+
+Đã **tái-token-hoá**: mọi thời lượng và easing ánh xạ vào thang của thienui, không giữ số của seam.
+Easing `surface` của họ cách `overshoot` của ta 0.11 trong không gian control point — cùng một ý đồ,
+nên map vào thay vì thêm token trùng nghĩa; chỉ `decelerate` (đường cong sheet) là thêm mới.
+
+Cổng `no-raw-durations` bắt được **đúng ba dòng** cần sửa khi file còn trong khu cách ly.
+
+**Đã bỏ khi thăng cấp:** `useMounted` của bản gốc dùng `useState` + `useEffect` — repo này đã có bản
+`useSyncExternalStore` tốt hơn. Vay không có nghĩa là nhận cả những chỗ mình đã làm tốt hơn.
+
+`patterns/pressable.tsx` là cách thêm press depth cho control **mà không sửa vendor**: `@seamui` giải
+bài này bằng cách sở hữu component; ở đây `base/` là ranh giới vendor nên cảm giác phải đến từ bên
+ngoài. Cái giá là một lớp bọc nữa trong cây — nhưng nó cục bộ và nhìn thấy được, còn cái giá của
+hướng kia thì phát tác dần: lần sau `shadcn add` một component mới, nó sẽ không có cảm giác và không
+ai nhớ ra.
+
 ## Vay component từ ngoài — năm bước, không bỏ bước
 
 418 registry công khai đang tồn tại; data-table, chart, rich-text, kanban, AI chat đều có bản làm tốt rồi. Nhưng registry **chèn code vào repo và bạn sở hữu nó ngay** — gồm cả màu cứng, `<svg>` tự vẽ, `title=`, spacing tuỳ ý. Đúng những thứ 32 luật này cấm.
@@ -202,6 +236,8 @@ Các namespace đã khai sẵn trong `components.json` (đã lọc sức khoẻ 
 | Sáu trạng thái DỮ LIỆU render thật (trong `data-table`) | ✅ pha 4 |
 | Chụp ảnh 4 tổ hợp theme × mode (`pnpm shots`) | ✅ |
 | Patterns & shells thu hoạch từ sakubun (10 + 4) | ✅ pha 4 |
+| Tầng cảm giác vay từ `@seamui` qua khu cách ly | ✅ pha 5 |
+| `data-table` lên TanStack v9 (sửa quyết định sai ở pha 4) | ✅ pha 5 |
 | Cổng thứ tư: canonical phải có thật | ✅ 32/32 luật trỏ đúng |
 | Demo: 18/76 item — còn component compound chưa có | ⬜ nợ đã biết |
 | Deploy registry (URL ở `registry.config.mjs`) | ⬜ chưa chọn domain |

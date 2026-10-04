@@ -2,8 +2,7 @@
 
 import * as React from 'react';
 import { Trash2, Archive, Star } from 'lucide-react';
-import type { ColumnDef } from '@tanstack/react-table';
-import { DataTable, NumberCell } from '@/registry/patterns/data-table';
+import { DataTable, NumberCell, type Column } from '@/registry/patterns/data-table';
 import { BulkActionButton, BulkActionDock } from '@/registry/patterns/bulk-action-button';
 import { Truncate } from '@/registry/base/truncate';
 import { Button } from '@/registry/base/button';
@@ -23,7 +22,7 @@ const ROWS: Row[] = [
   },
 ];
 
-const COLUMNS: ColumnDef<Row, unknown>[] = [
+const COLUMNS: Column<Row>[] = [
   {
     accessorKey: 'term',
     header: 'Thuật ngữ',

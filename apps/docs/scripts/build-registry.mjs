@@ -7,6 +7,7 @@
  *
  * Bốn tầng, và thứ tự này cũng là thứ tự phụ thuộc được phép:
  *   base/     primitive shadcn trên Base UI — tầng DUY NHẤT được import @base-ui/react
+ *   lib/      thư viện dùng chung, không phải component (motion, format)
  *   patterns/ generic đã ghép (data-table, confirm-dialog, empty-state)
  *   shells/   khung app & layout
  *   blocks/   cả màn hình
@@ -22,6 +23,7 @@ const REG = join(ROOT, 'registry');
 
 const TIERS = [
   { dir: 'base', type: 'registry:ui', note: 'primitive' },
+  { dir: 'lib', type: 'registry:lib', note: 'thư viện dùng chung' },
   { dir: 'patterns', type: 'registry:component', note: 'generic đã ghép' },
   { dir: 'shells', type: 'registry:component', note: 'khung app' },
   { dir: 'blocks', type: 'registry:block', note: 'cả màn hình' },
