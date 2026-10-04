@@ -1,0 +1,143 @@
+{
+  "$description": "TẦNG 1 — PRIMITIVE phi-màu. Chữ, khoảng cách, bán kính, chuyển động, độ sâu. Đây là bốn thứ `docs/DESIGN.md` của sakubun ĐÃ KHAI nhưng không có gì cưỡng chế; từ đây chúng là token thật, và guards kiểm.",
+
+  "type": {
+    "$type": "dimension",
+    "$description": "Thang Dynamic Type của Apple ở cỡ mặc định (Large), đổi sang rem với gốc 16px. Body 17pt = SÀN dễ đọc cho khoảng cách đọc một sải tay — web mặc định 16px nằm DƯỚI sàn đó, và chỉ riêng việc nâng lên 17px đã làm giao diện đọc ra bình tĩnh hơn.",
+    "caption2":   { "$value": "0.6875rem", "$description": "11pt" },
+    "caption1":   { "$value": "0.75rem",   "$description": "12pt" },
+    "footnote":   { "$value": "0.8125rem", "$description": "13pt" },
+    "subhead":    { "$value": "0.9375rem", "$description": "15pt" },
+    "callout":    { "$value": "1rem",      "$description": "16pt" },
+    "body":       { "$value": "1.0625rem", "$description": "17pt — sàn" },
+    "title3":     { "$value": "1.25rem",   "$description": "20pt" },
+    "title2":     { "$value": "1.375rem",  "$description": "22pt" },
+    "title1":     { "$value": "1.75rem",   "$description": "28pt" },
+    "largeTitle": { "$value": "2.125rem",  "$description": "34pt" }
+  },
+  "leading": {
+    "$type": "number",
+    "$description": "Chữ càng nhỏ càng cần leading tương đối lớn; tiêu đề lớn thì bó sát.",
+    "caption2":   { "$value": 1.45 },
+    "caption1":   { "$value": 1.42 },
+    "footnote":   { "$value": 1.40 },
+    "subhead":    { "$value": 1.40 },
+    "callout":    { "$value": 1.45 },
+    "body":       { "$value": 1.47 },
+    "title3":     { "$value": 1.30 },
+    "title2":     { "$value": 1.25 },
+    "title1":     { "$value": 1.18 },
+    "largeTitle": { "$value": 1.08 }
+  },
+  "tracking": {
+    "$type": "dimension",
+    "$description": "Chữ lớn giảm tracking, nhãn in hoa tăng. Đây là chỗ hay bị bỏ, và là một phần của cái cảm giác 'đắt'.",
+    "tight":  { "$value": "-0.022em", "$description": "largeTitle · title1" },
+    "snug":   { "$value": "-0.012em", "$description": "title2 · title3" },
+    "normal": { "$value": "0em" },
+    "label":  { "$value": "0.09em",  "$description": "nhãn in hoa, caption" }
+  },
+  "weight": {
+    "$type": "number",
+    "$description": "Phân cấp bằng weight, không bằng họ chữ thứ ba. Headline của Apple = cùng cỡ body nhưng weight 600 — đó là cách tạo cấp mà không tăng cỡ.",
+    "regular":  { "$value": 400 },
+    "medium":   { "$value": 500 },
+    "semibold": { "$value": 600 },
+    "bold":     { "$value": 700 }
+  },
+  "measure": {
+    "$type": "dimension",
+    "$description": "Độ dài dòng. Ngoài khoảng này thì mắt mất dòng khi quay đầu dòng.",
+    "prose": { "$value": "68ch" },
+    "narrow": { "$value": "48ch" },
+    "wide":  { "$value": "84ch" }
+  },
+
+  "space": {
+    "$type": "dimension",
+    "$description": "Lưới 8pt, chia nhỏ 4pt. Khớp đúng thang Tailwind nên không phải đổi gì ở chỗ dùng.",
+    "0":  { "$value": "0px" },
+    "1":  { "$value": "0.25rem", "$description": "4" },
+    "2":  { "$value": "0.5rem",  "$description": "8" },
+    "3":  { "$value": "0.75rem", "$description": "12" },
+    "4":  { "$value": "1rem",    "$description": "16" },
+    "5":  { "$value": "1.25rem", "$description": "20" },
+    "6":  { "$value": "1.5rem",  "$description": "24" },
+    "8":  { "$value": "2rem",    "$description": "32" },
+    "10": { "$value": "2.5rem",  "$description": "40" },
+    "12": { "$value": "3rem",    "$description": "48" },
+    "16": { "$value": "4rem",    "$description": "64" }
+  },
+  "target": {
+    "$type": "dimension",
+    "$description": "WCAG 2.5.8 chỉ đòi 24×24 CSS px. Apple đòi 44. Lấy 44 — và dùng hit-area overflow: nút NHÌN nhỏ, vùng BẤM phủ đủ 44.",
+    "min":   { "$value": "44px" },
+    "wcag":  { "$value": "24px", "$description": "chỉ để tham chiếu — đừng dùng làm mục tiêu" }
+  },
+
+  "radius": {
+    "$type": "dimension",
+    "$description": "Sinh từ MỘT giá trị gốc, nhân hệ số. Thang này lấy nguyên từ sakubun vì nó đúng.",
+    "base": { "$value": "0.625rem", "$description": "10px — gốc của cả thang" },
+    "sm":   { "$value": "0.375rem", "$description": "0.6 × base" },
+    "md":   { "$value": "0.5rem",   "$description": "0.8 × base" },
+    "lg":   { "$value": "0.625rem", "$description": "1.0 × base" },
+    "xl":   { "$value": "0.875rem", "$description": "1.4 × base" },
+    "2xl":  { "$value": "1.125rem", "$description": "1.8 × base" },
+    "full": { "$value": "9999px" }
+  },
+  "$note-dong-tam": "Bán kính ĐỒNG TÂM là chi tiết Apple có đòn bẩy cao nhất trên web và gần như không ai làm: r_trong = r_ngoài − padding. Build sinh ra `--radius-concentric`; chỗ dùng chỉ cần khai `--pad` rồi đọc nó. Đây là lý do card lồng trong card thường trông rẻ — hai góc cùng bán kính thì góc trong nhìn như bị bóp.",
+
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "$description": "DESIGN.md của sakubun khai fast:120 / base:200 nhưng globals.css rải 180ms, 0.7s tại chỗ. Đây là bản khai duy nhất kể từ giờ.",
+      "instant":    { "$value": "0ms" },
+      "fast":       { "$value": "120ms", "$description": "hover, focus, press — phải không cảm thấy được" },
+      "base":       { "$value": "200ms", "$description": "mặc định: mở/đóng, fade" },
+      "slow":       { "$value": "320ms", "$description": "sheet, drawer, lớp phủ" },
+      "deliberate": { "$value": "480ms", "$description": "chuyển cảnh lớn. Trên mức này người dùng bắt đầu ĐỢI." }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "$description": "Vào và ra KHÔNG đối xứng: vào chậm hơn để mắt bắt được, ra nhanh hơn để không chắn đường. Đối xứng làm giao diện nặng.",
+      "standard": { "$value": [0.2, 0.8, 0.2, 1] },
+      "enter":    { "$value": [0.05, 0.7, 0.1, 1] },
+      "exit":     { "$value": [0.3, 0, 0.8, 0.15] },
+      "overshoot":{ "$value": [0.2, 1.4, 0.4, 1], "$description": "pop — dùng rất tiết chế" }
+    },
+    "spring": {
+      "$type": "other",
+      "$description": "Cho motion/react. Spring đúng cho thao tác do NGƯỜI khởi phát (kéo, bấm, vuốt); easing đúng cho thứ do HỆ THỐNG khởi phát (toast, điều hướng).",
+      "press":  { "$value": { "stiffness": 400, "damping": 30, "mass": 1 } },
+      "pop":    { "$value": { "stiffness": 600, "damping": 24, "mass": 1 } },
+      "settle": { "$value": { "stiffness": 220, "damping": 26, "mass": 1 } }
+    },
+    "stagger": {
+      "$type": "duration",
+      "$description": "Lệch pha giữa các phần tử cùng nhóm, để mắt đọc ra thứ tự thay vì thấy cả khối nhảy một lúc.",
+      "tight": { "$value": "30ms" },
+      "base":  { "$value": "50ms" }
+    },
+    "$note-tan-suat": "Tần suất và mới lạ: KHÔNG animation trên thao tác tần suất cao — command menu, context menu, chuyển tab. Animation lần thứ năm mươi không còn là duyên, nó là ma sát. Guards không kiểm được luật này; nó nằm trong ui-patterns và review."
+  },
+
+  "elevation": {
+    "$type": "shadow",
+    "$description": "Thứ sakubun thiếu hoàn toàn: độ sâu hiện dựa 100% vào bậc màu nền. Bậc nền vẫn là tầng chính (nó đổi theo theme đúng cách), bóng chỉ là tầng phụ. Alpha ở dark mode đậm hơn vì bóng trên nền tối cần nhiều hơn mới thấy.",
+    "light": {
+      "0": { "$value": "none" },
+      "1": { "$value": "0 1px 2px 0 oklch(0.191 0.002 107 / 0.05)" },
+      "2": { "$value": "0 1px 2px 0 oklch(0.191 0.002 107 / 0.05), 0 8px 24px -12px oklch(0.191 0.002 107 / 0.12)" },
+      "3": { "$value": "0 2px 4px -1px oklch(0.191 0.002 107 / 0.06), 0 12px 32px -12px oklch(0.191 0.002 107 / 0.16)" },
+      "4": { "$value": "0 4px 8px -2px oklch(0.191 0.002 107 / 0.08), 0 24px 56px -16px oklch(0.191 0.002 107 / 0.22)" }
+    },
+    "dark": {
+      "0": { "$value": "none" },
+      "1": { "$value": "0 1px 2px 0 oklch(0 0 0 / 0.40)" },
+      "2": { "$value": "0 1px 2px 0 oklch(0 0 0 / 0.40), 0 8px 24px -12px oklch(0 0 0 / 0.60)" },
+      "3": { "$value": "0 2px 4px -1px oklch(0 0 0 / 0.45), 0 12px 32px -12px oklch(0 0 0 / 0.65)" },
+      "4": { "$value": "0 4px 8px -2px oklch(0 0 0 / 0.50), 0 24px 56px -16px oklch(0 0 0 / 0.70)" }
+    }
+  }
+}

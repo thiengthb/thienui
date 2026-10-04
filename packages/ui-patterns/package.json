@@ -1,0 +1,9 @@
+{
+  "name": "@thienui/ui-patterns",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Registry chỉ-thêm các luật UI đã khoá. @thienui/guards đọc file này để làm cổng; hook đọc để hiện luật trước lần ghi UI đầu phiên.",
+  "files": ["src"],
+  "exports": { ".": "./src/ui-patterns.json", "./ui-patterns.json": "./src/ui-patterns.json" },
+  "scripts": { "typecheck": "echo '(ui-patterns: chỉ dữ liệu)'", "lint": "node -e \"JSON.parse(require('fs').readFileSync('src/ui-patterns.json','utf8'));console.log('ui-patterns.json: JSON hợp lệ')\"" }
+}

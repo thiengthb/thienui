@@ -1,0 +1,1 @@
+{ "extends": "@thienui/tsconfig/base.json", "include": ["dist/tokens.ts"] }

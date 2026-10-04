@@ -1,0 +1,18 @@
+/* Thứ tự import có ý nghĩa:
+ *   1. framework trước (Tailwind + preset của shadcn)
+ *   2. token của thienui — ghi đè mọi token mặc định của preset bằng ba tầng của ta
+ *   3. base.css — focus ring, scrollbar, prefers-reduced-motion, hit-area 44px
+ * Đảo 2 và 1 thì preset của shadcn sẽ ghi đè token của ta và cả hệ màu biến mất. */
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+@import '@thienui/tokens/tokens.css';
+@import '@thienui/tokens/base.css';
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    /* 17pt = sàn dễ đọc của Apple. Web mặc định 16px nằm DƯỚI sàn đó. */
+    font-size: 17px;
+  }
+}

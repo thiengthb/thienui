@@ -1,0 +1,5 @@
+packages/tokens/dist/
+apps/docs/public/r/
+apps/docs/registry.json
+pnpm-lock.yaml
+.next/

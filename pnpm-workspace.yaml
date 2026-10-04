@@ -1,0 +1,9 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+# unrs-resolver (phụ thuộc của eslint-config-next) có build script native. Cho phép tường minh
+# thay vì để pnpm cảnh báo ở mọi lệnh (pnpm 12 dùng khoá `allowBuilds`). Tường minh nghĩa là lần thêm package có build
+# script vẫn sẽ bị hỏi, chứ không tự chạy.
+allowBuilds:
+  unrs-resolver: true

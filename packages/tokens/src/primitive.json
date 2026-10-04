@@ -1,0 +1,404 @@
+{
+  "$description": "TẦNG 1 — PRIMITIVE. Giá trị thô, không mang ý kiến về chỗ dùng. Không file nào ngoài tầng 2 được trỏ vào đây, và component thì TUYỆT ĐỐI không. Định dạng theo hình DTCG ($type/$value/alias {a.b.c}) — không tuyên bố conformance đầy đủ với bản 2025.10.",
+  "$note-thang-12-bac": "Mỗi ramp neutral có hai scale riêng cho sáng và tối, 12 bậc, và BẬC SỐ MANG CÙNG MỘT NGHĨA ở cả hai: 1 nền app · 2 nền phụ · 3 nền phần tử UI · 4 hover · 5 active/selected · 6 viền mảnh & phân tách · 7 viền phần tử & focus ring · 8 viền hover · 9 nền đặc · 10 nền đặc hover · 11 chữ tương phản thấp · 12 chữ tương phản cao. Cộng một bậc tên riêng `surface` = mặt nâng lên (card). Lý do có hai scale thay vì một scale bị đảo: đầu tối cần dày hơn — 0.236 / 0.268 / 0.309 / 0.325 / 0.347 / 0.360 nằm trong 0.13 đơn vị L, một ramp đảo không có đủ bậc ở đó.",
+  "color": {
+    "$type": "color",
+    "warm": {
+      "$description": "Neutral ấm, hue 97–107. Giấy. Đo từ bề mặt Claude Desktop (#FAF9F5 / #F0EEE6 / #FFFFFF / #141413 / #E3E1DA).",
+      "light": {
+        "1": {
+          "$value": "oklch(0.982 0.005 95)",
+          "$description": "#FAF9F5 nền trang"
+        },
+        "2": {
+          "$value": "oklch(0.968 0.008 95)",
+          "$description": "nền phụ"
+        },
+        "3": {
+          "$value": "oklch(0.9485 0.011 95)",
+          "$description": "#F0EEE6 nền phần tử UI / sidebar"
+        },
+        "4": {
+          "$value": "oklch(0.925 0.013 94)",
+          "$description": "hover"
+        },
+        "5": {
+          "$value": "oklch(0.912 0.014 94)",
+          "$description": "active / selected"
+        },
+        "6": {
+          "$value": "oklch(0.909 0.010 94)",
+          "$description": "#E3E1DA viền mảnh"
+        },
+        "7": {
+          "$value": "oklch(0.880 0.011 94)",
+          "$description": "viền phần tử & focus ring"
+        },
+        "8": {
+          "$value": "oklch(0.830 0.012 94)",
+          "$description": "viền hover"
+        },
+        "9": {
+          "$value": "oklch(0.650 0.010 96)",
+          "$description": "nền đặc"
+        },
+        "10": {
+          "$value": "oklch(0.600 0.009 96)",
+          "$description": "nền đặc hover"
+        },
+        "11": {
+          "$value": "oklch(0.512 0.008 97)",
+          "$description": "~#686762 chữ tương phản thấp — L đã giải cho 4.5:1 trên bậc 1 VÀ trên surface"
+        },
+        "12": {
+          "$value": "oklch(0.191 0.002 107)",
+          "$description": "#141413 chữ tương phản cao"
+        },
+        "surface": {
+          "$value": "oklch(1 0 95)",
+          "$description": "#FFFFFF — mặt nâng lên khỏi trang"
+        },
+        "sunken": {
+          "$value": "oklch(0.9485 0.011 95)",
+          "$description": "mặt CHÌM dưới trang — sidebar, chrome"
+        },
+        "overlay": {
+          "$value": "oklch(1 0 95)",
+          "$description": "mặt trên cùng — popover, menu"
+        }
+      },
+      "dark": {
+        "1": {
+          "$value": "oklch(0.268 0.004 107)",
+          "$description": "#262624 nền trang"
+        },
+        "2": {
+          "$value": "oklch(0.290 0.004 107)",
+          "$description": "nền phụ"
+        },
+        "3": {
+          "$value": "oklch(0.309 0.004 107)",
+          "$description": "#30302E nền phần tử UI"
+        },
+        "4": {
+          "$value": "oklch(0.325 0.004 107)",
+          "$description": "hover"
+        },
+        "5": {
+          "$value": "oklch(0.347 0.004 107)",
+          "$description": "#3A3A38 active / selected"
+        },
+        "6": {
+          "$value": "oklch(0.360 0.004 107)",
+          "$description": "viền mảnh"
+        },
+        "7": {
+          "$value": "oklch(0.400 0.004 107)",
+          "$description": "viền phần tử & focus ring"
+        },
+        "8": {
+          "$value": "oklch(0.450 0.005 107)",
+          "$description": "viền hover"
+        },
+        "9": {
+          "$value": "oklch(0.560 0.008 100)",
+          "$description": "nền đặc"
+        },
+        "10": {
+          "$value": "oklch(0.620 0.008 100)",
+          "$description": "nền đặc hover"
+        },
+        "11": {
+          "$value": "oklch(0.718 0.008 97)",
+          "$description": "~#A5A49E chữ tương phản thấp"
+        },
+        "12": {
+          "$value": "oklch(0.982 0.005 95)",
+          "$description": "#FAF9F5 chữ tương phản cao"
+        },
+        "surface": {
+          "$value": "oklch(0.309 0.004 107)",
+          "$description": "#30302E — card nổi LÊN khỏi trang 0.268"
+        },
+        "sunken": {
+          "$value": "oklch(0.236 0.002 68)",
+          "$description": "#1F1E1D mặt CHÌM dưới trang"
+        },
+        "overlay": {
+          "$value": "oklch(0.348 0.003 107)",
+          "$description": "#3A3A38 mặt trên cùng"
+        }
+      }
+    },
+    "cool": {
+      "$description": "Neutral lạnh, hue 255. Dùng cho theme thứ hai — thứ chứng minh ba tầng thật sự hoạt động.",
+      "light": {
+        "1": {
+          "$value": "oklch(0.988 0.003 255)"
+        },
+        "2": {
+          "$value": "oklch(0.972 0.005 255)"
+        },
+        "3": {
+          "$value": "oklch(0.952 0.008 255)"
+        },
+        "4": {
+          "$value": "oklch(0.934 0.010 255)"
+        },
+        "5": {
+          "$value": "oklch(0.918 0.012 255)"
+        },
+        "6": {
+          "$value": "oklch(0.906 0.012 255)"
+        },
+        "7": {
+          "$value": "oklch(0.878 0.014 255)"
+        },
+        "8": {
+          "$value": "oklch(0.828 0.016 255)"
+        },
+        "9": {
+          "$value": "oklch(0.645 0.016 255)"
+        },
+        "10": {
+          "$value": "oklch(0.595 0.016 255)"
+        },
+        "11": {
+          "$value": "oklch(0.505 0.014 255)"
+        },
+        "12": {
+          "$value": "oklch(0.196 0.008 255)"
+        },
+        "surface": {
+          "$value": "oklch(1 0 255)"
+        },
+        "sunken": {
+          "$value": "oklch(0.952 0.008 255)"
+        },
+        "overlay": {
+          "$value": "oklch(1 0 255)"
+        }
+      },
+      "dark": {
+        "1": {
+          "$value": "oklch(0.232 0.008 255)"
+        },
+        "2": {
+          "$value": "oklch(0.252 0.009 255)"
+        },
+        "3": {
+          "$value": "oklch(0.272 0.010 255)"
+        },
+        "4": {
+          "$value": "oklch(0.292 0.011 255)"
+        },
+        "5": {
+          "$value": "oklch(0.315 0.012 255)"
+        },
+        "6": {
+          "$value": "oklch(0.335 0.012 255)"
+        },
+        "7": {
+          "$value": "oklch(0.378 0.013 255)"
+        },
+        "8": {
+          "$value": "oklch(0.430 0.014 255)"
+        },
+        "9": {
+          "$value": "oklch(0.550 0.014 255)"
+        },
+        "10": {
+          "$value": "oklch(0.610 0.014 255)"
+        },
+        "11": {
+          "$value": "oklch(0.715 0.012 255)"
+        },
+        "12": {
+          "$value": "oklch(0.980 0.004 255)"
+        },
+        "surface": {
+          "$value": "oklch(0.272 0.010 255)"
+        },
+        "sunken": {
+          "$value": "oklch(0.198 0.006 255)"
+        },
+        "overlay": {
+          "$value": "oklch(0.315 0.012 255)"
+        }
+      }
+    },
+    "clay": {
+      "$description": "Clay #D97757 — hue 39. Bậc `solid` GIỐNG NHAU ở sáng và tối, có chủ ý: Claude không làm sáng màu thương hiệu cho dark mode. Bậc `text` là bậc duy nhất được giải L cho 4.5:1, vì nó là chữ (link, focus ring).",
+      "light": {
+        "wash": {
+          "$value": "oklch(0.955 0.020 39)"
+        },
+        "soft": {
+          "$value": "oklch(0.880 0.055 39)"
+        },
+        "solid": {
+          "$value": "oklch(0.672 0.131 39)",
+          "$description": "#D97757 chính xác"
+        },
+        "solidHover": {
+          "$value": "oklch(0.625 0.131 39)"
+        },
+        "text": {
+          "$value": "oklch(0.527 0.1375 39)"
+        }
+      },
+      "dark": {
+        "wash": {
+          "$value": "oklch(0.300 0.030 39)"
+        },
+        "soft": {
+          "$value": "oklch(0.400 0.060 39)"
+        },
+        "solid": {
+          "$value": "oklch(0.672 0.131 39)"
+        },
+        "solidHover": {
+          "$value": "oklch(0.715 0.125 40)"
+        },
+        "text": {
+          "$value": "oklch(0.731 0.130 42)"
+        }
+      }
+    },
+    "teal": {
+      "$description": "Accent của theme `slate`. Hue 185.",
+      "light": {
+        "wash": {
+          "$value": "oklch(0.955 0.018 185)"
+        },
+        "soft": {
+          "$value": "oklch(0.875 0.048 185)"
+        },
+        "solid": {
+          "$value": "oklch(0.590 0.088 185)",
+          "$description": "L đã GIẢI cho 4.5:1 với ink cool-12 ở trên (4.639). Ở 0.580 cặp này đo được 4.454 — trượt sàn chữ, và cổng contrast đã bắt được nó lúc dựng theme."
+        },
+        "solidHover": {
+          "$value": "oklch(0.545 0.088 185)"
+        },
+        "text": {
+          "$value": "oklch(0.505 0.088 185)"
+        }
+      },
+      "dark": {
+        "wash": {
+          "$value": "oklch(0.278 0.028 185)"
+        },
+        "soft": {
+          "$value": "oklch(0.388 0.048 185)"
+        },
+        "solid": {
+          "$value": "oklch(0.650 0.085 185)"
+        },
+        "solidHover": {
+          "$value": "oklch(0.700 0.080 185)"
+        },
+        "text": {
+          "$value": "oklch(0.760 0.088 185)"
+        }
+      }
+    },
+    "emerald": {
+      "$description": "Tín hiệu ĐÚNG / đúng tiến độ. Bốn ramp tín hiệu dưới đây cùng một họ L/C, nên chúng đọc ra như một bộ.",
+      "light": {
+        "text": {
+          "$value": "oklch(0.496 0.122 155)"
+        },
+        "wash": {
+          "$value": "oklch(0.952 0.022 155)"
+        }
+      },
+      "dark": {
+        "text": {
+          "$value": "oklch(0.702 0.140 155)"
+        },
+        "wash": {
+          "$value": "oklch(0.288 0.040 155)"
+        }
+      }
+    },
+    "amber": {
+      "$description": "Tín hiệu MỘT PHẦN / chậm tiến độ. Hue 85 — đã đẩy lệch khỏi clay để không nhầm với màu thương hiệu.",
+      "light": {
+        "text": {
+          "$value": "oklch(0.514 0.105 85)"
+        },
+        "wash": {
+          "$value": "oklch(0.955 0.030 85)"
+        }
+      },
+      "dark": {
+        "text": {
+          "$value": "oklch(0.720 0.130 88)"
+        },
+        "wash": {
+          "$value": "oklch(0.292 0.042 85)"
+        }
+      }
+    },
+    "rose": {
+      "$description": "Tín hiệu SAI / lapse. Hue 20.",
+      "light": {
+        "text": {
+          "$value": "oklch(0.538 0.200 20)"
+        },
+        "wash": {
+          "$value": "oklch(0.952 0.023 20)"
+        }
+      },
+      "dark": {
+        "text": {
+          "$value": "oklch(0.761 0.14 20)"
+        },
+        "wash": {
+          "$value": "oklch(0.292 0.055 20)"
+        }
+      }
+    },
+    "blue": {
+      "$description": "Tín hiệu DỄ / đã thuộc. Hue 245.",
+      "light": {
+        "text": {
+          "$value": "oklch(0.510 0.130 245)"
+        },
+        "wash": {
+          "$value": "oklch(0.955 0.022 245)"
+        }
+      },
+      "dark": {
+        "text": {
+          "$value": "oklch(0.715 0.130 245)"
+        },
+        "wash": {
+          "$value": "oklch(0.295 0.045 245)"
+        }
+      }
+    },
+    "danger": {
+      "$description": "Hành động phá hoại. Hue 27 — tách khỏi `rose` vì rose là TÍN HIỆU trạng thái, danger là HÀNH ĐỘNG; trộn hai thứ làm nút xoá trông như một badge.",
+      "light": {
+        "solid": {
+          "$value": "oklch(0.537 0.200 27)"
+        },
+        "solidHover": {
+          "$value": "oklch(0.492 0.200 27)"
+        }
+      },
+      "dark": {
+        "solid": {
+          "$value": "oklch(0.774 0.13 22)"
+        },
+        "solidHover": {
+          "$value": "oklch(0.812 0.104 22)"
+        }
+      }
+    }
+  },
+  "$note-bac-ten-rieng": "Ba bậc TÊN RIÊNG — `sunken` (chìm dưới trang: sidebar, chrome) · `surface` (nâng trên trang: card) · `overlay` (trên cùng: popover, menu) — tồn tại vì một thang số không diễn tả được chúng: ở light `sunken` phải TỐI hơn bậc 1, ở dark nó phải SÁNG hơn... không, TỐI hơn nữa. Đặt tên theo VAI TRÒ thay vì theo số làm cả hai mode map về cùng một cái tên, và đó là điều kiện để tầng 2 không phải khai hai lần hai ý khác nhau. Các bậc 1–12 còn lại vẫn được phép map lệch index giữa hai mode: scale tối KHÔNG phải ảnh phản chiếu của scale sáng, và giả vờ ngược lại thì phải bóp méo các giá trị đã đo.",
+  "$note-gamut": "Mọi token đã được CLAMP về trong gamut sRGB (lùi 2% khỏi biên để chừa sai số làm tròn của browser). Lý do không phải là sự cẩn thận quá mức: một token khai màu ngoài sRGB sẽ bị browser gamut-map, nên màu HIỆN RA khác màu ĐÃ KHAI — và vì cổng contrast đo màu đã khai, tỉ số nó báo không phải tỉ số người dùng thấy. Token alert dark của sakubun, oklch(0.761 0.180 20), lệch tới 0.16 ngoài biên: đủ xa để con số 4.5:1 trở thành không đáng tin. Thêm nữa, trên màn hình P3 màu ngoài sRGB hiện đậm hơn, nên cùng một token cho hai tỉ số khác nhau ở hai máy — và đó là thứ không cổng nào bắt được."
+}

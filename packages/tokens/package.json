@@ -1,0 +1,26 @@
+{
+  "name": "@thienui/tokens",
+  "version": "0.1.0",
+  "type": "module",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "exports": {
+    ".": "./dist/tokens.ts",
+    "./tokens.css": "./dist/tokens.css",
+    "./base.css": "./dist/base.css",
+    "./themes.json": "./dist/themes.json",
+    "./src/*": "./src/*",
+    "./tokens.json": "./dist/tokens.json"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo '(tokens: không có lint riêng)'"
+  },
+  "devDependencies": {
+    "@thienui/tsconfig": "workspace:*",
+    "typescript": "^5.9.3"
+  }
+}
