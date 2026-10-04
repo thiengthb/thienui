@@ -16,13 +16,15 @@
     "test": "turbo run test",
     "build": "turbo run build",
     "verify": "pnpm tokens && pnpm guards && pnpm typecheck && pnpm lint && pnpm test && pnpm build",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "shots": "node tooling/shots.mjs"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@thienui/guards": "workspace:*",
+    "prettier": "^3.9.6",
     "turbo": "^2.6.1",
     "typescript": "^5.9.3",
-    "vitest": "^4.1.10",
-    "prettier": "^3.9.6",
-    "@thienui/guards": "workspace:*"
+    "vitest": "^4.1.10"
   }
 }

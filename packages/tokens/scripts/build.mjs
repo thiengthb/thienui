@@ -181,15 +181,32 @@ for (const name of Object.keys(def.light)) {
   else out.push(`  --color-${name}: var(--${name});`);
 }
 out.push('');
-for (const [path, v] of Object.entries(P)) {
-  if (path.startsWith('type.')) out.push(`  --text-${path.slice(5)}: var(--p-${path.replace(/\./g, '-')});`);
-}
-for (const [path] of Object.entries(P)) {
-  if (path.startsWith('radius.')) {
-    const k = path.slice(7);
-    out.push(`  --radius-${k}: var(--p-radius-${k});`);
+/* Nối token phi-màu vào ĐÚNG namespace của Tailwind v4. Namespace quyết định utility nào được sinh;
+ * khai token mà không nối vào đây thì nó tồn tại trong CSS mà không có class nào dùng được — đúng
+ * lỗi đã xảy ra: `tracking`, `leading`, `weight`, `measure`, `easing` được khai trong scale.json từ
+ * đầu nhưng `tracking-snug` không tồn tại, và Tailwind im lặng bỏ qua một class không biết. */
+const NS = [
+  ['type.', '--text-'],          // -> text-body, text-title1
+  ['tracking.', '--tracking-'],  // -> tracking-tight, tracking-label
+  ['leading.', '--leading-'],    // -> leading-body
+  ['weight.', '--font-weight-'], // -> font-semibold (ghi đè thang mặc định)
+  ['measure.', '--container-'],  // -> max-w-prose, max-w-narrow
+  ['radius.', '--radius-'],      // -> rounded-lg
+];
+for (const [prefix, ns] of NS) {
+  for (const path of Object.keys(P)) {
+    if (!path.startsWith(prefix)) continue;
+    out.push(`  ${ns}${path.slice(prefix.length)}: var(--p-${path.replace(/\./g, '-')});`);
   }
 }
+for (const path of Object.keys(P)) {
+  if (path.startsWith('motion.easing.')) out.push(`  --ease-${path.slice(14)}: var(--p-${path.replace(/\./g, '-')});`);
+}
+out.push('');
+out.push('  /* Tailwind KHÔNG có namespace cho duration — `duration-*` đọc thang riêng của nó, không');
+out.push('   * đọc @theme. Nên cách đúng để dùng token thời lượng là giá trị tuỳ ý TRỎ TOKEN:');
+out.push('   *   duration-[var(--p-motion-duration-fast)]');
+out.push('   * Luật `no-raw-durations` cho phép đúng dạng đó và chặn `duration-[200ms]`. */');
 out.push('  --font-sans: var(--font-sans);');
 out.push('  --font-mono: var(--font-mono);');
 out.push('}');

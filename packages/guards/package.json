@@ -3,11 +3,43 @@
   "version": "0.1.0",
   "type": "module",
   "description": "Cổng UI máy cưỡng chế: tương phản WCAG trên token, gamut sRGB, và luật UI đã khoá.",
-  "files": ["src", "bin"],
+  "files": [
+    "src",
+    "bin"
+  ],
   "main": "./src/index.mjs",
-  "exports": { ".": "./src/index.mjs", "./contrast": "./src/contrast.mjs", "./pattern-lock": "./src/pattern-lock.mjs", "./oklch": "./src/oklch.mjs" },
-  "bin": { "thienui-guards": "./bin/guards.mjs" },
-  "scripts": { "test": "vitest run", "typecheck": "echo '(guards: JS thuần + JSDoc)'", "lint": "echo '(guards: lint ở cấp root)'" },
-  "peerDependencies": { "@thienui/tokens": "workspace:*" },
-  "peerDependenciesMeta": { "@thienui/tokens": { "optional": true } }
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "default": "./src/index.mjs"
+    },
+    "./contrast": {
+      "types": "./src/contrast.d.ts",
+      "default": "./src/contrast.mjs"
+    },
+    "./pattern-lock": {
+      "types": "./src/pattern-lock.d.ts",
+      "default": "./src/pattern-lock.mjs"
+    },
+    "./oklch": {
+      "types": "./src/oklch.d.ts",
+      "default": "./src/oklch.mjs"
+    }
+  },
+  "bin": {
+    "thienui-guards": "./bin/guards.mjs"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "echo '(guards: JS thuần + JSDoc)'",
+    "lint": "echo '(guards: lint ở cấp root)'"
+  },
+  "peerDependencies": {
+    "@thienui/tokens": "workspace:*"
+  },
+  "peerDependenciesMeta": {
+    "@thienui/tokens": {
+      "optional": true
+    }
+  }
 }

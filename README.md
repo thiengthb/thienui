@@ -24,12 +24,16 @@ Hai đường phát hành, và việc gì đi đường nào không phải chuy�
 ## Cấu trúc
 
 ```
-apps/docs/                 Fumadocs sẽ vào đây — hiện là Next 16 + registry host
+apps/docs/                 Next 16 · trang showcase + registry host
+├─ app/(site)/             /  ·  /tokens  ·  /components  ·  /components/[name]
+├─ app/preview/[name]/     render CÁCH LY — không chrome, để iframe và để chụp ảnh
+├─ components/             chrome của site, bộ chuyển theme, ma trận demo
 ├─ registry/
 │  ├─ base/                55 primitive trên Base UI + hook — RANH GIỚI VENDOR
 │  ├─ patterns/            generic đã ghép: data-table, confirm-dialog, empty-state
 │  ├─ shells/              khung app & layout
 │  ├─ blocks/              cả màn hình
+│  ├─ demos/               spec demo (variants × sizes), khai bằng dữ liệu
 │  └─ _quarantine/         code vay, chưa soát — KHÔNG AI được import
 ├─ registry.config.mjs     địa chỉ công khai của registry — MỘT chỗ duy nhất
 ├─ registry.json           SINH TỰ ĐỘNG từ cây thư mục, đừng sửa tay
@@ -40,6 +44,8 @@ packages/
 ├─ guards/                 @thienui/guards — cổng contrast, gamut, pattern-lock
 ├─ ui-patterns/            @thienui/ui-patterns — 32 luật UI đã khoá
 └─ tsconfig/
+
+tooling/shots.mjs          chụp 4 tổ hợp theme × mode bằng Playwright
 ```
 
 ## Token: ba tầng, một chiều
@@ -102,6 +108,40 @@ pnpm dlx shadcn@latest add @thienui/theme-claude @thienui/sidebar
 #     package.json → "verify": "... && thienui-guards"
 ```
 
+## Trang showcase
+
+```bash
+pnpm dev     # http://localhost:4321
+pnpm shots   # chụp 4 tổ hợp theme × mode (cần server đang chạy)
+```
+
+| trang | nó chứng minh điều gì |
+|---|---|
+| `/tokens` | Ramp tầng 1, token tầng 2 theo vai trò, thang chữ / khoảng cách / bán kính / độ sâu / chuyển động. Và **bảng đo contrast thật** — không phải ảnh chụp, mà là chính kết quả `@thienui/guards` chạy lúc build, lọc theo theme đang chọn. |
+| `/components` | 58 item, bốn tầng. Cái nào **chưa có demo** thì hiện rõ là chưa — nợ nhìn thấy được thì còn trả được. |
+| `/components/[name]` | Lệnh cài · export · ma trận **biến thể × kích cỡ** · **sáu vi-trạng thái** · **sáu trạng thái dữ liệu** · nguồn. |
+| `/preview/[name]` | Render cách ly, không CSS nào của site xung quanh. Nếu một component chỉ trông đúng trong trang docs thì nó đang mượn style từ trang docs. |
+
+**Hai trục theme**, cả hai ghi lên `<html>`: `class="dark"` (mode, do next-themes) và `data-theme`
+(brand, do `BrandThemeProvider`). Phải cùng một phần tử — token brand khai ở `[data-theme='x'].dark`.
+
+### Không dùng Fumadocs — và vì sao
+
+Kế hoạch ban đầu nói Fumadocs. Khi dựng thì nó không còn hợp: Fumadocs mạnh ở **docs văn xuôi MDX**
+và nó **sở hữu layout**, trong khi thứ cần dựng là một showcase có bộ chuyển theme riêng, ma trận
+trạng thái và bảng đo chạy lúc build. Hai thứ đó tranh nhau cái layout. Showcase dựng thẳng bằng
+route Next thì ít lớp hơn và không có gì phải chống lại.
+
+Fumadocs vẫn đáng thêm **sau**, cho phần docs văn xuôi — nó không mâu thuẫn với các route hiện có.
+
+### Playwright thay Storybook — lý do thật
+
+Không phải để tiết kiệm. Một trang web **không tự hover được cho chính nó**: `hover`, `active` và
+`focus-visible` là pseudo-class CSS, nên ma trận vi-trạng thái phải ghi "tự trỏ vào để xem" cho ba ô
+đó. `tooling/shots.mjs` thì hover được thật, Tab được thật, và nó **đọc lại `data-theme` + `.dark`
+sau khi tải** để chứng minh theme đã áp — nếu brand provider vỡ thì ảnh vẫn trông "đúng", vì theme
+mặc định cũng là `claude`.
+
 ## `registry/base/` là ranh giới vendor
 
 `base/` chứa code kéo từ registry shadcn, và `shadcn add` **ghi đè file**. Trong lúc port 55 primitive,
@@ -151,8 +191,12 @@ Các namespace đã khai sẵn trong `components.json` (đã lọc sức khoẻ 
 | Hook + skill `/ui-pattern-lock` | ✅ |
 | Monorepo + registry sinh tự động + `shadcn build` | ✅ `pnpm verify` |
 | Tầng base: **55 primitive + 1 hook** trên Base UI 1.8.0 | ✅ pha 2 |
+| Trang showcase: token · gallery · ma trận 6×6 · preview cách ly | ✅ pha 3 |
+| Chụp ảnh 4 tổ hợp theme × mode (`pnpm shots`) | ✅ |
+| Demo: 12/58 item — component compound cần render riêng | ⬜ nợ đã biết |
+| Deploy registry (URL ở `registry.config.mjs`) | ⬜ chưa chọn domain |
+| Fumadocs cho docs văn xuôi | ⬜ pha 3b |
 | Registry **công khai**, cài được từ project ngoài | ✅ đã kiểm end-to-end |
-| Fumadocs + `/preview/[name]` + ma trận 6 trạng thái | ⬜ pha 3 |
 | Thu hoạch `patterns/` + `shells/` từ sakubun | ⬜ pha 4 |
 | Tầng cảm giác từ `@seamui` -> motion token | ⬜ pha 5 |
 | Dựng một project thật hoàn toàn trên thienui | ⬜ pha 6 |

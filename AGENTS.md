@@ -36,6 +36,21 @@ pnpm dev         # trang docs, cổng 4321
 - **Địa chỉ registry công khai sống ở `apps/docs/registry.config.mjs`**, một chỗ duy nhất. Chưa deploy —
   đổi `PUBLIC_URL` hoặc đặt `THIENUI_REGISTRY_URL`.
 
+## Trang showcase (apps/docs)
+
+- `pnpm dev` -> :4321. `pnpm shots` chụp 4 tổ hợp theme × mode (cần server đang chạy).
+- **Hai trục theme phải cùng nằm trên `<html>`**: `class="dark"` (next-themes) và `data-theme`
+  (`BrandThemeProvider`). Đặt `data-theme` trên một div bên trong thì `[data-theme='x'].dark` không
+  bao giờ khớp, và theme tối của brand phụ im lặng không áp.
+- **Đừng dùng mẫu `useState(false)` + `useEffect(() => setMounted(true))`.** Dùng `useMounted()` trong
+  `lib/use-mounted.ts` (`useSyncExternalStore`). Mẫu cũ gọi setState đồng bộ trong effect — luật
+  `react-hooks/set-state-in-effect` bắt nó, và nó thêm một render lồng cho mỗi component dùng.
+- Demo khai trong `registry/demos/index.tsx`, giữ THAM CHIẾU tới component chứ không giữ tên —
+  đường dẫn động không resolve được qua Turbopack. Component compound (Dialog, Combobox, Calendar,
+  Progress) không khai được bằng spec `variants × sizes`; chúng cần render riêng.
+- `hover` / `active` / `focus-visible` KHÔNG force được từ JS. Ma trận ghi rõ điều đó thay vì hiện
+  một ô trông như đã kiểm. Đó là việc của `pnpm shots`.
+
 ## Khi viết UI
 
 1. **Hook sẽ hiện 32 luật** trước lần ghi `.tsx`/`.css` đầu tiên của phiên. Đọc nó.

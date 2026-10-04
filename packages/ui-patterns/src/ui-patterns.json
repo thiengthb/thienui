@@ -22,7 +22,7 @@
     {
       "id": "no-hardcoded-colors",
       "rule": "Màu lấy từ token theme. Không mã hex, không rgb()/hsl() literal, không class màu tuỳ ý.",
-      "why": "Một màu literal không biết tới theme, nên phần tử đó là thứ duy nhất trên trang không đổi theo sáng/tối — và nó cũng vô hình với cổng contrast, vì cổng chỉ đo token.",
+      "why": "Một màu literal không biết tới theme, nên phần tử đó là thứ duy nhất trên trang không đổi theo sáng/tối — và nó cũng vô hình với cổng contrast, vì cổng chỉ đo token. GIỚI HẠN ĐÃ BIẾT: check là regex theo dòng nên nó không phân biệt được CODE với VĂN XUÔI — viết tên một mẫu bị cấm ra nguyên văn trong comment cũng làm cổng đỏ. Đã cân nhắc bỏ qua comment và loại bỏ: muốn làm đúng thì phải parse AST cho cả .tsx và .css, và một cổng phức tạp hơn là một cổng có nhiều chỗ sai hơn. Kỷ luật thay thế rất rẻ: trong comment thì MÔ TẢ mẫu thay vì viết nó ra.",
       "canonical": "packages/tokens/src/primitive.json",
       "source": "sakubun · lockedOn 2026-07-23",
       "check": {
@@ -34,7 +34,7 @@
     {
       "id": "no-tailwind-palette-colors",
       "rule": "Không dùng class màu của bảng màu Tailwind (text-red-500, bg-slate-100, border-zinc-200…). Màu đi qua token ngữ nghĩa: text-foreground, bg-card, text-alert, bg-ok-wash.",
-      "why": "Đây là lỗ mà luật no-hardcoded-colors không bắt được: `text-red-500` không có hex nào nên nó lọt, nhưng nó vẫn là một màu nằm ngoài theme và vẫn không đổi theo dark mode. Nó cũng phá quy tắc 'gán NGHĨA trước khi gán màu' — red-500 không nói nó là lỗi, là phá hoại, hay chỉ là trang trí.",
+      "why": "Đây là lỗ mà luật no-hardcoded-colors không bắt được: `text-red-500` không có hex nào nên nó lọt, nhưng nó vẫn là một màu nằm ngoài theme và vẫn không đổi theo dark mode. Nó cũng phá quy tắc 'gán NGHĨA trước khi gán màu' — red-500 không nói nó là lỗi, là phá hoại, hay chỉ là trang trí. GIỚI HẠN ĐÃ BIẾT: check là regex theo dòng nên nó không phân biệt được CODE với VĂN XUÔI — viết tên một mẫu bị cấm ra nguyên văn trong comment cũng làm cổng đỏ. Đã cân nhắc bỏ qua comment và loại bỏ: muốn làm đúng thì phải parse AST cho cả .tsx và .css, và một cổng phức tạp hơn là một cổng có nhiều chỗ sai hơn. Kỷ luật thay thế rất rẻ: trong comment thì MÔ TẢ mẫu thay vì viết nó ra.",
       "canonical": "packages/tokens/src/semantic.claude.json",
       "source": "thienui · 2026-10-04",
       "check": {
