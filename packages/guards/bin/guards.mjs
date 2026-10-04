@@ -15,6 +15,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve, join } from 'node:path';
 import { checkContrast, checkGamut } from '../src/contrast.mjs';
 import { runPatternLock } from '../src/pattern-lock.mjs';
+import { checkCanonicals } from '../src/canonical.mjs';
 
 const argv = process.argv.slice(2);
 const flag = (n, d = null) => {
@@ -106,6 +107,17 @@ for (const p of pl.byPattern) {
   }
 }
 
+/* ───────── cổng 4: canonical phải có thật ───────── */
+const can = checkCanonicals(root, registry);
+if (!can.pass) {
+  exitCode = 1;
+  console.error('\n' + bar + '\n✗ CANONICAL — luật trỏ "làm đúng ở" vào chỗ không tồn tại\n' + bar);
+  for (const m of can.missing) console.error(`  [${m.id}]  ->  ${m.canonical}`);
+  for (const id of can.noCanonical) console.error(`  [${id}]  thiếu hẳn trường canonical (dùng "—" nếu cố ý)`);
+  console.error('\n  Một luật trỏ vào file không có thì tệ hơn một luật không có con trỏ: người đọc mở ra,');
+  console.error('  không thấy gì, rồi kết luận luật đã lỗi thời và bỏ qua nó.');
+}
+
 /* ───────── tổng kết ───────── */
 const manual = pl.byPattern.filter((p) => p.manual).length;
 const auto = pl.byPattern.length - manual;
@@ -123,7 +135,7 @@ if (has('report')) {
 if (exitCode === 0) {
   console.log(
     `✓ guards: ${c.results.length} cặp contrast (${byTier('text')} chữ · ${byTier('graphic')} đồ hoạ · ${byTier('decor')} decor) ` +
-      `· ${auto} luật máy kiểm + ${manual} luật review · gamut sạch`
+      `· ${auto} luật máy kiểm + ${manual} luật review · gamut sạch · canonical đủ`
   );
 } else {
   console.error('');

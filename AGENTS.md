@@ -81,6 +81,18 @@ Năm bước trong `README.md`, không bỏ bước nào. Luật `no-quarantine-
 Điều cần nhớ: registry **chèn code vào repo và bạn sở hữu nó ngay**. Không có gì "chỉ là dependency" ở
 đây — mọi dòng vay về là dòng bạn phải bảo trì và phải qua được cổng.
 
+## Tầng patterns & shells
+
+- `patterns/` là code TA VIẾT — mọi luật áp đủ, không có `exclude` nào. Khác hẳn `base/`.
+- **Đừng chép class giữa `PageShell` và `PageSkeleton`.** Phần chung nằm ở `shells/page-chrome.ts` và
+  cả hai IMPORT nó. Ở sakubun hai file chép nhau rồi lệch: placeholder thanh trên di động bị thiếu,
+  nên dưới `md` breadcrumb nhảy ~41px mỗi lần điều hướng. Chép thì lệch được; import thì không.
+- `data-table` ghim `@tanstack/react-table@^8` CÓ CHỦ Ý dù v9 đã là `latest` — hai registry đã chọn
+  để vay (`@niko-table`, `@data-table-filters`) đều nhắm v8. Chi phí đã biết: React Compiler bỏ qua
+  component đó. Lý do đầy đủ ghi trong chính file.
+- Component có HÀNH VI thật (bảng, dialog, chồng thẻ) dùng `custom` trong `registry/demos/index.tsx`
+  + một file `*-demo.tsx` riêng. Spec `variants × sizes` không diễn tả được chúng.
+
 ## Khi sửa một cổng
 
 Cổng mà sửa cho nó im tiếng thì không còn là cổng:
@@ -91,6 +103,8 @@ Cổng mà sửa cho nó im tiếng thì không còn là cổng:
 - Regex bắt oan code đang đúng → **hẹp regex lại**, đừng thêm `allow`. Một regex quá rộng còn tệ hơn
   không có luật: nó dạy người ta cách bỏ qua cổng.
 - `allow` mới → lý do phải dài hơn 20 ký tự, có test cưỡng chế. "file sinh tự động" không đủ.
+- Luật mới → `canonical` phải trỏ vào chỗ CÓ THẬT; cổng thứ tư kiểm điều đó. Dùng `"—"` nếu luật cố
+  ý không có canonical (luật về thái độ, không về một file).
 - Thêm cổng mới → kèm một test chứng minh nó **bắt được** vi phạm. Xem ca
   "bật một token sai thì cổng PHẢI đỏ" trong `packages/guards/test/guards.test.mjs`. Một cổng không có
   test chứng minh nó đỏ được là một cổng có thể đã mù từ đầu mà không ai biết.

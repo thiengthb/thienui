@@ -24,6 +24,10 @@
     "./oklch": {
       "types": "./src/oklch.d.ts",
       "default": "./src/oklch.mjs"
+    },
+    "./canonical": {
+      "types": "./src/canonical.d.ts",
+      "default": "./src/canonical.mjs"
     }
   },
   "bin": {

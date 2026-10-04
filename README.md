@@ -30,8 +30,10 @@ apps/docs/                 Next 16 · trang showcase + registry host
 ├─ components/             chrome của site, bộ chuyển theme, ma trận demo
 ├─ registry/
 │  ├─ base/                55 primitive trên Base UI + hook — RANH GIỚI VENDOR
-│  ├─ patterns/            generic đã ghép: data-table, confirm-dialog, empty-state
-│  ├─ shells/              khung app & layout
+│  ├─ patterns/            10 generic đã ghép: data-table, confirm-dialog, empty-state,
+│  │                       explain, info-tooltip, search-input, tab-select, card-deck,
+│  │                       relative-time, bulk-action-button
+│  ├─ shells/              app-shell · app-sidebar · page-shell · page-skeleton
 │  ├─ blocks/              cả màn hình
 │  ├─ demos/               spec demo (variants × sizes), khai bằng dữ liệu
 │  └─ _quarantine/         code vay, chưa soát — KHÔNG AI được import
@@ -85,6 +87,11 @@ Khác hai điểm so với bản trong `sakubun`, và cả hai là sửa lỗi t
 **2 · Gamut** — token khai màu ngoài sRGB sẽ bị browser gamut-map, nên màu hiện ra khác màu đã khai, và tỉ số contrast đo được không phải tỉ số người dùng thấy. Mọi token đã clamp về trong gamut (lùi 2% khỏi biên).
 
 **3 · Pattern lock** — 32 luật, **14 máy kiểm** + 18 người review. Mỗi luật có `rule` · `why` · `canonical` · `check` · `allow`.
+
+**4 · Canonical** — mỗi luật phải trỏ `canonical` vào một chỗ **có thật**. Một luật trỏ vào file không
+tồn tại thì tệ hơn một luật không có con trỏ: người đọc (hoặc agent) mở ra, không thấy gì, rồi kết
+luận luật đã lỗi thời và bỏ qua nó — cả cụm luật chết theo cách đó mà không ai sửa gì. Cổng này bắt
+được **14/32 luật** đang trỏ vào chỗ không có, ngay lúc nó được thêm vào.
 
 Hook `.claude/hooks/ui-pattern-lock.mjs` hiện toàn bộ luật trước **lần ghi UI đầu tiên của mỗi phiên** — luật đến vào lúc nó còn thay đổi được quyết định, không phải lúc test đã đỏ.
 
@@ -192,8 +199,11 @@ Các namespace đã khai sẵn trong `components.json` (đã lọc sức khoẻ 
 | Monorepo + registry sinh tự động + `shadcn build` | ✅ `pnpm verify` |
 | Tầng base: **55 primitive + 1 hook** trên Base UI 1.8.0 | ✅ pha 2 |
 | Trang showcase: token · gallery · ma trận 6×6 · preview cách ly | ✅ pha 3 |
+| Sáu trạng thái DỮ LIỆU render thật (trong `data-table`) | ✅ pha 4 |
 | Chụp ảnh 4 tổ hợp theme × mode (`pnpm shots`) | ✅ |
-| Demo: 12/58 item — component compound cần render riêng | ⬜ nợ đã biết |
+| Patterns & shells thu hoạch từ sakubun (10 + 4) | ✅ pha 4 |
+| Cổng thứ tư: canonical phải có thật | ✅ 32/32 luật trỏ đúng |
+| Demo: 18/76 item — còn component compound chưa có | ⬜ nợ đã biết |
 | Deploy registry (URL ở `registry.config.mjs`) | ⬜ chưa chọn domain |
 | Fumadocs cho docs văn xuôi | ⬜ pha 3b |
 | Registry **công khai**, cài được từ project ngoài | ✅ đã kiểm end-to-end |

@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { contrast, solveLightness, outOfGamut } from '../src/oklch.mjs';
 import { checkContrast, checkGamut, POLICY } from '../src/contrast.mjs';
 import { runCheck, runPatternLock } from '../src/pattern-lock.mjs';
+import { checkCanonicals } from '../src/canonical.mjs';
 
 const tokens = JSON.parse(readFileSync(new URL('../../tokens/dist/tokens.json', import.meta.url), 'utf8'));
 const registry = JSON.parse(readFileSync(new URL('../../ui-patterns/src/ui-patterns.json', import.meta.url), 'utf8'));
@@ -113,6 +114,23 @@ describe('registry luật UI', () => {
     for (const p of registry.patterns)
       for (const [file, reason] of Object.entries(p.allow ?? {}))
         expect(String(reason).length, `${p.id} → ${file}`).toBeGreaterThan(20);
+  });
+
+  it('mọi luật trỏ canonical vào chỗ CÓ THẬT trong repo này', () => {
+    const r = checkCanonicals(new URL('../../../', import.meta.url).pathname, registry);
+    expect(r.missing.map((m) => `${m.id} -> ${m.canonical}`)).toEqual([]);
+    expect(r.noCanonical, 'luật thiếu hẳn canonical — dùng "—" nếu cố ý').toEqual([]);
+  });
+
+  it('cổng canonical PHẢI đỏ khi đường dẫn không tồn tại — cổng không được mù', () => {
+    const r = checkCanonicals('/khong/ton/tai', { patterns: [{ id: 'x', canonical: 'a/b.tsx' }] });
+    expect(r.pass).toBe(false);
+    expect(r.missing).toHaveLength(1);
+  });
+
+  it('canonical "—" là CỐ Ý không có, không tính là thiếu', () => {
+    const r = checkCanonicals('/khong/ton/tai', { patterns: [{ id: 'x', canonical: '—' }] });
+    expect(r.pass).toBe(true);
   });
 
   it('check.kind chỉ nằm trong tập bộ chạy hiểu được', () => {

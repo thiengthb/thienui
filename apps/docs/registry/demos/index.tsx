@@ -12,8 +12,9 @@
  * đúng cái đó, và TypeScript bắt được ngay nếu component bị đổi tên.
  *
  * `variants` × `sizes` là hai trục mà phần lớn primitive có, nên một renderer chung dựng được ma trận
- * đầy đủ mà không cần một file riêng cho mỗi component. Component compound (Progress, Dialog,
- * Combobox, Calendar) không khai được bằng spec này — chúng cần render riêng, và chưa có.
+ * đầy đủ mà không cần một file riêng cho mỗi component. Component có HÀNH VI thật (bảng, dialog,
+ * chồng thẻ) thì không: trạng thái dữ liệu và cử chỉ không phải là một trục prop. Chúng dùng `custom`
+ * và một file demo riêng — `*-demo.tsx` bên cạnh file này.
  */
 import type * as React from 'react';
 
@@ -29,6 +30,12 @@ import { Kbd } from '@/registry/base/kbd';
 import { Switch } from '@/registry/base/switch';
 import { Checkbox } from '@/registry/base/checkbox';
 import { Toggle } from '@/registry/base/toggle';
+import { EmptyState } from '@/registry/patterns/empty-state';
+import { SearchInput } from '@/registry/patterns/search-input';
+import { InfoTooltip } from '@/registry/patterns/info-tooltip';
+import { DataTableDemo } from '@/registry/demos/data-table-demo';
+import { CardDeckDemo } from '@/registry/demos/card-deck-demo';
+import { ConfirmDialogDemo } from '@/registry/demos/confirm-dialog-demo';
 
 export type StateName = 'default' | 'hover' | 'focus-visible' | 'active' | 'disabled' | 'loading';
 
@@ -53,7 +60,13 @@ export const DATA_STATES = [
 ] as const;
 
 export type DemoSpec = {
-  component: React.ComponentType<Record<string, unknown>>;
+  /** Component cho spec `variants × sizes`. Bỏ qua khi có `custom`. */
+  component?: React.ComponentType<Record<string, unknown>>;
+  /**
+   * Demo tự viết, cho component có HÀNH VI thật — dialog, bảng, chồng thẻ. Spec `variants × sizes`
+   * không diễn tả được chúng: trạng thái dữ liệu và cử chỉ không phải là một trục prop.
+   */
+  custom?: React.ComponentType;
   variants?: { prop: string; values: string[] };
   sizes?: { prop: string; values: string[] };
   props?: Record<string, unknown>;
@@ -106,6 +119,40 @@ export const DEMOS: Record<string, DemoSpec> = {
   switch: { component: Switch, microstates: true },
   checkbox: { component: Checkbox, microstates: true },
   toggle: { component: Toggle, children: 'Đã thuộc', microstates: true },
+
+  // ── pattern (pha 4) ──
+  'empty-state': {
+    component: EmptyState as React.ComponentType<Record<string, unknown>>,
+    props: {
+      title: 'Chưa có thuật ngữ nào',
+      description: 'Thêm mục đầu tiên để bắt đầu.',
+      className: 'w-full',
+    },
+    note: 'Dựng TRÊN `Empty` của shadcn, không dựng lại — luật reuse-before-build. Hai icon mang hai nghĩa khác nhau: Inbox = chưa có gì (trang nên giấu cả thanh công cụ), SearchX = có dữ liệu nhưng bộ lọc không khớp (PHẢI giữ thanh công cụ, nếu không người dùng mắc kẹt).',
+  },
+  'search-input': {
+    component: SearchInput as React.ComponentType<Record<string, unknown>>,
+    props: { placeholder: 'Tìm thuật ngữ…' },
+    microstates: true,
+    note: 'Bề rộng dùng CONTAINER QUERY, không viewport. Ô này hay nằm trong toolbar hẹp, trong dialog, trong một cột grid — theo viewport thì nó tràn khỏi hộp chứa dù hộp chỉ 300px.',
+  },
+  'info-tooltip': {
+    component: InfoTooltip as React.ComponentType<Record<string, unknown>>,
+    props: { text: 'Số lượt ôn đã hoàn thành của mục này.' },
+    note: 'Là một <button> thật chứ không phải span có icon — span không nhận focus bàn phím, nên lời giải thích sẽ không tồn tại với người không dùng chuột. Vùng chạm phủ 44px mà không phóng to phần nhìn thấy.',
+  },
+  'data-table': {
+    custom: DataTableDemo,
+    note: 'Chỗ DUY NHẤT sáu trạng thái dữ liệu được render thật chứ không chỉ liệt kê. Bấm từng trạng thái ở trên bảng.',
+  },
+  'card-deck': {
+    custom: CardDeckDemo,
+    note: 'Phản hồi theo NGÓN TAY: thẻ đi theo con trỏ ngay, không chờ ngưỡng. Chờ ngưỡng làm cử chỉ cảm giác như bị trễ dù tổng thời gian bằng nhau.',
+  },
+  'confirm-dialog': {
+    custom: ConfirmDialogDemo,
+    note: '`pending` khoá CẢ HAI nút, không chỉ nút xác nhận: bấm Huỷ giữa chừng một thao tác đã gửi đi sẽ đóng modal trong khi việc vẫn chạy, và người dùng mất chỗ duy nhất để biết kết quả.',
+  },
 };
 
 export const hasDemo = (name: string) => name in DEMOS;

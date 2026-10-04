@@ -17,7 +17,31 @@ import { DEMOS, MICROSTATES, DATA_STATES } from '@/registry/demos';
 export function DemoMatrix({ name }: { name: string }) {
   const spec = DEMOS[name];
   if (!spec) return null;
+
+  // Demo tự viết: component có HÀNH VI thật (bảng, dialog, chồng thẻ) không khai được bằng trục prop.
+  // Ma trận biến thể và ô vi-trạng thái không áp dụng — chúng sẽ chỉ dựng ra những ô rỗng.
+  if (spec.custom) {
+    const Custom = spec.custom;
+    return (
+      <div className="flex flex-col gap-10">
+        {spec.note ? (
+          <p className="max-w-prose rounded-lg border-l-2 border-accent-brand bg-brand-wash px-4 py-3 text-footnote">
+            {spec.note}
+          </p>
+        ) : null}
+        <section className="@container flex flex-col gap-3">
+          <Head
+            title="Demo"
+            note="Component này có hành vi thật, nên demo là một bản dựng riêng chứ không phải ma trận prop."
+          />
+          <Custom />
+        </section>
+      </div>
+    );
+  }
+
   const C = spec.component;
+  if (!C) return null;
   const base = { ...(spec.props ?? {}) };
   const kids = spec.children ? { children: spec.children } : {};
 

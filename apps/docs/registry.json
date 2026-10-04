@@ -409,6 +409,18 @@
       ]
     },
     {
+      "name": "fit-rows",
+      "type": "registry:ui",
+      "title": "fit-rows",
+      "description": "primitive · fit-rows",
+      "files": [
+        {
+          "path": "registry/base/fit-rows.ts",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
       "name": "hover-card",
       "type": "registry:ui",
       "title": "hover-card",
@@ -962,6 +974,39 @@
       ]
     },
     {
+      "name": "truncate",
+      "type": "registry:ui",
+      "title": "truncate",
+      "description": "primitive · truncate",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "explain"
+      ],
+      "files": [
+        {
+          "path": "registry/base/truncate.tsx",
+          "type": "registry:ui"
+        }
+      ]
+    },
+    {
+      "name": "use-fit-rows",
+      "type": "registry:hook",
+      "title": "use-fit-rows",
+      "description": "hook · use-fit-rows",
+      "registryDependencies": [
+        "fit-rows"
+      ],
+      "files": [
+        {
+          "path": "registry/base/use-fit-rows.ts",
+          "type": "registry:hook"
+        }
+      ]
+    },
+    {
       "name": "use-mobile",
       "type": "registry:hook",
       "title": "use-mobile",
@@ -970,6 +1015,277 @@
         {
           "path": "registry/base/use-mobile.ts",
           "type": "registry:hook"
+        }
+      ]
+    },
+    {
+      "name": "bulk-action-button",
+      "type": "registry:component",
+      "title": "bulk-action-button",
+      "description": "generic đã ghép · bulk-action-button",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "button",
+        "explain"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/bulk-action-button.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "card-deck",
+      "type": "registry:component",
+      "title": "card-deck",
+      "description": "generic đã ghép · card-deck",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/card-deck.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "confirm-dialog",
+      "type": "registry:component",
+      "title": "confirm-dialog",
+      "description": "generic đã ghép · confirm-dialog",
+      "registryDependencies": [
+        "button",
+        "dialog",
+        "spinner"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/confirm-dialog.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "data-table",
+      "type": "registry:component",
+      "title": "data-table",
+      "description": "generic đã ghép · data-table",
+      "dependencies": [
+        "@tanstack/react-table",
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "button",
+        "checkbox",
+        "empty-state",
+        "skeleton",
+        "table"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/data-table.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "empty-state",
+      "type": "registry:component",
+      "title": "empty-state",
+      "description": "generic đã ghép · empty-state",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "empty"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/empty-state.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "explain",
+      "type": "registry:component",
+      "title": "explain",
+      "description": "generic đã ghép · explain",
+      "registryDependencies": [
+        "tooltip"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/explain.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "info-tooltip",
+      "type": "registry:component",
+      "title": "info-tooltip",
+      "description": "generic đã ghép · info-tooltip",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "explain"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/info-tooltip.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "relative-time",
+      "type": "registry:component",
+      "title": "relative-time",
+      "description": "generic đã ghép · relative-time",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "explain"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/relative-time.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "search-input",
+      "type": "registry:component",
+      "title": "search-input",
+      "description": "generic đã ghép · search-input",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "input"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/search-input.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "tab-select",
+      "type": "registry:component",
+      "title": "tab-select",
+      "description": "generic đã ghép · tab-select",
+      "registryDependencies": [
+        "select",
+        "tabs"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/tab-select.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "app-shell",
+      "type": "registry:component",
+      "title": "app-shell",
+      "description": "khung app · app-shell",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "sidebar"
+      ],
+      "files": [
+        {
+          "path": "registry/shells/app-shell.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "app-sidebar",
+      "type": "registry:component",
+      "title": "app-sidebar",
+      "description": "khung app · app-sidebar",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "sidebar"
+      ],
+      "files": [
+        {
+          "path": "registry/shells/app-sidebar.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "page-chrome",
+      "type": "registry:component",
+      "title": "page-chrome",
+      "description": "khung app · page-chrome",
+      "files": [
+        {
+          "path": "registry/shells/page-chrome.ts",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "page-shell",
+      "type": "registry:component",
+      "title": "page-shell",
+      "description": "khung app · page-shell",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "page-chrome"
+      ],
+      "files": [
+        {
+          "path": "registry/shells/page-shell.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "page-skeleton",
+      "type": "registry:component",
+      "title": "page-skeleton",
+      "description": "khung app · page-skeleton",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "page-chrome",
+        "skeleton"
+      ],
+      "files": [
+        {
+          "path": "registry/shells/page-skeleton.tsx",
+          "type": "registry:component"
         }
       ]
     },

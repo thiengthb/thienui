@@ -7,7 +7,7 @@
     {
       "id": "lucide-icons-only",
       "rule": "Icon lấy từ lucide-react, không bao giờ tự vẽ <svg>, không dùng bộ icon khác, không dùng emoji làm icon.",
-      "why": "Một <svg> tự vẽ sẽ lệch khỏi stroke width, thang cỡ và hành vi currentColor của bộ icon, nên nó trông sai ở dark mode và ở các cỡ khác. Ngoại lệ DUY NHẤT là svg RENDER DỮ LIỆU (đường cong, sparkline) hoặc logo thương hiệu bên thứ ba không có bản lucide. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không.",
+      "why": "Một <svg> tự vẽ sẽ lệch khỏi stroke width, thang cỡ và hành vi currentColor của bộ icon, nên nó trông sai ở dark mode và ở các cỡ khác. Ngoại lệ DUY NHẤT là svg RENDER DỮ LIỆU (đường cong, sparkline) hoặc logo thương hiệu bên thứ ba không có bản lucide. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không. GIỚI HẠN ĐÃ BIẾT: check là regex theo dòng nên nó không phân biệt được CODE với VĂN XUÔI — viết tên mẫu bị cấm ra nguyên văn trong comment cũng làm cổng đỏ. Kỷ luật thay thế rất rẻ: trong comment thì MÔ TẢ mẫu thay vì viết nó ra.",
       "canonical": "registry/shells/app-sidebar.tsx",
       "source": "sakubun · lockedOn 2026-07-23",
       "check": {
@@ -83,12 +83,12 @@
     {
       "id": "no-native-dialogs",
       "rule": "Không alert() / confirm() / prompt() native. Dùng component dialog của hệ.",
-      "why": "Hai lý do, và cả hai đều cứng. (1) Agent KHÔNG NHÌN THẤY dialog native qua browser automation, nên feature dựa vào chúng hay lỗi âm thầm — và một dialog native chặn mọi event tiếp theo, làm cả phiên automation treo. (2) Chúng không nhận style, không nhận theme, không nhận token. DESIGN.md của sakubun đã CẤM điều này bằng chữ nhưng không có check nào; đây là check đó.",
+      "why": "Hai lý do, và cả hai đều cứng. (1) Agent KHÔNG NHÌN THẤY dialog native qua browser automation, nên feature dựa vào chúng hay lỗi âm thầm — và một dialog native chặn mọi event tiếp theo, làm cả phiên automation treo. (2) Chúng không nhận style, không nhận theme, không nhận token. DESIGN.md của sakubun đã CẤM điều này bằng chữ nhưng không có check nào; đây là check đó. GIỚI HẠN ĐÃ BIẾT: check là regex theo dòng nên nó không phân biệt được CODE với VĂN XUÔI — viết tên mẫu bị cấm ra nguyên văn trong comment cũng làm cổng đỏ. Kỷ luật thay thế rất rẻ: trong comment thì MÔ TẢ mẫu thay vì viết nó ra. Regex loại trừ KHAI BÁO (`function confirm(`, `const confirm =`): một hàm nội bộ trùng tên với API của browser không phải vi phạm — dù đặt tên như vậy vẫn là ý tồi vì nó che global. Bản đầu bắt nhầm đúng ca đó khi dựng demo của chính ConfirmDialog.",
       "canonical": "registry/patterns/confirm-dialog.tsx",
       "source": "sakubun docs/DESIGN.md (mục Cấm, chưa từng có check) · thienui 2026-10-04",
       "check": {
         "kind": "forbid",
-        "pattern": "(?:^|[^.\\w])(?:window\\.)?(?:alert|confirm|prompt)\\s*\\("
+        "pattern": "(?:^|[^.\\w])(?<!function )(?<!const )(?<!let )(?<!var )(?:window\\.)?(?:alert|confirm|prompt)\\s*\\("
       },
       "allow": {}
     },
@@ -163,7 +163,7 @@
     {
       "id": "input-clear-affordance",
       "rule": "Mọi ô chữ đi qua <Input> dùng chung, component này mang nút xoá (×) khi có nội dung. Không bao giờ dựng <input> trần.",
-      "why": "Người dùng xoá nội dung ô tìm kiếm/lọc liên tục. Thiếu nút xoá là bắt họ bôi đen rồi xoá — và nếu mỗi chỗ tự dựng input thì nút xoá chỉ có ở vài chỗ, nên hành vi không đoán được. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không.",
+      "why": "Người dùng xoá nội dung ô tìm kiếm/lọc liên tục. Thiếu nút xoá là bắt họ bôi đen rồi xoá — và nếu mỗi chỗ tự dựng input thì nút xoá chỉ có ở vài chỗ, nên hành vi không đoán được. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không. GIỚI HẠN ĐÃ BIẾT: check là regex theo dòng nên nó không phân biệt được CODE với VĂN XUÔI — viết tên mẫu bị cấm ra nguyên văn trong comment cũng làm cổng đỏ. Kỷ luật thay thế rất rẻ: trong comment thì MÔ TẢ mẫu thay vì viết nó ra.",
       "canonical": "registry/base/input.tsx",
       "source": "sakubun · lockedOn 2026-07-25",
       "check": {
@@ -180,7 +180,7 @@
     {
       "id": "explain-is-the-only-tooltip",
       "rule": "Giải thích một phần tử bằng <Explain>. Không dùng thuộc tính title= trên thẻ DOM, và không dựng Tooltip primitive trực tiếp ngoài registry/patterns.",
-      "why": "title= không hiện trên thiết bị cảm ứng, không hiện cho bàn phím, trễ khoảng một giây, và không nhận style — nên nó trông như một lời giải thích mà thực tế một phần người dùng không bao giờ thấy. Dồn mọi lời giải thích qua MỘT component là cách duy nhất để sửa hành vi đó ở một chỗ. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không.",
+      "why": "title= không hiện trên thiết bị cảm ứng, không hiện cho bàn phím, trễ khoảng một giây, và không nhận style — nên nó trông như một lời giải thích mà thực tế một phần người dùng không bao giờ thấy. Dồn mọi lời giải thích qua MỘT component là cách duy nhất để sửa hành vi đó ở một chỗ. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không. GIỚI HẠN ĐÃ BIẾT: check là regex theo dòng nên nó không phân biệt được CODE với VĂN XUÔI — viết tên mẫu bị cấm ra nguyên văn trong comment cũng làm cổng đỏ. Kỷ luật thay thế rất rẻ: trong comment thì MÔ TẢ mẫu thay vì viết nó ra.",
       "canonical": "registry/patterns/explain.tsx",
       "source": "sakubun · lockedOn 2026-07-28",
       "check": {
