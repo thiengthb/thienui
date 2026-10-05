@@ -68,13 +68,17 @@ export function runCheck(root, pattern) {
   const scope = chk.files ?? DEFAULT_SCOPE;
   const exclude = chk.exclude ?? [];
   const allow = pattern.allow ?? {};
+  // Khoá của `allow` là đường dẫn HOẶC glob. Glob cần thiết vì cùng một file sống ở
+  // `apps/docs/registry/...` trong thienui nhưng ở `apps/web/registry/...` trong project tiêu thụ —
+  // ghi cứng `apps/docs/` thì ngoại lệ không bao giờ khớp ở nơi nó được dùng thật.
+  const allowed = (f) => f in allow || Object.keys(allow).some((k) => k.includes('*') && matchSimple(k, f));
   const violations = [];
 
   if (chk.kind === 'forbid' || chk.kind === 'forbid-import') {
     const rx = new RegExp(chk.pattern);
     const files = filesFor(root, chk.kind === 'forbid-import' ? (chk.from ?? scope) : scope, exclude);
     for (const f of files) {
-      if (f in allow) continue;
+      if (allowed(f)) continue;
       const lines = readFileSync(resolve(root, f), 'utf8').split('\n');
       for (let i = 0; i < lines.length; i++) {
         if (rx.test(lines[i])) violations.push({ file: f, line: i + 1, excerpt: lines[i].trim().slice(0, 120) });
@@ -83,7 +87,7 @@ export function runCheck(root, pattern) {
   } else if (chk.kind === 'require') {
     const rx = new RegExp(chk.pattern);
     for (const f of filesFor(root, scope, exclude)) {
-      if (f in allow) continue;
+      if (allowed(f)) continue;
       if (!rx.test(readFileSync(resolve(root, f), 'utf8'))) {
         violations.push({ file: f, line: 0, excerpt: 'thiếu mẫu: ' + chk.pattern });
       }
@@ -93,7 +97,7 @@ export function runCheck(root, pattern) {
     const when = new RegExp(chk.when);
     const then = new RegExp(chk.then);
     for (const f of filesFor(root, scope, exclude)) {
-      if (f in allow) continue;
+      if (allowed(f)) continue;
       const text = readFileSync(resolve(root, f), 'utf8');
       if (when.test(text) && !then.test(text)) {
         violations.push({ file: f, line: 0, excerpt: 'khớp "' + chk.when + '" nhưng thiếu "' + chk.then + '"' });

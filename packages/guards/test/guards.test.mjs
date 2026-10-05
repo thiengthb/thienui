@@ -169,6 +169,20 @@ describe('bộ chạy pattern-lock', () => {
     expect(r.violations.map((v) => v.file)).toEqual(['bad.tsx']);
   });
 
+  it('allow dạng glob khớp cả bố cục thienui lẫn bố cục project tiêu thụ', () => {
+    const dir = fixture({
+      'apps/docs/registry/patterns/explain.tsx': 'const c = "#ff00aa";\n',
+      'apps/web/registry/patterns/explain.tsx': 'const c = "#ff00aa";\n',
+      'apps/web/registry/patterns/other.tsx': 'const c = "#ff00aa";\n',
+    });
+    const r = runCheck(dir, {
+      id: 't',
+      check: { kind: 'forbid', pattern: '#[0-9a-fA-F]{6}\\b' },
+      allow: { 'apps/*/registry/patterns/explain.tsx': 'lý do đủ dài để qua test về lý do' },
+    });
+    expect(r.violations.map((v) => v.file)).toEqual(['apps/web/registry/patterns/other.tsx']);
+  });
+
   it('bỏ qua node_modules và dist', () => {
     const dir = fixture({
       'node_modules/pkg/i.tsx': 'const c = "#ff00aa";\n',

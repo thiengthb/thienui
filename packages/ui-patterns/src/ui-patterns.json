@@ -174,7 +174,7 @@
         ]
       },
       "allow": {
-        "apps/docs/registry/base/input.tsx": "chính component dùng chung — đây là chỗ <input> trần được phép tồn tại"
+        "apps/*/registry/base/input.tsx": "chính component dùng chung — đây là chỗ <input> trần được phép tồn tại"
       }
     },
     {
@@ -192,9 +192,9 @@
         ]
       },
       "allow": {
-        "apps/docs/registry/base/tooltip.tsx": "Chính primitive tooltip — đây là chỗ DUY NHẤT được phép dùng TooltipTrigger trực tiếp, vì mọi chỗ khác đi qua <Explain>.",
-        "apps/docs/registry/patterns/explain.tsx": "Component duy nhất được bọc primitive tooltip. Mọi lời giải thích trong app đi qua đây, nên hành vi sửa ở một chỗ.",
-        "apps/docs/registry/base/sidebar.tsx": "Sidebar của shadcn dùng tooltip để hiện nhãn khi thu gọn — thuộc component gốc, không phải lời giải thích do ta thêm."
+        "apps/*/registry/base/tooltip.tsx": "Chính primitive tooltip — đây là chỗ DUY NHẤT được phép dùng TooltipTrigger trực tiếp, vì mọi chỗ khác đi qua <Explain>.",
+        "apps/*/registry/patterns/explain.tsx": "Component duy nhất được bọc primitive tooltip. Mọi lời giải thích trong app đi qua đây, nên hành vi sửa ở một chỗ.",
+        "apps/*/registry/base/sidebar.tsx": "Sidebar của shadcn dùng tooltip để hiện nhãn khi thu gọn — thuộc component gốc, không phải lời giải thích do ta thêm."
       }
     },
     {
@@ -208,7 +208,7 @@
         "pattern": "<DialogFooter(?:(?!</DialogFooter>)[\\s\\S])*variant=\"destructive\""
       },
       "allow": {
-        "apps/docs/registry/patterns/confirm-dialog.tsx": "chính component dùng chung"
+        "apps/*/registry/patterns/confirm-dialog.tsx": "chính component dùng chung"
       }
     },
     {
