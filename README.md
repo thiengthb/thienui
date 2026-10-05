@@ -278,3 +278,34 @@ tự ngồi lên thienui:
   sẵn. Đây là một component mới, không phải một bản vá.
 - **Demo mới phủ 10/17 pattern+shell.** `pnpm registry` in ra con số đó mỗi lần chạy — nợ nhìn thấy
   được thì không âm thầm lớn lên.
+
+## Demo — phủ đủ 78/78
+
+Mỗi item render được của registry đều có một demo chạy thật trên trang showcase. Hai thứ phần này
+thêm vào, và cả hai đều là hệ quả trực tiếp của pha 6:
+
+**`pnpm registry` giờ là một CỔNG, không phải lời nhắc.** Thiếu demo thì nó exit 1 kèm tên item còn
+thiếu. Lý do: pha 6 cho thấy một component chưa từng được render có thể mang **ba lỗi cùng lúc** và
+vẫn nằm trong registry ở trạng thái "xong". "Thêm demo sau" là một lời hứa mà chính pha 6 chứng minh
+là không được giữ. Không demo nổi thì khai vào `KHONG_CAN_DEMO` kèm lý do thật — và "khó demo" không
+phải lý do; danh sách đó hiện chỉ có hai theme.
+
+**`pnpm quet-demo` mở cả 78 trang bằng Playwright** và kiểm hai thứ: không có lỗi console, và khối
+demo thật sự render ra nội dung. Build xanh chỉ chứng minh SSR chạy — nó không nhìn thấy gì xảy ra
+sau khi hydrate.
+
+Lần quét đầu tiên tìm ra hai lỗi mà typecheck, lint và build đều không thấy:
+
+| | |
+|---|---|
+| **Mọi trang** đều in cảnh báo `Base UI: A component that acts as a button expected a native <button>` | 5 chỗ trong chrome của chính trang showcase dùng `<Button render={<Link/>}>` mà không đặt `nativeButton={false}`. Nó đã kêu trên mọi trang, từ pha 3. |
+| `data-table` **lặp render vô tận** — `Maximum update depth exceeded` | `selectedIds` khai `useMemo(..., [rowSelection, table])` kèm một comment nói *"`table` thì ổn định giữa các lần render"*. Lời giải thích đó **sai**: `useTable` của v9 trả object mới mỗi lần render → mảng mới mỗi lần render → effect báo ra ngoài chạy mỗi lần render → cha `setState` → lặp. Nay dẫn xuất thẳng từ `rowSelection` (khoá của nó CHÍNH LÀ row id), không hỏi `table` nữa. |
+
+Cái thứ hai là lần thứ **hai** trong hai pha liên tiếp một lý do đã viết ra hoá ra sai — và lần này
+nó sai theo kiểu tốn kém hơn: component bảng là thứ được cài nhiều nhất, và vòng lặp chỉ hiện ra khi
+có người bật `selectable`.
+
+**Một ngoại lệ được khoanh, không được mở.** Luật `explain-is-the-only-tooltip` cấm dựng Tooltip
+primitive trực tiếp — nhưng demo của chính primitive đó là chỗ **duy nhất** bắt buộc phải dựng nó.
+Nên `TooltipDemo` được tách ra `registry/demos/tooltip-demo.tsx` và `check.exclude` khoanh vào đúng
+**một đường dẫn**, thay vì mở cho cả thư mục `demos/`. Mọi file demo khác vẫn phải đi qua `Explain`.

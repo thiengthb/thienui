@@ -173,11 +173,23 @@ export function DataTable<T extends RowData>({
     ...(getRowId ? { getRowId } : {}),
   });
 
+  /*
+   * Dẫn xuất THẲNG từ `rowSelection`, không hỏi `table`.
+   *
+   * Bản trước gọi `table.getSelectedRowModel()` và khai `[rowSelection, table]`, kèm một lời giải
+   * thích rằng "`table` thì ổn định giữa các lần render". **Lời giải thích đó sai**, và cái giá là
+   * một vòng lặp vô tận: `useTable` của v9 trả một object MỚI mỗi lần render → `selectedIds` là
+   * mảng mới mỗi lần render → effect báo ra ngoài chạy mỗi lần render → cha `setState` → render lại
+   * → … Trình duyệt báo "Maximum update depth exceeded", và không có gì trong typecheck, lint hay
+   * build nhìn thấy nó.
+   *
+   * Khoá của `rowSelection` CHÍNH LÀ row id (chúng do `getRowId` sinh ra), nên không cần `table` để
+   * biết dòng nào đang chọn. Phụ thuộc vào state thay vì vào một instance là cách duy nhất làm cho
+   * identity ổn định mà không phải tin vào một giả định về thư viện.
+   */
   const selectedIds = React.useMemo(
-    () => table.getSelectedRowModel().rows.map((r) => r.id),
-    // `rowSelection` là thứ thật sự đổi; `table` thì ổn định giữa các lần render.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [rowSelection, table]
+    () => Object.keys(rowSelection).filter((id) => rowSelection[id]),
+    [rowSelection]
   );
 
   // Báo lựa chọn ra ngoài TRONG effect, không trong lúc render: gọi callback của cha giữa chừng

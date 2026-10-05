@@ -180,14 +180,15 @@
     {
       "id": "explain-is-the-only-tooltip",
       "rule": "Giải thích một phần tử bằng <Explain>. Không dùng thuộc tính title= trên thẻ DOM, và không dựng Tooltip primitive trực tiếp ngoài registry/patterns.",
-      "why": "title= không hiện trên thiết bị cảm ứng, không hiện cho bàn phím, trễ khoảng một giây, và không nhận style — nên nó trông như một lời giải thích mà thực tế một phần người dùng không bao giờ thấy. Dồn mọi lời giải thích qua MỘT component là cách duy nhất để sửa hành vi đó ở một chỗ. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không. GIỚI HẠN ĐÃ BIẾT: check là regex theo dòng nên nó không phân biệt được CODE với VĂN XUÔI — viết tên mẫu bị cấm ra nguyên văn trong comment cũng làm cổng đỏ. Kỷ luật thay thế rất rẻ: trong comment thì MÔ TẢ mẫu thay vì viết nó ra.",
+      "why": "title= không hiện trên thiết bị cảm ứng, không hiện cho bàn phím, trễ khoảng một giây, và không nhận style — nên nó trông như một lời giải thích mà thực tế một phần người dùng không bao giờ thấy. Dồn mọi lời giải thích qua MỘT component là cách duy nhất để sửa hành vi đó ở một chỗ. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không. GIỚI HẠN ĐÃ BIẾT: check là regex theo dòng nên nó không phân biệt được CODE với VĂN XUÔI — viết tên mẫu bị cấm ra nguyên văn trong comment cũng làm cổng đỏ. Kỷ luật thay thế rất rẻ: trong comment thì MÔ TẢ mẫu thay vì viết nó ra. NGOẠI LỆ DUY NHẤT: `registry/demos/tooltip-demo.tsx` — demo của chính primitive là chỗ bắt buộc phải dựng nó trực tiếp. Ngoại lệ khoanh vào ĐÚNG MỘT đường dẫn chứ không mở cho cả thư mục demos, nên mọi file demo khác vẫn phải đi qua `Explain`; và đó cũng là lý do `TooltipDemo` được tách khỏi `overlay-demos.tsx`.",
       "canonical": "registry/patterns/explain.tsx",
       "source": "sakubun · lockedOn 2026-07-28",
       "check": {
         "kind": "forbid",
         "pattern": "<(?:span|div|button|a|p|li|td|th|section|header|figure|img|input|label|ul|ol|nav)\\b[^>]*\\stitle=\"|<TooltipTrigger\\b",
         "exclude": [
-          "apps/*/registry/base/**"
+          "apps/*/registry/base/**",
+          "apps/*/registry/demos/tooltip-demo.tsx"
         ]
       },
       "allow": {

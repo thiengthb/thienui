@@ -49,7 +49,7 @@ export function SiteHeader() {
                 key={item.href}
                 variant={active ? 'secondary' : 'ghost'}
                 size="sm"
-                render={<Link href={item.href} />}
+                nativeButton={false} render={<Link href={item.href} />}
                 className={cn('shrink-0', active && 'font-medium')}
               >
                 {item.label}

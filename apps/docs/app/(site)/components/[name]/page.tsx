@@ -30,7 +30,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ name
   return (
     <div className="flex flex-col gap-8">
       <div>
-        <Button variant="ghost" size="sm" render={<Link href="/components" />}>
+        <Button variant="ghost" size="sm" nativeButton={false} render={<Link href="/components" />}>
           <ArrowLeft data-icon="inline-start" />
           Component
         </Button>
@@ -79,7 +79,7 @@ export default async function ComponentPage({ params }: { params: Promise<{ name
       <section className="flex flex-col gap-2">
         <div className="flex items-center justify-between gap-2 border-b pb-2">
           <h2 className="text-subhead font-semibold">Nguồn</h2>
-          <Button variant="ghost" size="sm" render={<Link href={`/preview/${name}`} target="_blank" />}>
+          <Button variant="ghost" size="sm" nativeButton={false} render={<Link href={`/preview/${name}`} target="_blank" />}>
             Mở preview cách ly
             <ExternalLink data-icon="inline-end" />
           </Button>

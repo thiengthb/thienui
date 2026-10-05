@@ -52,11 +52,11 @@ export default function HomePage() {
           <strong className="text-foreground">bắt buộc</strong> đồng nhất.
         </p>
         <div className="flex flex-wrap gap-2">
-          <Button render={<Link href="/components" />}>
+          <Button nativeButton={false} render={<Link href="/components" />}>
             Xem component
             <ArrowRight data-icon="inline-end" />
           </Button>
-          <Button variant="secondary" render={<Link href="/tokens" />}>
+          <Button variant="secondary" nativeButton={false} render={<Link href="/tokens" />}>
             Xem token
           </Button>
         </div>

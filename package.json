@@ -17,7 +17,8 @@
     "build": "turbo run build",
     "verify": "pnpm tokens && pnpm guards && pnpm typecheck && pnpm lint && pnpm test && pnpm build",
     "format": "prettier --write .",
-    "shots": "node tooling/shots.mjs"
+    "shots": "node tooling/shots.mjs",
+    "quet-demo": "node tooling/quet-demo.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",

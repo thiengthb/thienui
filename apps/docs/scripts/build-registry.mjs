@@ -204,19 +204,35 @@ writeFileSync(join(ROOT, 'registry.json'), JSON.stringify(registry, null, 2) + '
 mkdirSync(join(ROOT, 'public/r'), { recursive: true });
 
 /**
- * BÁO CÁO phủ demo cho `patterns/` và `shells/`.
+ * BÁO CÁO phủ demo — cho MỌI item render được, không chỉ patterns/shells.
  *
  * Pha 6 cho thấy một item chưa được render ở đâu có thể mang ba lỗi cùng lúc và vẫn nằm trong
- * registry ở trạng thái "xong". Con số này không chặn build — nó chỉ không cho phép nợ đó vô hình.
+ * registry ở trạng thái "xong". Nên con số này đếm tất cả, và nó in ra tên những cái còn thiếu —
+ * một nợ có tên thì trả được, một nợ chỉ là con số thì không.
+ *
+ * Ba thứ KHÔNG đếm, và lý do phải là lý do thật chứ không phải "khó demo":
+ *   · `theme-*` — theme không phải component; chỗ xem nó là trang /tokens.
+ *
+ * Danh sách này chỉ có hai dòng, và nên giữ nó như vậy. `motion-tokens` từng nằm ở đây với lý do
+ * "file dữ liệu sinh tự động" — nhưng nó vẫn là chỗ duy nhất đọc được giá trị thật của tầng cảm
+ * giác, nên lý do đó là một cách nói "khó demo" chứ không phải "không demo được".
  */
+const KHONG_CAN_DEMO = new Set(['theme-claude', 'theme-slate']);
 const demoSrc = readFileSync(join(REG, 'demos/index.tsx'), 'utf8');
 const coDemo = new Set([...demoSrc.matchAll(/^\s{2}'?([\w-]+)'?:\s*\{/gm)].map((m) => m[1]));
-const canDemo = items
-  .filter((i) => i.files?.[0]?.path.startsWith('registry/patterns/') || i.files?.[0]?.path.startsWith('registry/shells/'))
-  .map((i) => i.name);
+const canDemo = items.map((i) => i.name).filter((n) => !KHONG_CAN_DEMO.has(n));
 const thieu = canDemo.filter((n) => !coDemo.has(n));
 
 const byType = items.reduce((a, i) => ((a[i.type] = (a[i.type] ?? 0) + 1), a), {});
 console.log(`✓ registry.json: ${items.length} item`);
 for (const [t, n] of Object.entries(byType)) console.log(`    ${t.padEnd(20)} ${n}`);
-console.log(`    demo pattern+shell   ${canDemo.length - thieu.length}/${canDemo.length}${thieu.length ? ` — thiếu: ${thieu.join(', ')}` : ''}`);
+console.log(`    demo                 ${canDemo.length - thieu.length}/${canDemo.length}${thieu.length ? '' : ' ✓'}`);
+if (thieu.length) {
+  // CỔNG, không phải lời nhắc. Pha 6 cho thấy một item chưa từng được render có thể mang ba lỗi
+  // cùng lúc và vẫn nằm trong registry ở trạng thái "xong" — nên "thêm demo sau" là một lời hứa mà
+  // chính pha 6 chứng minh là không được giữ. Không demo nổi thì khai vào KHONG_CAN_DEMO kèm lý do
+  // thật; "khó demo" không phải lý do.
+  console.error(`\n✗ ${thieu.length} item chưa có demo trong registry/demos/index.tsx:`);
+  for (const n of thieu) console.error(`    ${n}`);
+  process.exit(1);
+}

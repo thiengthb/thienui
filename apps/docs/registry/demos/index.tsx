@@ -42,6 +42,31 @@ import { ShellDemo } from '@/registry/demos/shell-demo';
 import { ModeToggle } from '@/registry/patterns/mode-toggle';
 import { RelativeTime } from '@/registry/patterns/relative-time';
 import { Truncate } from '@/registry/base/truncate';
+import {
+  AlertDialogDemo, CommandDemo, ContextMenuDemo, DialogDemo, DrawerDemo, DropdownMenuDemo,
+  HoverCardDemo, MenubarDemo, PopoverDemo, SheetDemo,
+} from '@/registry/demos/overlay-demos';
+import { TooltipDemo } from '@/registry/demos/tooltip-demo';
+import { MotionTokensDemo } from '@/registry/demos/motion-tokens-demo';
+import {
+  ButtonGroupDemo, CalendarDemo, ComboboxDemo, FieldDemo, InputGroupDemo, InputOtpDemo,
+  NativeSelectDemo, RadioGroupDemo, SelectDemo, SliderDemo,
+} from '@/registry/demos/form-demos';
+import {
+  AlertDemo, AspectRatioDemo, AvatarDemo, CardDemo, CarouselDemo, ChartDemo, EmptyDemo, ItemDemo,
+  ProgressDemo, ResizableDemo, ScrollAreaDemo, TableDemo,
+} from '@/registry/demos/display-demos';
+import {
+  AccordionDemo, BreadcrumbDemo, CollapsibleDemo, NavigationMenuDemo, PaginationDemo, SidebarDemo,
+  TabsDemo, ToggleGroupDemo,
+} from '@/registry/demos/nav-demos';
+import {
+  FitRowsDemo, SonnerDemo, ToastDemo, UseFitRowsDemo, UseIsMobileDemo,
+} from '@/registry/demos/feedback-demos';
+import {
+  AppShellDemo, AppSidebarDemo, BulkActionDemo, ExplainDemo, PageChromeDemo, PageSkeletonDemo,
+  PressableDemo,
+} from '@/registry/demos/shell-extra-demos';
 
 export type StateName = 'default' | 'hover' | 'focus-visible' | 'active' | 'disabled' | 'loading';
 
@@ -191,6 +216,72 @@ export const DEMOS: Record<string, DemoSpec> = {
     custom: ConfirmDialogDemo,
     note: '`pending` khoá MỌI ĐƯỜNG RA. Pha 6 đo được rằng khoá hai nút là chưa đủ — hộp vẫn đóng được bằng Esc, bằng nút ×, và bằng bấm ra ngoài. Nay cả ba bị chặn ở `onOpenChange`, một cửa duy nhất, nên không quên được đường thứ tư. Lý do gốc: bấm Huỷ giữa chừng một thao tác đã gửi đi sẽ đóng modal trong khi việc vẫn chạy, và người dùng mất chỗ duy nhất để biết kết quả.',
   },
+
+  // ── lớp nổi ──
+  dialog: { custom: DialogDemo, note: 'Một dialog chỉ tồn tại khi có người mở, nên trạng thái đáng xem nhất của nó không phải lúc nó là một cái nút. Tab bị giữ lại trong hộp — đó là focus trap, và là lý do không tự dựng modal bằng div.' },
+  'alert-dialog': { custom: AlertDialogDemo, note: 'Khác Dialog đúng một chỗ: KHÔNG đóng được bằng bấm ra ngoài. Một việc không hoàn lại được thì không nên lỡ tay thoát khỏi.' },
+  sheet: { custom: SheetDemo, note: 'Dùng cho việc PHỤ chạy song song với trang — bộ lọc, chi tiết. Việc phải quyết xong mới đi tiếp thì dùng Dialog.' },
+  drawer: { custom: DrawerDemo, note: 'Dạng dành cho ĐIỆN THOẠI: kéo được bằng ngón tay. Trên màn rộng thì Sheet hoặc Dialog đúng hơn.' },
+  popover: { custom: PopoverDemo, note: 'Chứa được control bấm vào — khác Tooltip, thứ chỉ được chứa chữ. Ranh giới đó không phải thẩm mỹ: tooltip không giữ được focus.' },
+  'hover-card': { custom: HoverCardDemo, note: 'Chỉ mở bằng CON TRỎ, nên nội dung trong nó phải là thứ không bắt buộc. Thiết bị cảm ứng không có hover, và đó không phải trường hợp hiếm.' },
+  tooltip: { custom: TooltipDemo, note: 'Chỉ chứa CHỮ, và chữ đó luôn là phần thêm — không bao giờ là thông tin duy nhất. Tab tới cũng phải mở được, nếu không nó không tồn tại với người không dùng chuột.' },
+  'context-menu': { custom: ContextMenuDemo, note: 'Menu chuột phải là LỐI TẮT, không bao giờ là lối duy nhất: không có gì trên màn hình nói rằng nó tồn tại.' },
+  'dropdown-menu': { custom: DropdownMenuDemo, note: 'Mũi tên đi trong menu, chữ cái đầu nhảy tới mục. Đó là hành vi có sẵn, và là lý do không tự dựng menu bằng div + onClick.' },
+  menubar: { custom: MenubarDemo, note: 'Mở một menu rồi rê ngang thì các menu khác mở theo. Đó là thứ phân biệt một menubar thật với bốn dropdown đặt cạnh nhau.' },
+  command: { custom: CommandDemo, note: '`CommandEmpty` là trạng thái "lọc không khớp", khác hẳn "chưa có dữ liệu" — hai thứ này bị gộp làm một ở hầu hết app, và người dùng mắc kẹt vì nó.' },
+
+  // ── nhập liệu ──
+  select: { custom: SelectDemo, note: 'Prop `items` là thứ ánh xạ value → nhãn. Thiếu nó thì ô hiện ra chính value — đúng lỗi mà `tab-select` dính ở pha 6.' },
+  'native-select': { custom: NativeSelectDemo, note: '`<select>` THẬT: trên điện thoại nó mở bộ chọn của hệ điều hành, quen tay hơn và không tốn dòng JS nào. Dùng nó khi không cần tìm kiếm.' },
+  combobox: { custom: ComboboxDemo, note: 'Chỉ đáng dùng khi danh sách đủ dài để cuộn thành việc. Dưới mười mục thì Select nhanh hơn — gõ là thêm việc, không bớt.' },
+  'radio-group': { custom: RadioGroupDemo, note: 'Một nhóm radio là MỘT điểm dừng của Tab, không phải bốn. Mũi tên đổi lựa chọn bên trong nhóm.' },
+  slider: { custom: SliderDemo, note: 'Luôn hiện SỐ bên cạnh. Một slider không có số là một control mà người dùng không nói lại được họ vừa chọn gì.' },
+  'input-otp': { custom: InputOtpDemo, note: 'Dán cả mã vào một ô thì nó tự rải ra các ô. Không có điều đó, người dùng phải gõ lại tay từng số — và đó là lúc họ gõ sai.' },
+  field: { custom: FieldDemo, note: 'Nhãn, mô tả và lỗi được NỐI với input bằng id, không chỉ đặt gần nhau. Đó là khác biệt giữa một form dùng được bằng bàn phím và một form trông giống form.' },
+  'input-group': { custom: InputGroupDemo, note: 'Phần phụ nằm TRONG viền ô. Hai hộp dán cạnh nhau sẽ lệch chiều cao ngay khi một bên có trạng thái lỗi.' },
+  'button-group': { custom: ButtonGroupDemo, note: 'Bo góc chỉ ở hai đầu, viền giữa gộp làm một — đó là thứ nói "một control có nhiều nhánh", khác hẳn mấy cái nút đặt gần nhau.' },
+  calendar: { custom: CalendarDemo, note: 'Locale quyết định thứ bắt đầu tuần. Để mặc định tiếng Anh là lịch bắt đầu từ Chủ nhật — sai với phần lớn người dùng Việt, và không ai báo lỗi.' },
+
+  // ── hiển thị ──
+  card: { custom: CardDemo, note: 'Tiêu đề dài là trạng thái dữ liệu thứ tư và nó luôn tới. Ở đây nó bị cắt chứ không đẩy `CardAction` rơi xuống dòng.' },
+  item: { custom: ItemDemo, note: 'Một hàng danh sách có media + nội dung + hành động. Dùng nó thay vì tự ghép flex, để ba chỗ khác nhau trong app không ra ba chiều cao hàng khác nhau.' },
+  empty: { custom: EmptyDemo, note: 'Primitive trần. Bản đã mang sẵn hai nghĩa "chưa có gì" và "lọc không khớp" là `@thienui/empty-state`.' },
+  alert: { custom: AlertDemo, note: 'Mô tả phải nói SỬA THẾ NÀO, không chỉ nói có lỗi. "Đã có lỗi xảy ra" là một câu không ai làm gì được với nó.' },
+  avatar: { custom: AvatarDemo, note: 'Fallback là CHỮ CÁI ĐẦU chứ không phải một icon người chung chung: hai người không ảnh vẫn phải phân biệt được.' },
+  progress: { custom: ProgressDemo, note: '0% phải nhìn ra là 0%, không phải "chưa tải xong". Đó là trạng thái hay bị render thành một thanh rỗng trông y hệt lỗi.' },
+  chart: { custom: ChartDemo, note: 'Màu lấy từ --chart-1…5, không lấy từ bảng mặc định của recharts — nếu không, biểu đồ là thứ duy nhất trên trang không đổi theo theme.' },
+  table: { custom: TableDemo, note: 'Số căn PHẢI và dùng tabular-nums. Bảng có sắp xếp, chọn dòng và sáu trạng thái dữ liệu là `@thienui/data-table`.' },
+  'aspect-ratio': { custom: AspectRatioDemo, note: 'Giữ chỗ TRƯỚC khi ảnh về. Không có nó thì mỗi ảnh tải xong là một lần layout nhảy, và người đang đọc mất dòng.' },
+  'scroll-area': { custom: ScrollAreaDemo, note: 'Thanh cuộn tự vẽ nên giống nhau trên mọi hệ điều hành — macOS tự ẩn thanh cuộn, Windows thì không, và bố cục lệch khoảng 15px giữa hai bên.' },
+  resizable: { custom: ResizableDemo, note: 'Tay nắm kéo được bằng BÀN PHÍM nữa. Một tay nắm chỉ kéo được bằng chuột là một bố cục mà người không dùng chuột không chỉnh được.' },
+  carousel: { custom: CarouselDemo, note: 'Nút trước/sau tự disabled ở hai đầu — đó là cách duy nhất người dùng biết mình đã tới cuối mà không phải thử.' },
+
+  // ── điều hướng ──
+  accordion: { custom: AccordionDemo, note: 'Chiều cao chạy mượt vì nội dung được ĐO thật, không phải một max-height đoán sẵn — thứ luôn sai với câu trả lời dài.' },
+  collapsible: { custom: CollapsibleDemo, note: 'Một cặp mở/đóng trần, không quản nhóm. Dùng nó khi chỉ có MỘT thứ để giấu; nhiều thứ thì dùng Accordion.' },
+  tabs: { custom: TabsDemo, note: 'Tab nhảy THẲNG vào nội dung của tab đang chọn, không đi qua từng cái tab. Cần thu thành select khi hẹp thì dùng `@thienui/tab-select`.' },
+  breadcrumb: { custom: BreadcrumbDemo, note: 'Mục cuối là BreadcrumbPage chứ không phải link — một link trỏ về chính trang hiện tại là một lời hứa giả.' },
+  pagination: { custom: PaginationDemo, note: 'Luôn hiện trang CUỐI: nó là thứ duy nhất nói tổng cộng có bao nhiêu. Số mục mỗi trang nên đo theo màn hình — xem `use-fit-rows`.' },
+  'navigation-menu': { custom: NavigationMenuDemo, note: 'Đây là ĐIỀU HƯỚNG (mục là link, mở tab mới được), còn dropdown là HÀNH ĐỘNG. Trình đọc màn hình đọc hai thứ đó khác nhau.' },
+  'toggle-group': { custom: ToggleGroupDemo, note: 'Chọn-một và chọn-nhiều trông giống hệt nhau nhưng là hai lời hứa khác nhau. Khi chỉ có icon thì aria-label là thứ duy nhất nói nút đó làm gì.' },
+  sidebar: { custom: SidebarDemo, note: 'Primitive trần. Ở dạng icon, nhãn biến thành tooltip — nếu không thì các mục trở thành một cột biểu tượng không ai đoán được. Bản đã ghép là `@thienui/app-sidebar`.' },
+
+  // ── phản hồi & tiện ích ──
+  toast: { custom: ToastDemo, note: 'Bề mặt duy nhất trong hệ TỰ BIẾN MẤT. Nút "Hoàn tác" trong toast là lý do chính để dùng nó thay cho hộp xác nhận — nhưng lỗi cần xử lý thì không được chỉ nằm ở đây.' },
+  sonner: { custom: SonnerDemo, note: 'Hai bộ toast cùng có trong registry là CÓ CHỦ Ý, không phải trùng. Chọn một và dùng một: hai hệ toast trong một app nghĩa là hai vị trí, hai thời lượng, hai kiểu xếp chồng.' },
+  'use-mobile': { custom: UseIsMobileDemo, note: 'Viewport query thật, nên chỉ dùng cho quyết định VỀ CẢ MÀN HÌNH. Mọi thứ bên trong một component thì dùng container query — component không biết nó được đặt vào hộp rộng bao nhiêu.' },
+  'fit-rows': { custom: FitRowsDemo, note: 'Toán THUẦN, không chạm DOM — nên nó test được, và đó là lý do nó tách khỏi hook.' },
+  'use-fit-rows': { custom: UseFitRowsDemo, note: 'Phần quan trọng nhất là CHỐNG RUNG. Không có nó thì ngay tại biên vừa khít, số hàng dao động N ↔ N−1 vô tận, và người dùng thấy đúng một thứ: giật.' },
+
+  // ── pattern & shell còn lại ──
+  'bulk-action-button': { custom: BulkActionDemo, note: 'Dock tự ẩn khi count = 0 — một thanh hành động luôn hiện nhưng luôn mờ là một thanh người dùng học cách bỏ qua.' },
+  explain: { custom: ExplainDemo, note: 'Dùng cho con số mà người nhìn lần thứ mười vẫn không chắc nó đếm cái gì. Phần tử được giải thích là chính con số, không phải một dấu hỏi đặt cạnh.' },
+  pressable: { custom: PressableDemo, note: 'Thêm cảm giác từ BÊN NGOÀI thay vì sửa chính cái nút, vì registry/base/** là ranh giới vendor: shadcn add sẽ ghi đè mọi sửa đổi trong đó, âm thầm, trong khi test vẫn xanh.' },
+  'app-shell': { custom: AppShellDemo, note: '`renderLink` là lý do khung này nối được với router của bất kỳ framework nào mà không cần biết framework đó tồn tại.' },
+  'app-sidebar': { custom: AppSidebarDemo, note: 'Badge nằm cạnh nhãn chứ không chồng lên icon: chồng lên icon thì khi sidebar thu còn icon, con số che mất chính thứ nó đang đếm.' },
+  'page-skeleton': { custom: PageSkeletonDemo, note: 'Skeleton tồn tại để GIỮ layout, không phải để báo đang tải. Các cờ hasAside / hasBreadcrumb / hasDescription không phải tuỳ chọn thẩm mỹ — chúng phải khớp với trang thật.' },
+  'motion-tokens': { custom: MotionTokensDemo, note: 'File DỮ LIỆU sinh tự động, không phải component — nhưng vẫn là chỗ duy nhất đọc được giá trị THẬT của tầng cảm giác dưới dạng số. Nó tồn tại vì spring là SỐ, thứ CSS không mang được, và vì khai một dependency npm chưa publish làm `shadcn add` chết cả lô ở project ngoài.' },
+  'page-chrome': { custom: PageChromeDemo, note: 'Không có component nào ở đây, chỉ là chuỗi class — và đó là cả ý nghĩa của nó. PageShell và PageSkeleton IMPORT chung chúng thay vì chép nhau; ở sakubun chép nhau rồi lệch 41px.' },
 };
 
 export const hasDemo = (name: string) => name in DEMOS;
