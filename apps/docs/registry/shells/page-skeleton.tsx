@@ -25,18 +25,35 @@ export function PageSkeleton({
   children,
   width = 'full',
   hasAside = false,
+  hasBreadcrumb = false,
+  hasDescription = false,
   className,
 }: {
   children?: ReactNode;
   width?: PageWidth;
   /** Bật khi trang thật có `headerAside` — nếu không, hàng header sẽ ngắn hơn và vẫn nhảy. */
   hasAside?: boolean;
+  /** Bật khi trang thật truyền `breadcrumb` — nó là MỘT HÀNG RIÊNG phía trên tiêu đề. */
+  hasBreadcrumb?: boolean;
+  /** Bật khi trang thật truyền `description` — nó làm khối tiêu đề cao thêm một dòng. */
+  hasDescription?: boolean;
   className?: string;
 }) {
   return (
     <div className={cn('@container/page', PAGE_ROOT, PAGE_WIDTH[width], className)} aria-busy>
-      <div className={PAGE_HEADER_ROW}>
-        <Skeleton className="h-5 w-48" />
+      {hasBreadcrumb ? (
+        <div className={PAGE_HEADER_ROW}>
+          <Skeleton className="h-5 w-48" />
+        </div>
+      ) : null}
+      {/* Phản chiếu khối tiêu đề của `PageShell`: `h-8` khớp `text-title1`, dòng mô tả khớp
+          `text-subhead`. Thiếu dòng mô tả ở đây là đúng kiểu lệch 41px mà `page-chrome.ts` sinh ra
+          để chặn — chỉ khác là lần này nó lệch theo CHIỀU CAO. */}
+      <div className={cn(PAGE_HEADER_ROW, 'items-start')}>
+        <div className="flex min-w-0 flex-col gap-1">
+          <Skeleton className="h-8 w-56" />
+          {hasDescription ? <Skeleton className="h-4 w-80 max-w-full" /> : null}
+        </div>
         {hasAside ? (
           <div className={PAGE_HEADER_ASIDE}>
             <Skeleton className="h-8 w-40" />

@@ -30,7 +30,7 @@
         "cn"
       ],
       "registryDependencies": [
-        "button"
+        "@thienui/button"
       ],
       "files": [
         {
@@ -131,7 +131,7 @@
         "cn"
       ],
       "registryDependencies": [
-        "separator"
+        "@thienui/separator"
       ],
       "files": [
         {
@@ -168,7 +168,7 @@
         "react-day-picker"
       ],
       "registryDependencies": [
-        "button"
+        "@thienui/button"
       ],
       "files": [
         {
@@ -203,7 +203,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "button"
+        "@thienui/button"
       ],
       "files": [
         {
@@ -271,8 +271,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "button",
-        "input-group"
+        "@thienui/button",
+        "@thienui/input-group"
       ],
       "files": [
         {
@@ -292,8 +292,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "dialog",
-        "input-group"
+        "@thienui/dialog",
+        "@thienui/input-group"
       ],
       "files": [
         {
@@ -330,7 +330,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "button"
+        "@thienui/button"
       ],
       "files": [
         {
@@ -398,8 +398,8 @@
         "cn"
       ],
       "registryDependencies": [
-        "label",
-        "separator"
+        "@thienui/label",
+        "@thienui/separator"
       ],
       "files": [
         {
@@ -446,9 +446,9 @@
         "cn"
       ],
       "registryDependencies": [
-        "button",
-        "input",
-        "textarea"
+        "@thienui/button",
+        "@thienui/input",
+        "@thienui/textarea"
       ],
       "files": [
         {
@@ -501,7 +501,7 @@
         "cn"
       ],
       "registryDependencies": [
-        "separator"
+        "@thienui/separator"
       ],
       "files": [
         {
@@ -551,7 +551,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "dropdown-menu"
+        "@thienui/dropdown-menu"
       ],
       "files": [
         {
@@ -604,7 +604,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "button"
+        "@thienui/button"
       ],
       "files": [
         {
@@ -737,7 +737,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "button"
+        "@thienui/button"
       ],
       "files": [
         {
@@ -758,13 +758,13 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "button",
-        "input",
-        "separator",
-        "sheet",
-        "skeleton",
-        "tooltip",
-        "use-mobile"
+        "@thienui/button",
+        "@thienui/input",
+        "@thienui/separator",
+        "@thienui/sheet",
+        "@thienui/skeleton",
+        "@thienui/tooltip",
+        "@thienui/use-mobile"
       ],
       "files": [
         {
@@ -911,7 +911,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "button"
+        "@thienui/button"
       ],
       "files": [
         {
@@ -931,7 +931,7 @@
         "cn"
       ],
       "registryDependencies": [
-        "toggle"
+        "@thienui/toggle"
       ],
       "files": [
         {
@@ -982,7 +982,7 @@
         "cn"
       ],
       "registryDependencies": [
-        "explain"
+        "@thienui/explain"
       ],
       "files": [
         {
@@ -997,7 +997,7 @@
       "title": "use-fit-rows",
       "description": "hook · use-fit-rows",
       "registryDependencies": [
-        "fit-rows"
+        "@thienui/fit-rows"
       ],
       "files": [
         {
@@ -1019,13 +1019,27 @@
       ]
     },
     {
+      "name": "motion-tokens",
+      "type": "registry:lib",
+      "title": "motion-tokens",
+      "description": "thư viện dùng chung · motion-tokens",
+      "files": [
+        {
+          "path": "registry/lib/motion-tokens.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
       "name": "motion",
       "type": "registry:lib",
       "title": "motion",
       "description": "thư viện dùng chung · motion",
       "dependencies": [
-        "@thienui/tokens",
         "motion"
+      ],
+      "registryDependencies": [
+        "@thienui/motion-tokens"
       ],
       "files": [
         {
@@ -1043,8 +1057,8 @@
         "cn"
       ],
       "registryDependencies": [
-        "button",
-        "explain"
+        "@thienui/button",
+        "@thienui/explain"
       ],
       "files": [
         {
@@ -1063,7 +1077,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "button"
+        "@thienui/button"
       ],
       "files": [
         {
@@ -1078,9 +1092,9 @@
       "title": "confirm-dialog",
       "description": "generic đã ghép · confirm-dialog",
       "registryDependencies": [
-        "button",
-        "dialog",
-        "spinner"
+        "@thienui/button",
+        "@thienui/dialog",
+        "@thienui/spinner"
       ],
       "files": [
         {
@@ -1100,11 +1114,11 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "button",
-        "checkbox",
-        "empty-state",
-        "skeleton",
-        "table"
+        "@thienui/button",
+        "@thienui/checkbox",
+        "@thienui/empty-state",
+        "@thienui/skeleton",
+        "@thienui/table"
       ],
       "files": [
         {
@@ -1123,7 +1137,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "empty"
+        "@thienui/empty"
       ],
       "files": [
         {
@@ -1138,7 +1152,7 @@
       "title": "explain",
       "description": "generic đã ghép · explain",
       "registryDependencies": [
-        "tooltip"
+        "@thienui/tooltip"
       ],
       "files": [
         {
@@ -1157,7 +1171,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "explain"
+        "@thienui/explain"
       ],
       "files": [
         {
@@ -1167,10 +1181,31 @@
       ]
     },
     {
+      "name": "mode-toggle",
+      "type": "registry:component",
+      "title": "mode-toggle",
+      "description": "generic đã ghép · mode-toggle",
+      "dependencies": [
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "@thienui/button"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/mode-toggle.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "pressable",
       "type": "registry:component",
       "title": "pressable",
       "description": "generic đã ghép · pressable",
+      "registryDependencies": [
+        "@thienui/motion"
+      ],
       "files": [
         {
           "path": "registry/patterns/pressable.tsx",
@@ -1187,7 +1222,7 @@
         "cn"
       ],
       "registryDependencies": [
-        "explain"
+        "@thienui/explain"
       ],
       "files": [
         {
@@ -1206,7 +1241,8 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "input"
+        "@thienui/button",
+        "@thienui/input"
       ],
       "files": [
         {
@@ -1220,9 +1256,12 @@
       "type": "registry:component",
       "title": "tab-select",
       "description": "generic đã ghép · tab-select",
+      "dependencies": [
+        "cn"
+      ],
       "registryDependencies": [
-        "select",
-        "tabs"
+        "@thienui/select",
+        "@thienui/tabs"
       ],
       "files": [
         {
@@ -1240,7 +1279,7 @@
         "cn"
       ],
       "registryDependencies": [
-        "sidebar"
+        "@thienui/sidebar"
       ],
       "files": [
         {
@@ -1259,7 +1298,7 @@
         "lucide-react"
       ],
       "registryDependencies": [
-        "sidebar"
+        "@thienui/sidebar"
       ],
       "files": [
         {
@@ -1289,7 +1328,7 @@
         "cn"
       ],
       "registryDependencies": [
-        "page-chrome"
+        "@thienui/page-chrome"
       ],
       "files": [
         {
@@ -1307,8 +1346,8 @@
         "cn"
       ],
       "registryDependencies": [
-        "page-chrome",
-        "skeleton"
+        "@thienui/page-chrome",
+        "@thienui/skeleton"
       ],
       "files": [
         {
@@ -1323,6 +1362,51 @@
       "title": "Claude Clay",
       "description": "Theme Claude Clay (mặc định) — token ngữ nghĩa đã resolve, sáng + tối.",
       "cssVars": {
+        "theme": {
+          "--text-caption2": "0.6875rem",
+          "--text-caption1": "0.75rem",
+          "--text-footnote": "0.8125rem",
+          "--text-subhead": "0.9375rem",
+          "--text-callout": "1rem",
+          "--text-body": "1.0625rem",
+          "--text-title3": "1.25rem",
+          "--text-title2": "1.375rem",
+          "--text-title1": "1.75rem",
+          "--text-large-title": "2.125rem",
+          "--tracking-tight": "-0.022em",
+          "--tracking-snug": "-0.012em",
+          "--tracking-normal": "0em",
+          "--tracking-label": "0.09em",
+          "--leading-caption2": "1.45",
+          "--leading-caption1": "1.42",
+          "--leading-footnote": "1.4",
+          "--leading-subhead": "1.4",
+          "--leading-callout": "1.45",
+          "--leading-body": "1.47",
+          "--leading-title3": "1.3",
+          "--leading-title2": "1.25",
+          "--leading-title1": "1.18",
+          "--leading-large-title": "1.08",
+          "--font-weight-regular": "400",
+          "--font-weight-medium": "500",
+          "--font-weight-semibold": "600",
+          "--font-weight-bold": "700",
+          "--container-prose": "68ch",
+          "--container-narrow": "48ch",
+          "--container-wide": "84ch",
+          "--radius-base": "0.625rem",
+          "--radius-sm": "0.375rem",
+          "--radius-md": "0.5rem",
+          "--radius-lg": "0.625rem",
+          "--radius-xl": "0.875rem",
+          "--radius-2xl": "1.125rem",
+          "--radius-full": "9999px",
+          "--ease-standard": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+          "--ease-enter": "cubic-bezier(0.05, 0.7, 0.1, 1)",
+          "--ease-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
+          "--ease-overshoot": "cubic-bezier(0.2, 1.4, 0.4, 1)",
+          "--ease-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)"
+        },
         "light": {
           "background": "oklch(0.982 0.005 95)",
           "foreground": "oklch(0.191 0.002 107)",
@@ -1419,6 +1503,20 @@
           "shadow-3": "0 2px 4px -1px oklch(0 0 0 / 0.45), 0 12px 32px -12px oklch(0 0 0 / 0.65)",
           "shadow-4": "0 4px 8px -2px oklch(0 0 0 / 0.50), 0 24px 56px -16px oklch(0 0 0 / 0.70)"
         }
+      },
+      "css": {
+        ":root": {
+          "--p-motion-duration-instant": "0ms",
+          "--p-motion-duration-fast": "120ms",
+          "--p-motion-duration-base": "200ms",
+          "--p-motion-duration-slow": "320ms",
+          "--p-motion-duration-deliberate": "480ms",
+          "--p-motion-easing-standard": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+          "--p-motion-easing-enter": "cubic-bezier(0.05, 0.7, 0.1, 1)",
+          "--p-motion-easing-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
+          "--p-motion-easing-overshoot": "cubic-bezier(0.2, 1.4, 0.4, 1)",
+          "--p-motion-easing-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)"
+        }
       }
     },
     {
@@ -1427,6 +1525,51 @@
       "title": "Slate Teal",
       "description": "Theme Slate Teal — token ngữ nghĩa đã resolve, sáng + tối.",
       "cssVars": {
+        "theme": {
+          "--text-caption2": "0.6875rem",
+          "--text-caption1": "0.75rem",
+          "--text-footnote": "0.8125rem",
+          "--text-subhead": "0.9375rem",
+          "--text-callout": "1rem",
+          "--text-body": "1.0625rem",
+          "--text-title3": "1.25rem",
+          "--text-title2": "1.375rem",
+          "--text-title1": "1.75rem",
+          "--text-large-title": "2.125rem",
+          "--tracking-tight": "-0.022em",
+          "--tracking-snug": "-0.012em",
+          "--tracking-normal": "0em",
+          "--tracking-label": "0.09em",
+          "--leading-caption2": "1.45",
+          "--leading-caption1": "1.42",
+          "--leading-footnote": "1.4",
+          "--leading-subhead": "1.4",
+          "--leading-callout": "1.45",
+          "--leading-body": "1.47",
+          "--leading-title3": "1.3",
+          "--leading-title2": "1.25",
+          "--leading-title1": "1.18",
+          "--leading-large-title": "1.08",
+          "--font-weight-regular": "400",
+          "--font-weight-medium": "500",
+          "--font-weight-semibold": "600",
+          "--font-weight-bold": "700",
+          "--container-prose": "68ch",
+          "--container-narrow": "48ch",
+          "--container-wide": "84ch",
+          "--radius-base": "0.625rem",
+          "--radius-sm": "0.375rem",
+          "--radius-md": "0.5rem",
+          "--radius-lg": "0.625rem",
+          "--radius-xl": "0.875rem",
+          "--radius-2xl": "1.125rem",
+          "--radius-full": "9999px",
+          "--ease-standard": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+          "--ease-enter": "cubic-bezier(0.05, 0.7, 0.1, 1)",
+          "--ease-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
+          "--ease-overshoot": "cubic-bezier(0.2, 1.4, 0.4, 1)",
+          "--ease-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)"
+        },
         "light": {
           "background": "oklch(0.988 0.003 255)",
           "foreground": "oklch(0.196 0.008 255)",
@@ -1522,6 +1665,20 @@
           "shadow-2": "0 1px 2px 0 oklch(0 0 0 / 0.40), 0 8px 24px -12px oklch(0 0 0 / 0.60)",
           "shadow-3": "0 2px 4px -1px oklch(0 0 0 / 0.45), 0 12px 32px -12px oklch(0 0 0 / 0.65)",
           "shadow-4": "0 4px 8px -2px oklch(0 0 0 / 0.50), 0 24px 56px -16px oklch(0 0 0 / 0.70)"
+        }
+      },
+      "css": {
+        ":root": {
+          "--p-motion-duration-instant": "0ms",
+          "--p-motion-duration-fast": "120ms",
+          "--p-motion-duration-base": "200ms",
+          "--p-motion-duration-slow": "320ms",
+          "--p-motion-duration-deliberate": "480ms",
+          "--p-motion-easing-standard": "cubic-bezier(0.2, 0.8, 0.2, 1)",
+          "--p-motion-easing-enter": "cubic-bezier(0.05, 0.7, 0.1, 1)",
+          "--p-motion-easing-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
+          "--p-motion-easing-overshoot": "cubic-bezier(0.2, 1.4, 0.4, 1)",
+          "--p-motion-easing-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)"
         }
       }
     }

@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { animate, MotionConfigContext, useReducedMotion as useSystemReducedMotion } from 'motion/react';
 import type { TargetAndTransition, Transition } from 'motion/react';
-import { primitive } from '@thienui/tokens';
+import { primitive } from '@/registry/lib/motion-tokens';
 
 /**
  * Tầng CẢM GIÁC: spring, độ sâu, và chính sách giảm chuyển động.

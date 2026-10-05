@@ -31,4 +31,14 @@ export const PAGE_ROOT = 'flex flex-col gap-6 pt-6 pb-6';
 export const PAGE_HEADER_ROW = 'flex min-h-8 flex-wrap items-center gap-x-3 gap-y-2';
 
 /** Phần aside của header: ghim phải chỉ khi hẹp; từ `@md` trở lên nó nằm trong luồng. */
-export const PAGE_HEADER_ASIDE = 'max-@md/page:ml-auto';
+export const PAGE_HEADER_ASIDE = '@max-md/page:ml-auto';
+
+/**
+ * TIÊU ĐỀ TRANG. Gom ở đây vì đây đúng là chỗ trôi dạt mạnh nhất, và pha 6 bắt được nó trôi ngay
+ * trong app của chính thienui: `text-title1 font-semibold tracking-tight` được gõ lại ở ba file,
+ * còn file thứ tư dùng `text-large-title` — không ai cố ý, và không ai thấy.
+ */
+export const PAGE_TITLE = 'text-title1 font-semibold tracking-tight text-balance';
+
+/** Dòng mô tả dưới tiêu đề. `max-w-prose` vì đây là chữ để ĐỌC, không phải nhãn. */
+export const PAGE_DESCRIPTION = 'max-w-prose text-subhead text-muted-foreground';

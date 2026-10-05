@@ -1,7 +1,8 @@
 'use client';
 
 import * as React from 'react';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
+import { Button } from '@/registry/base/button';
 import { cn } from 'cn';
 import { Input } from '@/registry/base/input';
 
@@ -17,11 +18,69 @@ import { Input } from '@/registry/base/input';
  *
  * Icon là trang trí (`pointer-events-none`, `aria-hidden`) và input chừa padding trái cho nó. Để icon
  * nhận được chuột sẽ làm bấm vào nó không focus vào ô.
+ *
+ * HAI THỨ pha 6 bắt được là thiếu, vì mọi ô tìm kiếm thật đều phải viết lại chúng bằng tay:
+ *
+ * · **Nút xoá.** `type="search"` có nút × của trình duyệt, nhưng chỉ ở một số trình duyệt, và nó
+ *   không nhận được style, không nhận được tên cho trình đọc màn hình. Ô tìm kiếm không có đường
+ *   xoá là ô có thể làm người dùng mắc kẹt với một bộ lọc không khớp — đúng lỗi mà `NoMatchState`
+ *   được dựng ra để chặn ở phía kia.
+ *
+ * · **Debounce.** `onValueChange` nhận `debounceMs`. Lọc trên mảng trong bộ nhớ thì không cần, và
+ *   mặc định là 0 vì vậy; nhưng cái nào gọi API thì cần, và "cái nào gọi API" là thứ không nhìn ra
+ *   được từ chỗ này. Khi `debounceMs > 0`, ô giữ chữ hiện trên màn hình trong state của nó và chỉ
+ *   báo ra ngoài sau khi người dùng ngừng gõ — nên chữ không bao giờ nhảy lùi.
  */
 export function SearchInput({
   className,
+  value,
+  onValueChange,
+  debounceMs = 0,
+  clearLabel = 'Xoá ô tìm kiếm',
+  onChange,
   ...props
-}: React.ComponentProps<typeof Input> & { className?: string }) {
+}: Omit<React.ComponentProps<typeof Input>, 'value'> & {
+  className?: string;
+  value?: string;
+  /** Nhận CHỮ, không nhận event — cùng quy ước với `TabSelect`. `onChange` vẫn chạy như cũ. */
+  onValueChange?: (value: string) => void;
+  /** 0 = báo ngay. Đặt > 0 khi mỗi lần gõ gọi mạng. */
+  debounceMs?: number;
+  clearLabel?: string;
+}) {
+  const [nhap, setNhap] = React.useState(value ?? '');
+  const hienThi = debounceMs > 0 ? nhap : (value ?? nhap);
+
+  /*
+   * Prop `value` đổi từ BÊN NGOÀI (xoá bộ lọc, nạp lại từ URL) phải kéo chữ đang hiện theo.
+   *
+   * ĐIỀU CHỈNH TRONG LÚC RENDER, không đồng bộ bằng effect. Effect thì chạy SAU khi trình duyệt đã
+   * vẽ, nên sẽ có một khung hình hiện chữ cũ; và `react-hooks/set-state-in-effect` chặn đúng mẫu
+   * đó. Gọi `setState` trong thân render khi state phái sinh từ prop là cách React khuyến nghị:
+   * React bỏ kết quả render dở và chạy lại ngay, trước khi vẽ.
+   */
+  const [truocDo, setTruocDo] = React.useState(value);
+  if (value !== truocDo) {
+    setTruocDo(value);
+    setNhap(value ?? '');
+  }
+
+  const baoRa = React.useRef(onValueChange);
+  React.useEffect(() => {
+    baoRa.current = onValueChange;
+  });
+
+  React.useEffect(() => {
+    if (debounceMs <= 0) return;
+    const t = setTimeout(() => baoRa.current?.(nhap), debounceMs);
+    return () => clearTimeout(t);
+  }, [nhap, debounceMs]);
+
+  function doi(v: string) {
+    setNhap(v);
+    if (debounceMs <= 0) onValueChange?.(v);
+  }
+
   return (
     <div className={cn('@container/search relative w-full', className)}>
       <div className="relative @sm/search:max-w-xs">
@@ -29,7 +88,28 @@ export function SearchInput({
           className="pointer-events-none absolute top-1/2 left-2.5 size-4 -translate-y-1/2 text-muted-foreground"
           aria-hidden
         />
-        <Input type="search" {...props} className="pl-8" />
+        <Input
+          type="search"
+          value={hienThi}
+          onChange={(e) => {
+            doi(e.target.value);
+            onChange?.(e);
+          }}
+          {...props}
+          className="pl-8 pr-9"
+        />
+        {hienThi ? (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={clearLabel}
+            className="absolute top-1/2 right-0.5 size-8 -translate-y-1/2 text-muted-foreground"
+            onClick={() => doi('')}
+          >
+            <X />
+          </Button>
+        ) : null}
       </div>
     </div>
   );

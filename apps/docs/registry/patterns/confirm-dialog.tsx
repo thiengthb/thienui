@@ -24,7 +24,7 @@ import {
  * TRIGGER và trạng thái `open` ở lại với người gọi — mỗi chỗ điều khiển `open` một kiểu (một boolean,
  * hay một memo của mục đang chọn) — nên component này chỉ sở hữu thân modal và hai cái nút.
  *
- * `pending` khoá CẢ HAI nút, không chỉ nút xác nhận: bấm "Huỷ" giữa chừng một thao tác đã gửi đi sẽ
+ * `pending` khoá MỌI ĐƯỜNG RA, không chỉ nút xác nhận: bấm "Huỷ" giữa chừng một thao tác đã gửi đi sẽ
  * đóng modal trong khi việc vẫn đang chạy, và người dùng mất chỗ duy nhất để biết kết quả.
  */
 export function ConfirmDialog({
@@ -51,8 +51,24 @@ export function ConfirmDialog({
   cancelLabel?: string;
 }) {
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent>
+    <Dialog
+      open={open}
+      /*
+       * Trong lúc `pending`, BỎ QUA mọi yêu cầu đóng. Khoá hai cái nút là chưa đủ: pha 6 đo được
+       * rằng hộp vẫn đóng được bằng **Esc**, bằng **nút ×**, và bằng **bấm ra ngoài** — ba đường,
+       * mỗi đường gây đúng cái hậu quả mà việc khoá nút dựng lên để chặn.
+       *
+       * Chặn ở đây chứ không chặn ở từng chỗ: cả ba đều đi qua `onOpenChange`, nên một cửa là đủ,
+       * và một cửa thì không quên được đường thứ tư.
+       */
+      onOpenChange={(next) => {
+        if (pending && !next) return;
+        onOpenChange(next);
+      }}
+    >
+      {/* Nút × biến mất đúng lúc hai nút kia xám đi — để cả hộp ĐỌC RA là đang bận, thay vì để lại
+          một control bấm vào không có gì xảy ra. */}
+      <DialogContent showCloseButton={!pending}>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>

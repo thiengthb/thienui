@@ -246,3 +246,35 @@ Các namespace đã khai sẵn trong `components.json` (đã lọc sức khoẻ 
 | Thu hoạch `patterns/` + `shells/` từ sakubun | ⬜ pha 4 |
 | Tầng cảm giác từ `@seamui` -> motion token | ⬜ pha 5 |
 | Dựng một project thật hoàn toàn trên thienui | ⬜ pha 6 |
+
+## Pha 6 — dùng thật trên một project thật
+
+`~/projects/kiemke` là app kiểm kê kho dựng **hoàn toàn** trên registry này, từ một
+`create-next-app` trắng. Luật của pha: trong lúc dựng **không sửa gì trong thienui**, chỉ *ghi* lại
+mọi chỗ vướng; sửa thành một đợt riêng sau khi app chạy. Sổ ghi: `~/projects/kiemke/docs/ma-sat-thienui.md`.
+
+**13 mục ma sát, gộp lại là 4 vấn đề** — và hai trong số đó chỉ tồn tại được vì thienui chưa bao giờ
+tự ngồi lên thienui:
+
+| | tìm ra | đã sửa |
+|---|---|---|
+| `registryDependencies` viết tên trần → shadcn giải về `ui.shadcn.com`; 6 item chết 404, 26 item im lặng lấy file upstream | MS-03 | thêm tiền tố `@thienui/`, thêm tầng `lib` vào regex (thiếu nó nên `pressable` xuất bản mà không khai phụ thuộc `motion`) |
+| theme chỉ mang màu — thang chữ Apple, easing, `--p-motion-*` không theo, mà component đang dùng chúng | MS-02 | theme mang thêm 43 token thang (`cssVars.theme`) + 10 primitive chuyển động (`css[':root']`), giá trị đã resolve |
+| `motion` khai `@thienui/tokens` (chưa publish) → `shadcn add` chết cả lô | MS-04 | sinh `registry/lib/motion-tokens.ts`, chỉ `motion.*`, không kèm màu |
+| `TabSelect` crash vì thiếu `<Tabs>`; container query đặt trên `display:contents` nên **cả hai nửa cùng hiện ở mọi bề rộng**; select in ra `tat-ca` thay vì "Tất cả" | MS-08/09/10 | tự chứa `<Tabs>`, container trên phần tử sinh hộp + `w-full`, `Select items=`, thêm `className` để chỗ gọi định bề rộng |
+| `ConfirmDialog` khoá hai nút khi `pending` nhưng vẫn đóng được bằng Esc / nút × / bấm ra ngoài | MS-11 | chặn ở `onOpenChange` — một cửa duy nhất |
+| `PageShell` không có chỗ đặt `<h1>`, và **chưa ai dùng nó** | MS-06 | thêm `title`/`description` + `PAGE_TITLE`/`PAGE_DESCRIPTION`; `PageSkeleton` phản chiếu theo |
+| không item nào bật được chế độ tối | MS-05 | `@thienui/mode-toggle` + `MODE_SCRIPT` cho `<head>` |
+| `SearchInput` chưa có nút xoá, chưa có debounce | MS-07 | thêm cả hai + `onValueChange` cho thống nhất quy ước |
+| `pnpm lint` của project mới ĐỎ vì `use-mobile.ts` | MS-13 | patch vendor đầu tiên — `useSyncExternalStore` |
+| `max-@md/…` không sinh ra CSS nào (cú pháp đúng là `@max-md/…`), dính cả `PAGE_HEADER_ASIDE` | — | sửa 5 chỗ + **cổng thứ 15** chặn tái phát |
+
+**Chưa sửa, cố ý:**
+
+- **MS-01 — registry chưa deploy.** Cần chọn domain. Đây là việc *chặn*: không có nó thì hệ này chưa
+  tồn tại với ai ngoài máy này.
+- **MS-12 — chưa có pattern bảng-thành-thẻ khi hẹp.** `DataTable` ở 390px chỉ còn cách cuộn ngang,
+  nên màn hình đếm của kiemke phải tự viết danh sách và mất theo cả sáu trạng thái dữ liệu đã làm
+  sẵn. Đây là một component mới, không phải một bản vá.
+- **Demo mới phủ 10/17 pattern+shell.** `pnpm registry` in ra con số đó mỗi lần chạy — nợ nhìn thấy
+  được thì không âm thầm lớn lên.

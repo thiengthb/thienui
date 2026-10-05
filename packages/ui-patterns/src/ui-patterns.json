@@ -402,6 +402,18 @@
       "check": {
         "kind": "manual"
       }
+    },
+    {
+      "id": "container-query-variant-syntax",
+      "rule": "Biến thể container query max-width viết là `@max-md/tên:`, KHÔNG BAO GIỜ `max-@md/tên:`.",
+      "why": "`max-@md/tabs:hidden` không sinh ra CSS nào — Tailwind bỏ qua một class nó không hiểu, im lặng tuyệt đối: không lỗi build, không cảnh báo, không gạch đỏ trong editor. Pha 6 tìm thấy nó ở hai chỗ, một trong đó là `PAGE_HEADER_ASIDE` — hằng số dùng trên MỌI trang — nên phần ghim phải của header trên màn hẹp chưa bao giờ hoạt động, và không ai thấy vì bố cục vẫn 'trông được'. Cùng hình dạng với lỗi `--p-warm-light-1` ở pha 1 và `--ease-overshoot: 0.2,1.4,0.4,1` ở pha 6: thứ sai thì BIẾN MẤT thay vì kêu lên. Cách duy nhất bắt được là nhìn vào CSS build ra — hoặc dựng một cổng ở đây.",
+      "canonical": "apps/docs/registry/patterns/tab-select.tsx",
+      "source": "pha 6 · đo trên CSS build ra của một project tiêu thụ",
+      "check": {
+        "kind": "forbid",
+        "pattern": "max-@[a-z0-9]+(/[a-z-]+)?:"
+      },
+      "allow": {}
     }
   ]
 }

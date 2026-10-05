@@ -29,6 +29,37 @@ const TIERS = [
   { dir: 'blocks', type: 'registry:block', note: 'cả màn hình' },
 ];
 
+/**
+ * Sinh `registry/lib/motion-tokens.ts` — token chuyển động dưới dạng JS, cho `lib/motion.ts`.
+ *
+ * Vì sao phải sinh: `motion.ts` cần giá trị spring dưới dạng SỐ (stiffness, damping), và spring
+ * không phải CSS nên theme không mang được. Trước pha 6 nó import thẳng `@thienui/tokens`, nên
+ * `motion.json` khai một dependency npm chưa publish — và `shadcn add` ở project ngoài chết cả lô
+ * ngay ở bước `pnpm add @thienui/tokens` (404), kéo theo 13 item không liên quan.
+ *
+ * Chỉ `motion.*`, KHÔNG kèm màu: màu đã đi qua theme, và một file thứ hai chứa màu sẽ thành nguồn
+ * sự thật thứ hai trong project người dùng.
+ */
+function sinhMotionTokens(primitive) {
+  const picked = Object.entries(primitive).filter(([k]) => k.startsWith('motion.'));
+  const body = picked.map(([k, v]) => `  ${JSON.stringify(k)}: ${JSON.stringify(String(v))},`).join('\n');
+  const src = [
+    '// SINH TỰ ĐỘNG bởi scripts/build-registry.mjs từ @thienui/tokens — ĐỪNG SỬA TAY.',
+    '// Chạy lại: pnpm registry:gen',
+    'export const primitive = {',
+    body,
+    '} as const;',
+    '',
+  ].join('\n');
+  const target = join(REG, 'lib/motion-tokens.ts');
+  const truoc = existsSync(target) ? readFileSync(target, 'utf8') : null;
+  if (truoc !== src) writeFileSync(target, src);
+  return picked.length;
+}
+
+const tokens = JSON.parse(readFileSync(join(ROOT, 'node_modules/@thienui/tokens/dist/tokens.json'), 'utf8'));
+sinhMotionTokens(tokens.primitive);
+
 const items = [];
 
 /* ── component theo bốn tầng ── */
@@ -48,9 +79,18 @@ for (const tier of TIERS) {
     const type = isHook ? 'registry:hook' : tier.type;
 
     // registryDependencies: suy từ chính import của file, nên nó không thể lệch với code.
+    //
+    // PHẢI có tiền tố `@thienui/`. Tên trần được shadcn giải về registry MẶC ĐỊNH của nó
+    // (ui.shadcn.com), không về registry mà item vừa được lấy từ đó. Pha 6 đo được hậu quả: 6 item
+    // chết 404 ở project ngoài, và 26 item khác im lặng lấy file của upstream — kể cả khi `base/`
+    // đã được vá. Xem docs/vendor-patches.md.
+    //
+    // Danh sách tầng phải khớp TIERS; thiếu `lib` ở đây là lý do `pressable` từng xuất bản mà không
+    // khai phụ thuộc `motion` nào, nên nó về máy người dùng ở trạng thái không import được.
     const deps = new Set();
-    for (const m of src.matchAll(/from\s+['"]@\/registry\/(?:base|patterns|shells)\/([\w-]+)['"]/g)) {
-      if (m[1] !== name) deps.add(m[1]);
+    const tierAlt = TIERS.map((t) => t.dir).join('|');
+    for (const m of src.matchAll(new RegExp(`from\\s+['"]@/registry/(?:${tierAlt})/([\\w-]+)['"]`, 'g'))) {
+      if (m[1] !== name) deps.add(`@thienui/${m[1]}`);
     }
     // dependencies npm: chỉ những package ngoài, bỏ alias nội bộ và react.
     const npm = new Set();
@@ -72,7 +112,70 @@ for (const tier of TIERS) {
 }
 
 /* ── theme sinh từ token ── */
-const tokens = JSON.parse(readFileSync(join(ROOT, 'node_modules/@thienui/tokens/dist/tokens.json'), 'utf8'));
+
+/**
+ * Thang PHI-MÀU đi kèm theme, giá trị đã resolve.
+ *
+ * Pha 6 đo được: một project ngoài cài `@thienui/theme-claude` thì có đủ 46 token màu, nhưng
+ * `text-caption1` / `ease-overshoot` / `max-w-prose` **không phải class** ở đó, và
+ * `var(--p-motion-duration-base)` là rỗng — trong khi `app-sidebar`, `bulk-action-button`,
+ * `card-deck`, `lib/motion` đang dùng đúng những thứ đó. Cả hai đều hỏng IM LẶNG: biến CSS thiếu
+ * thì thuộc tính bị bỏ, class chưa khai thì Tailwind không sinh ra gì.
+ *
+ * Nguyên nhân: thang này đi đường npm (`@thienui/tokens`) còn component đi đường registry, và chỉ
+ * đường registry là có thật. Chừng nào npm chưa mở, theme phải gánh cả hai.
+ *
+ * Giá trị LITERAL chứ không `var(--p-*)`: consumer không có tầng 1 để var() trỏ tới — đúng cùng lý
+ * do mà token màu đã được làm phẳng ở đây từ đầu.
+ */
+/** Giống `cssValue` của packages/tokens: mảng [x1,y1,x2,y2] LÀ một cubic-bezier, không phải chuỗi. */
+const giaTriCss = (v) => (Array.isArray(v) ? `cubic-bezier(${v.join(', ')})` : String(v));
+
+const NS = [
+  ['type.', '--text-'],
+  ['tracking.', '--tracking-'],
+  ['leading.', '--leading-'],
+  ['weight.', '--font-weight-'],
+  ['measure.', '--container-'],
+  ['radius.', '--radius-'],
+  ['motion.easing.', '--ease-'],
+];
+const scaleTheme = {};
+for (const [prefix, ns] of NS) {
+  for (const [path, value] of Object.entries(tokens.primitive)) {
+    if (path.startsWith(prefix)) scaleTheme[`${ns}${path.slice(prefix.length)}`] = giaTriCss(value);
+  }
+}
+
+/**
+ * Primitive chuyển động, giữ NGUYÊN tên `--p-motion-*`.
+ *
+ * Chúng không vào `cssVars.theme` được: `@theme` của Tailwind chỉ hiểu một tập namespace, và
+ * Tailwind **không có** namespace cho duration — `duration-*` đọc thang riêng. Nên component đọc
+ * thẳng biến, và biến phải được khai ở `:root` như một biến CSS thường. Khối `css` làm đúng việc đó
+ * mà không bị shadcn tự sinh thêm `--color-*` như khi đi qua `cssVars`.
+ */
+const motionRoot = {};
+for (const [path, value] of Object.entries(tokens.primitive)) {
+  if (path.startsWith('motion.duration.') || path.startsWith('motion.easing.')) {
+    motionRoot[`--p-${path.replace(/\./g, '-')}`] = giaTriCss(value);
+  }
+}
+
+/*
+ * CỔNG: không giá trị nào được là một DÃY SỐ TRẦN.
+ *
+ * Lỗi đã xảy ra: `motion.easing.*` lưu `[0.2, 1.4, 0.4, 1]`, và `String(value)` cho ra
+ * `0.2,1.4,0.4,1` — không phải giá trị CSS. Trình duyệt bỏ qua khai báo đó, không báo gì, và
+ * `ease-overshoot` lặng lẽ không còn easing. Cùng một hình dạng với lỗi `--p-warm-light-1` ở pha 1:
+ * CSS sai thì im lặng, nên cổng phải đứng ở chỗ sinh ra nó.
+ */
+for (const [ten, gia] of [...Object.entries(scaleTheme), ...Object.entries(motionRoot)]) {
+  if (/^[\d.\s-]+(,[\d.\s-]+)+$/.test(gia)) {
+    throw new Error(`token "${ten}" ra một dãy số trần: ${gia} — thiếu hàm CSS bọc ngoài?`);
+  }
+}
+
 for (const meta of tokens.meta) {
   const t = tokens.themes[meta.name];
   // cssVars của shadcn nhận giá trị ĐÃ RESOLVE: một project tiêu thụ chỉ cài theme, không cài cả
@@ -83,7 +186,8 @@ for (const meta of tokens.meta) {
     type: 'registry:theme',
     title: meta.label,
     description: `Theme ${meta.label}${meta.default ? ' (mặc định)' : ''} — token ngữ nghĩa đã resolve, sáng + tối.`,
-    cssVars: { light: t.light, dark: t.dark },
+    cssVars: { theme: scaleTheme, light: t.light, dark: t.dark },
+    css: { ':root': motionRoot },
   });
 }
 
@@ -99,6 +203,20 @@ const registry = {
 writeFileSync(join(ROOT, 'registry.json'), JSON.stringify(registry, null, 2) + '\n');
 mkdirSync(join(ROOT, 'public/r'), { recursive: true });
 
+/**
+ * BÁO CÁO phủ demo cho `patterns/` và `shells/`.
+ *
+ * Pha 6 cho thấy một item chưa được render ở đâu có thể mang ba lỗi cùng lúc và vẫn nằm trong
+ * registry ở trạng thái "xong". Con số này không chặn build — nó chỉ không cho phép nợ đó vô hình.
+ */
+const demoSrc = readFileSync(join(REG, 'demos/index.tsx'), 'utf8');
+const coDemo = new Set([...demoSrc.matchAll(/^\s{2}'?([\w-]+)'?:\s*\{/gm)].map((m) => m[1]));
+const canDemo = items
+  .filter((i) => i.files?.[0]?.path.startsWith('registry/patterns/') || i.files?.[0]?.path.startsWith('registry/shells/'))
+  .map((i) => i.name);
+const thieu = canDemo.filter((n) => !coDemo.has(n));
+
 const byType = items.reduce((a, i) => ((a[i.type] = (a[i.type] ?? 0) + 1), a), {});
 console.log(`✓ registry.json: ${items.length} item`);
 for (const [t, n] of Object.entries(byType)) console.log(`    ${t.padEnd(20)} ${n}`);
+console.log(`    demo pattern+shell   ${canDemo.length - thieu.length}/${canDemo.length}${thieu.length ? ` — thiếu: ${thieu.join(', ')}` : ''}`);

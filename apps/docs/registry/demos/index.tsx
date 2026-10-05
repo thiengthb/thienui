@@ -37,6 +37,11 @@ import { DataTableDemo } from '@/registry/demos/data-table-demo';
 import { CardDeckDemo } from '@/registry/demos/card-deck-demo';
 import { ConfirmDialogDemo } from '@/registry/demos/confirm-dialog-demo';
 import { MotionDemo } from '@/registry/demos/motion-demo';
+import { TabSelectDemo } from '@/registry/demos/tab-select-demo';
+import { ShellDemo } from '@/registry/demos/shell-demo';
+import { ModeToggle } from '@/registry/patterns/mode-toggle';
+import { RelativeTime } from '@/registry/patterns/relative-time';
+import { Truncate } from '@/registry/base/truncate';
 
 export type StateName = 'default' | 'hover' | 'focus-visible' | 'active' | 'disabled' | 'loading';
 
@@ -154,9 +159,37 @@ export const DEMOS: Record<string, DemoSpec> = {
     custom: MotionDemo,
     note: 'Tầng cảm giác, VAY từ @seamui/motion qua quy trình khu cách ly năm bước. Đã tái-token-hoá: mọi thời lượng và easing ánh xạ vào thang của thienui, không giữ số của seam. Cổng no-raw-durations bắt được đúng ba dòng cần sửa khi nó còn trong khu cách ly.',
   },
+  'tab-select': {
+    custom: TabSelectDemo,
+    note: 'Ba lỗi của nó chỉ tồn tại được vì nó CHƯA TỪNG được render: crash vì thiếu <Tabs>, container query đặt trên một phần tử display:contents nên không có container nào, và ô select in ra value thay vì nhãn. Thu một component vào registry không chứng minh nó chạy.',
+  },
+  'page-shell': {
+    custom: ShellDemo,
+    note: 'Trang thật và khung chờ đứng cạnh nhau — chúng tồn tại để KHÔNG lệch nhau, nên đó là phép kiểm duy nhất có nghĩa. Prop `title`/`description` được thêm ở pha 6: một "page shell" không có chỗ đặt <h1> thì mỗi trang tự gõ lại chuỗi class của mình, và chúng trôi.',
+  },
+  'mode-toggle': {
+    component: ModeToggle as React.ComponentType<Record<string, unknown>>,
+    note: 'Theme sinh ra cả khối .dark nhưng trước pha 6 không item nào bật được nó. Phần khó là MODE_SCRIPT trong <head>: áp chế độ sau khi hydrate thì lần sơn đầu luôn sai rồi nháy, và không useEffect nào sửa được vì nó chạy sau khi trình duyệt đã vẽ.',
+  },
+  'relative-time': {
+    component: RelativeTime as React.ComponentType<Record<string, unknown>>,
+    props: {
+      value: '2026-10-04T09:00:00+07:00',
+      format: (d: Date) => new Intl.RelativeTimeFormat('vi-VN', { numeric: 'auto' }).format(
+        Math.round((d.getTime() - Date.parse('2026-10-05T09:00:00+07:00')) / 86_400_000), 'day'),
+      exact: (d: Date) => d.toLocaleString('vi-VN'),
+    },
+    note: 'Không mang theo cách viết tiếng Việt — `format` và `exact` là prop. Component UI không nên quyết định ngôn ngữ; cái giá là mỗi app phải có một file định dạng, và đó là cái giá đúng.',
+  },
+  truncate: {
+    component: Truncate as React.ComponentType<Record<string, unknown>>,
+    props: { className: 'w-56' },
+    children: 'Sữa tươi tiệt trùng Vinamilk có đường 180ml',
+    note: 'Chữ dài là trạng thái dữ liệu thứ tư, và nó LUÔN xảy ra với dữ liệu thật. Cắt chữ mà không cho đọc đủ thì chỉ đổi một lỗi layout thành một lỗi thông tin — nên bản đầy đủ nằm trong tooltip.',
+  },
   'confirm-dialog': {
     custom: ConfirmDialogDemo,
-    note: '`pending` khoá CẢ HAI nút, không chỉ nút xác nhận: bấm Huỷ giữa chừng một thao tác đã gửi đi sẽ đóng modal trong khi việc vẫn chạy, và người dùng mất chỗ duy nhất để biết kết quả.',
+    note: '`pending` khoá MỌI ĐƯỜNG RA. Pha 6 đo được rằng khoá hai nút là chưa đủ — hộp vẫn đóng được bằng Esc, bằng nút ×, và bằng bấm ra ngoài. Nay cả ba bị chặn ở `onOpenChange`, một cửa duy nhất, nên không quên được đường thứ tư. Lý do gốc: bấm Huỷ giữa chừng một thao tác đã gửi đi sẽ đóng modal trong khi việc vẫn chạy, và người dùng mất chỗ duy nhất để biết kết quả.',
   },
 };
 

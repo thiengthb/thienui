@@ -58,6 +58,9 @@ const patternsPath = locate(flag('patterns'), [
   'docs/ui-patterns.json',
 ], 'ui-patterns.json');
 
+/** Luật là của chính repo này (thienui), hay đến từ node_modules (project tiêu thụ)? */
+const ownsRegistry = !patternsPath.split(/[\\/]/).includes('node_modules');
+
 const tokens = JSON.parse(readFileSync(tokensPath, 'utf8'));
 const registry = JSON.parse(readFileSync(patternsPath, 'utf8'));
 
@@ -95,7 +98,7 @@ if (!pl.pass) {
   for (const p of pl.byPattern) {
     if (!p.violations.length) continue;
     console.error(`\n  [${p.id}]  ${p.rule}`);
-    if (p.canonical) console.error(`  làm đúng ở: ${p.canonical}`);
+    if (p.canonical) console.error(`  làm đúng ở: ${p.canonical}${ownsRegistry ? '' : '  (trong repo thienui)'}`);
     for (const v of p.violations.slice(0, 8)) console.error(`    ${v.file}:${v.line}  ${v.excerpt}`);
     if (p.violations.length > 8) console.error(`    … và ${p.violations.length - 8} chỗ nữa`);
   }
@@ -108,7 +111,11 @@ for (const p of pl.byPattern) {
 }
 
 /* ───────── cổng 4: canonical phải có thật ───────── */
-const can = checkCanonicals(root, registry);
+// Cổng này kiểm REGISTRY LUẬT, không kiểm repo đang quét: `canonical` là đường dẫn bên trong thienui.
+// Ở project tiêu thụ (luật đến từ node_modules) mọi con trỏ đều "không tồn tại" theo định nghĩa, và
+// một cổng đỏ vì lý do người tiêu thụ không sửa được sẽ dạy họ tắt cổng. Registry được kiểm ở CI
+// của chính thienui; ở đây `canonical` chỉ in ra như con trỏ vào mã nguồn thienui.
+const can = ownsRegistry ? checkCanonicals(root, registry) : { pass: true, skipped: true };
 if (!can.pass) {
   exitCode = 1;
   console.error('\n' + bar + '\n✗ CANONICAL — luật trỏ "làm đúng ở" vào chỗ không tồn tại\n' + bar);
@@ -135,7 +142,7 @@ if (has('report')) {
 if (exitCode === 0) {
   console.log(
     `✓ guards: ${c.results.length} cặp contrast (${byTier('text')} chữ · ${byTier('graphic')} đồ hoạ · ${byTier('decor')} decor) ` +
-      `· ${auto} luật máy kiểm + ${manual} luật review · gamut sạch · canonical đủ`
+      `· ${auto} luật máy kiểm + ${manual} luật review · gamut sạch · ${can.skipped ? 'canonical: kiểm ở thienui' : 'canonical đủ'}`
   );
 } else {
   console.error('');
