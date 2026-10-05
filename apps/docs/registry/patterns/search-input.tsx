@@ -70,9 +70,26 @@ export function SearchInput({
     baoRa.current = onValueChange;
   });
 
+  /*
+   * Chỉ báo ra khi chữ KHÁC giá trị đã biết. Trước đây effect debounce chạy cả lúc vừa mount và
+   * báo lại đúng giá trị ban đầu sau `debounceMs` — trang nào nối `onValueChange` vào điều hướng
+   * (bộ lọc trên URL) sẽ tự điều hướng về chính nó, đè lên cú bấm link của người dùng trong khoảng
+   * đó. Lộ ra ở capstone-hub: bấm "Tạo nhóm" ngay sau khi trang Tìm nhóm mở thì không đi đâu cả.
+   *
+   * `daBao` = giá trị bên ngoài đã biết: cập nhật khi prop `value` đổi (effect này khai TRƯỚC effect
+   * debounce nên chạy trước trong cùng lần commit) và khi chính ta báo ra.
+   */
+  const daBao = React.useRef(value ?? '');
   React.useEffect(() => {
-    if (debounceMs <= 0) return;
-    const t = setTimeout(() => baoRa.current?.(nhap), debounceMs);
+    daBao.current = value ?? '';
+  }, [value]);
+
+  React.useEffect(() => {
+    if (debounceMs <= 0 || nhap === daBao.current) return;
+    const t = setTimeout(() => {
+      daBao.current = nhap;
+      baoRa.current?.(nhap);
+    }, debounceMs);
     return () => clearTimeout(t);
   }, [nhap, debounceMs]);
 
