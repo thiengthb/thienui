@@ -478,6 +478,23 @@
         ]
       },
       "allow": {}
+    },
+    {
+      "id": "touch-target-44",
+      "rule": "`Button`, `Toggle` và `TabsTrigger` mang class `target-44`: vùng bấm 44px khi con trỏ là ngón tay, 24px khi là chuột, còn phần nhìn thấy giữ đúng cỡ của prop `size`. Muốn dễ bấm trên điện thoại thì dựa vào vùng bấm này, không phóng to nút.",
+      "why": "Bản mẫu sakubun phóng nút và icon lên cỡ điện thoại để dễ bấm, rồi cùng cỡ đó hiện trên desktop — người dùng thấy ngay 'nút quá to, icon quá to, chỉ hợp với mobile'. Phần nhìn và vùng bấm là hai việc khác nhau: Apple đòi 44pt cho vùng chạm chứ không đòi nút cao 44pt. Đặt vùng bấm trong chính component thì mọi nút trong mọi project có nó mà không ai phải nhớ. Check là `require` trên ba file vendor vì `shadcn add` GHI ĐÈ chúng: sau một lần cập nhật vendor, class này biến mất im lặng, và cổng này là thứ duy nhất kêu lên. Patch ghi trong `docs/vendor-patches.md`.",
+      "canonical": "apps/docs/registry/base/button.tsx",
+      "source": "thien · 2026-10-24",
+      "check": {
+        "kind": "require",
+        "pattern": "target-44",
+        "files": [
+          "**/registry/base/button.tsx",
+          "**/registry/base/toggle.tsx",
+          "**/registry/base/tabs.tsx"
+        ]
+      },
+      "allow": {}
     }
   ]
 }

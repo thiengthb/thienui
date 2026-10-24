@@ -1516,6 +1516,27 @@
           "--p-motion-easing-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
           "--p-motion-easing-overshoot": "cubic-bezier(0.2, 1.4, 0.4, 1)",
           "--p-motion-easing-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)"
+        },
+        "@layer base": {
+          ".target-44": {
+            "position": "relative"
+          },
+          ".target-44::before": {
+            "content": "''",
+            "position": "absolute",
+            "inset": "50% auto auto 50%",
+            "translate": "-50% -50%",
+            "min-width": "24px",
+            "min-height": "24px",
+            "width": "100%",
+            "height": "100%"
+          },
+          "@media (pointer: coarse)": {
+            ".target-44::before": {
+              "min-width": "44px",
+              "min-height": "44px"
+            }
+          }
         }
       }
     },
@@ -1679,6 +1700,27 @@
           "--p-motion-easing-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
           "--p-motion-easing-overshoot": "cubic-bezier(0.2, 1.4, 0.4, 1)",
           "--p-motion-easing-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)"
+        },
+        "@layer base": {
+          ".target-44": {
+            "position": "relative"
+          },
+          ".target-44::before": {
+            "content": "''",
+            "position": "absolute",
+            "inset": "50% auto auto 50%",
+            "translate": "-50% -50%",
+            "min-width": "24px",
+            "min-height": "24px",
+            "width": "100%",
+            "height": "100%"
+          },
+          "@media (pointer: coarse)": {
+            ".target-44::before": {
+              "min-width": "44px",
+              "min-height": "44px"
+            }
+          }
         }
       }
     }

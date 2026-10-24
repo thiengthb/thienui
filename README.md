@@ -45,7 +45,7 @@ apps/docs/                 Next 16 · trang showcase + registry host
 packages/
 ├─ tokens/                 @thienui/tokens — DTCG ba tầng -> CSS + TS + JSON
 ├─ guards/                 @thienui/guards — cổng contrast, gamut, pattern-lock
-├─ ui-patterns/            @thienui/ui-patterns — 36 luật UI đã khoá
+├─ ui-patterns/            @thienui/ui-patterns — 37 luật UI đã khoá
 └─ tsconfig/
 
 tooling/shots.mjs          chụp 4 tổ hợp theme × mode bằng Playwright
@@ -87,7 +87,7 @@ Khác hai điểm so với bản trong `sakubun`, và cả hai là sửa lỗi t
 
 **2 · Gamut** — token khai màu ngoài sRGB sẽ bị browser gamut-map, nên màu hiện ra khác màu đã khai, và tỉ số contrast đo được không phải tỉ số người dùng thấy. Mọi token đã clamp về trong gamut (lùi 2% khỏi biên).
 
-**3 · Pattern lock** — 36 luật, **18 máy kiểm** + 18 người review. Mỗi luật có `rule` · `why` · `canonical` · `check` · `allow`.
+**3 · Pattern lock** — 37 luật, **19 máy kiểm** + 18 người review. Mỗi luật có `rule` · `why` · `canonical` · `check` · `allow`.
 
 **4 · Canonical** — mỗi luật phải trỏ `canonical` vào một chỗ **có thật**. Một luật trỏ vào file không
 tồn tại thì tệ hơn một luật không có con trỏ: người đọc (hoặc agent) mở ra, không thấy gì, rồi kết
@@ -205,7 +205,7 @@ ai nhớ ra.
 
 ## Vay component từ ngoài — năm bước, không bỏ bước
 
-418 registry công khai đang tồn tại; data-table, chart, rich-text, kanban, AI chat đều có bản làm tốt rồi. Nhưng registry **chèn code vào repo và bạn sở hữu nó ngay** — gồm cả màu cứng, `<svg>` tự vẽ, `title=`, spacing tuỳ ý. Đúng những thứ 36 luật này cấm.
+418 registry công khai đang tồn tại; data-table, chart, rich-text, kanban, AI chat đều có bản làm tốt rồi. Nhưng registry **chèn code vào repo và bạn sở hữu nó ngay** — gồm cả màu cứng, `<svg>` tự vẽ, `title=`, spacing tuỳ ý. Đúng những thứ 37 luật này cấm.
 
 ```bash
 # 1 — hạ cánh vào khu cách ly, KHÔNG vào registry/base
@@ -238,7 +238,7 @@ Các namespace đã khai sẵn trong `components.json` (đã lọc sức khoẻ 
 | Patterns & shells thu hoạch từ sakubun (10 + 4) | ✅ pha 4 |
 | Tầng cảm giác vay từ `@seamui` qua khu cách ly | ✅ pha 5 |
 | `data-table` lên TanStack v9 (sửa quyết định sai ở pha 4) | ✅ pha 5 |
-| Cổng thứ tư: canonical phải có thật | ✅ 36/36 luật trỏ đúng |
+| Cổng thứ tư: canonical phải có thật | ✅ 37/37 luật trỏ đúng |
 | Demo: 18/76 item — còn component compound chưa có | ⬜ nợ đã biết |
 | Deploy registry (URL ở `registry.config.mjs`) | ⬜ chưa chọn domain |
 | Fumadocs cho docs văn xuôi | ⬜ pha 3b |
