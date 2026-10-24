@@ -162,6 +162,37 @@ for (const [path, value] of Object.entries(tokens.primitive)) {
   }
 }
 
+/**
+ * Vùng chạm `.target-44`, cùng định nghĩa với `@thienui/tokens/base.css`.
+ *
+ * Cùng lỗi pha 6 với thang phi-màu ở trên: `info-tooltip`, `bulk-action-button`, `card-deck`,
+ * `app-shell` và `Button` đều gắn class `target-44`, nhưng base.css đi đường npm nên ở project
+ * tiêu thụ class đó KHÔNG được khai — nút vẫn hiện, chỉ là vùng bấm không nở ra, và không gì báo.
+ * Giá trị literal vì consumer không có `--p-target-*`.
+ */
+const vungCham = (min) => ({
+  content: "''",
+  position: 'absolute',
+  inset: '50% auto auto 50%',
+  translate: '-50% -50%',
+  'min-width': min,
+  'min-height': min,
+  width: '100%',
+  height: '100%',
+});
+const targetCss = {
+  '@layer base': {
+    '.target-44': { position: 'relative' },
+    '.target-44::before': vungCham(giaTriCss(tokens.primitive['target.wcag'])),
+    '@media (pointer: coarse)': {
+      '.target-44::before': {
+        'min-width': giaTriCss(tokens.primitive['target.min']),
+        'min-height': giaTriCss(tokens.primitive['target.min']),
+      },
+    },
+  },
+};
+
 /*
  * CỔNG: không giá trị nào được là một DÃY SỐ TRẦN.
  *
@@ -187,7 +218,7 @@ for (const meta of tokens.meta) {
     title: meta.label,
     description: `Theme ${meta.label}${meta.default ? ' (mặc định)' : ''} — token ngữ nghĩa đã resolve, sáng + tối.`,
     cssVars: { theme: scaleTheme, light: t.light, dark: t.dark },
-    css: { ':root': motionRoot },
+    css: { ':root': motionRoot, ...targetCss },
   });
 }
 

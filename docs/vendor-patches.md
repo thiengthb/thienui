@@ -30,6 +30,7 @@ viện dẫn — ở đây là lúc thật sự mở `@niko-table` ra xem, chứ
 
 | file | chỗ | trước → sau | vì sao | ngày |
 |---|---|---|---|---|
+| `button.tsx`, `toggle.tsx`, `tabs.tsx` (`TabsTrigger`) | chuỗi class gốc | thêm `target-44` | Vùng bấm 44px trên màn cảm ứng mà không phóng to nút (luật `touch-target-44`). Không làm được từ ngoài vendor: bọc mọi nút trong một lớp nữa thì chỗ gọi phải nhớ dùng lớp bọc, và chỗ quên chính là chỗ nút bị phóng to lại. Cái giá rơi xuống người dùng điện thoại, nên đạt tiêu chuẩn patch bên dưới. Sau `shadcn add` vào ba file này, `pnpm guards` sẽ đỏ cho tới khi áp lại. | 2026-10-24 |
 | `use-mobile.ts` | cả hook | `useState` + `useEffect` → `useSyncExternalStore` | Bản upstream gọi `setState` thẳng trong thân effect, nên `react-hooks/set-state-in-effect` báo **error**. Trong repo này nó được hạ xuống `warn` cho riêng `base/**` — nhưng `eslint.config.mjs` **không đi theo registry**, nên `pnpm lint` của một project mới đỏ ngay ngày đầu, trên một file họ không viết. Cái giá không nằm ở ta; nó rơi xuống người dùng. Tiện thể bỏ luôn một nhịp render thừa: bản cũ luôn vẽ một lần với `undefined`. | 2026-10-05 |
 
 Đây là patch vendor ĐẦU TIÊN, và nó đến từ pha 6. Tiêu chuẩn mà nó đặt ra cho các patch sau: không

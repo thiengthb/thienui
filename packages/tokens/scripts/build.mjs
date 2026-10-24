@@ -255,17 +255,26 @@ writeFileSync(join(DIST, 'base.css'), `/* SINH TỰ ĐỘNG bởi @thienui/token
     outline-offset: var(--ring-offset);
   }
 
-  /* Vùng chạm 44px mà KHÔNG phóng to phần nhìn thấy — hit-area overflow. */
+  /* Vùng chạm mà KHÔNG phóng to phần nhìn thấy — hit-area overflow. 44px khi con trỏ là ngón tay,
+     24px (sàn WCAG 2.5.8) khi là chuột: hai nút 32px cách nhau 4px trên desktop mà mỗi nút phủ 44px
+     thì vùng bấm chồng lên nhau và nút sau giành mất cú bấm vào mép nút trước.
+     Dùng ::before vì ::after đã là vạch chỉ báo của TabsTrigger. */
   .target-44 { position: relative; }
-  .target-44::after {
+  .target-44::before {
     content: '';
     position: absolute;
     inset: 50% auto auto 50%;
     translate: -50% -50%;
-    min-width: var(--p-target-min);
-    min-height: var(--p-target-min);
+    min-width: var(--p-target-wcag);
+    min-height: var(--p-target-wcag);
     width: 100%;
     height: 100%;
+  }
+  @media (pointer: coarse) {
+    .target-44::before {
+      min-width: var(--p-target-min);
+      min-height: var(--p-target-min);
+    }
   }
 
   /* Số thẳng cột ở mọi nơi chữ số xếp cột. */

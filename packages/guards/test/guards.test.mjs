@@ -408,3 +408,29 @@ describe('bộ chạy jsx-class', () => {
       expect(lines(runCheck(dir, byId(id))), id).toEqual([]);
   });
 });
+
+describe('touch-target-44', () => {
+  const rule = registry.patterns.find((p) => p.id === 'touch-target-44');
+  function fixture(files) {
+    const dir = mkdtempSync(join(tmpdir(), 'thienui-target-'));
+    for (const [p, content] of Object.entries(files)) {
+      const full = join(dir, p);
+      mkdirSync(join(full, '..'), { recursive: true });
+      writeFileSync(full, content);
+    }
+    return dir;
+  }
+
+  it('đỏ khi một lần shadcn add làm mất target-44 khỏi vendor', () => {
+    const dir = fixture({
+      'apps/web/registry/base/button.tsx': 'const b = cva("target-44 inline-flex");\n',
+      'apps/web/registry/base/toggle.tsx': 'const t = cva("inline-flex");\n',
+    });
+    expect(runCheck(dir, rule).violations.map((v) => v.file)).toEqual(['apps/web/registry/base/toggle.tsx']);
+  });
+
+  it('ba file vendor thật đều đang mang target-44', () => {
+    const r = runCheck(new URL('../../../', import.meta.url).pathname, rule);
+    expect(r.violations).toEqual([]);
+  });
+});

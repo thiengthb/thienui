@@ -1252,6 +1252,26 @@
       ]
     },
     {
+      "name": "stat",
+      "type": "registry:component",
+      "title": "stat",
+      "description": "generic đã ghép · stat",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "@thienui/info-tooltip",
+        "@thienui/skeleton"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/stat.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "tab-select",
       "type": "registry:component",
       "title": "tab-select",
@@ -1303,6 +1323,24 @@
       "files": [
         {
           "path": "registry/shells/app-sidebar.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "bottom-nav",
+      "type": "registry:component",
+      "title": "bottom-nav",
+      "description": "khung app · bottom-nav",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "@thienui/app-sidebar"
+      ],
+      "files": [
+        {
+          "path": "registry/shells/bottom-nav.tsx",
           "type": "registry:component"
         }
       ]
@@ -1516,6 +1554,27 @@
           "--p-motion-easing-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
           "--p-motion-easing-overshoot": "cubic-bezier(0.2, 1.4, 0.4, 1)",
           "--p-motion-easing-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)"
+        },
+        "@layer base": {
+          ".target-44": {
+            "position": "relative"
+          },
+          ".target-44::before": {
+            "content": "''",
+            "position": "absolute",
+            "inset": "50% auto auto 50%",
+            "translate": "-50% -50%",
+            "min-width": "24px",
+            "min-height": "24px",
+            "width": "100%",
+            "height": "100%"
+          },
+          "@media (pointer: coarse)": {
+            ".target-44::before": {
+              "min-width": "44px",
+              "min-height": "44px"
+            }
+          }
         }
       }
     },
@@ -1679,6 +1738,27 @@
           "--p-motion-easing-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
           "--p-motion-easing-overshoot": "cubic-bezier(0.2, 1.4, 0.4, 1)",
           "--p-motion-easing-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)"
+        },
+        "@layer base": {
+          ".target-44": {
+            "position": "relative"
+          },
+          ".target-44::before": {
+            "content": "''",
+            "position": "absolute",
+            "inset": "50% auto auto 50%",
+            "translate": "-50% -50%",
+            "min-width": "24px",
+            "min-height": "24px",
+            "width": "100%",
+            "height": "100%"
+          },
+          "@media (pointer: coarse)": {
+            ".target-44::before": {
+              "min-width": "44px",
+              "min-height": "44px"
+            }
+          }
         }
       }
     }
