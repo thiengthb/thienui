@@ -207,6 +207,37 @@ for (const [ten, gia] of [...Object.entries(scaleTheme), ...Object.entries(motio
   }
 }
 
+/**
+ * Tầng 3 theo màn hình: cỡ nút, lề trang, viền 2px + bóng đáy. Quy chuẩn UI 2026-10-24.
+ *
+ * Cùng lý do với thang phi-màu: consumer chỉ cài theme, nên `--control-h` phải đến bằng theme, nếu
+ * không thì `h-control` sinh ra `height: var(--control-h)` trỏ vào biến không ai khai — nút cao 0
+ * và không gì báo. Giá trị literal; riêng bóng đáy trỏ `var(--border)` / `var(--press)` vì hai màu
+ * đó là token theme mà consumer có.
+ */
+const px = (k) => giaTriCss(tokens.primitive[k]);
+const coThuoc = (may) => ({
+  '--control-h': px(`control.height.${may}`),
+  '--control-px': px(`control.padding-x.${may}`),
+  '--page-gutter': px(`layout.gutter.${may}`),
+  '--page-top': px(`layout.top.${may}`),
+});
+const tang3Root = {
+  ...coThuoc('phone'),
+  '--edge': px('edge.width'),
+  '--lift': `0 ${px('edge.lift')} 0 var(--border)`,
+  '--lift-primary': `0 ${px('edge.lift')} 0 var(--press)`,
+};
+const tang3Theme = {
+  '--spacing-control': 'var(--control-h)',
+  '--spacing-control-x': 'var(--control-px)',
+  '--spacing-gutter': 'var(--page-gutter)',
+  '--spacing-page-top': 'var(--page-top)',
+  '--shadow-lift': 'var(--lift)',
+  '--shadow-lift-primary': 'var(--lift-primary)',
+  '--container-page': px('layout.content-max'),
+};
+
 for (const meta of tokens.meta) {
   const t = tokens.themes[meta.name];
   // cssVars của shadcn nhận giá trị ĐÃ RESOLVE: một project tiêu thụ chỉ cài theme, không cài cả
@@ -217,8 +248,12 @@ for (const meta of tokens.meta) {
     type: 'registry:theme',
     title: meta.label,
     description: `Theme ${meta.label}${meta.default ? ' (mặc định)' : ''} — token ngữ nghĩa đã resolve, sáng + tối.`,
-    cssVars: { theme: scaleTheme, light: t.light, dark: t.dark },
-    css: { ':root': motionRoot, ...targetCss },
+    cssVars: { theme: { ...scaleTheme, ...tang3Theme }, light: t.light, dark: t.dark },
+    css: {
+      ':root': { ...motionRoot, ...tang3Root },
+      [`@media (min-width: ${px('layout.breakpoint.desktop')})`]: { ':root': coThuoc('desktop') },
+      ...targetCss,
+    },
   });
 }
 

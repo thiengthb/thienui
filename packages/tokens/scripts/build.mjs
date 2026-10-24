@@ -163,6 +163,17 @@ for (const b of blocks) {
     out.push('  --ring-width: 2px;');
     out.push('  --ring-offset: 2px;');
     out.push('');
+    out.push(H('cỡ theo màn hình — giá trị điện thoại ở đây, laptop ghi đè ở mốc 48rem bên dưới'));
+    out.push('  --control-h: var(--p-control-height-phone);');
+    out.push('  --control-px: var(--p-control-padding-x-phone);');
+    out.push('  --page-gutter: var(--p-layout-gutter-phone);');
+    out.push('  --page-top: var(--p-layout-top-phone);');
+    out.push('');
+    out.push(H('viền 2px + bóng đáy đặc — thẻ, nút viền, nút chính'));
+    out.push('  --edge: var(--p-edge-width);');
+    out.push('  --lift: 0 var(--p-edge-lift) 0 var(--border);');
+    out.push('  --lift-primary: 0 var(--p-edge-lift) 0 var(--press);');
+    out.push('');
     out.push(H('bán kính ĐỒNG TÂM — r_trong = r_ngoài − padding'));
     out.push('  /* Chỗ dùng chỉ cần khai --pad; đừng khai lại công thức. */');
     out.push('  --radius-concentric: max(0px, calc(var(--radius-outer, var(--p-radius-lg)) - var(--pad, 0px)));');
@@ -173,6 +184,19 @@ for (const b of blocks) {
   out.push('}');
   out.push('');
 }
+
+/* Mốc 48rem = `md` của Tailwind. Media query không đọc được var(), nên mốc viết tay ở đây và
+ * ghi trong scale.json (layout.breakpoint.desktop) để người đọc thấy cùng một con số. */
+out.push('/* laptop: từ 48rem (768px) */');
+out.push('@media (min-width: 48rem) {');
+out.push('  :root {');
+out.push('    --control-h: var(--p-control-height-desktop);');
+out.push('    --control-px: var(--p-control-padding-x-desktop);');
+out.push('    --page-gutter: var(--p-layout-gutter-desktop);');
+out.push('    --page-top: var(--p-layout-top-desktop);');
+out.push('  }');
+out.push('}');
+out.push('');
 
 out.push('/* Nối tầng 2 vào Tailwind v4. Chỉ ở đây token gặp utility class. */');
 out.push('@theme inline {');
@@ -199,6 +223,15 @@ for (const [prefix, ns] of NS) {
     out.push(`  ${ns}${path.slice(prefix.length)}: var(--p-${path.replace(/\./g, '-')});`);
   }
 }
+out.push('');
+out.push('  /* tầng 3 -> utility: h-control, px-control-x, size-control, shadow-lift, max-w-page */');
+out.push('  --spacing-control: var(--control-h);');
+out.push('  --spacing-control-x: var(--control-px);');
+out.push('  --spacing-gutter: var(--page-gutter);');
+out.push('  --spacing-page-top: var(--page-top);');
+out.push('  --shadow-lift: var(--lift);');
+out.push('  --shadow-lift-primary: var(--lift-primary);');
+out.push('  --container-page: var(--p-layout-content-max);');
 for (const path of Object.keys(P)) {
   if (path.startsWith('motion.easing.')) out.push(`  --ease-${path.slice(14)}: var(--p-${path.replace(/\./g, '-')});`);
 }
