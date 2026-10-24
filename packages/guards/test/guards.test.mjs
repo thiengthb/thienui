@@ -194,6 +194,17 @@ describe('bộ chạy pattern-lock', () => {
     expect(r.violations.map((v) => `${v.file}:${v.line}`)).toEqual(['call.tsx:1', 'call.tsx:2']);
   });
 
+  it('no-raw-durations cho qua dòng khai token, vẫn bắt chỗ dùng literal', () => {
+    const rule = registry.patterns.find((p) => p.id === 'no-raw-durations');
+    const dir = fixture({
+      'app/globals.css':
+        ':root {\n  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);\n  --p-motion-easing-exit: cubic-bezier(0.3, 0, 0.8, 0.15);\n}\n' +
+        '.a { animation: x 0.7s cubic-bezier(0.2, 0.9, 0.25, 1); }\n.b { transition-timing-function: cubic-bezier(0, 0, 1, 1); }\n',
+    });
+    const r = runCheck(dir, rule);
+    expect(r.violations.map((v) => v.line)).toEqual([5, 6]);
+  });
+
   it('bỏ qua node_modules và dist', () => {
     const dir = fixture({
       'node_modules/pkg/i.tsx': 'const c = "#ff00aa";\n',
