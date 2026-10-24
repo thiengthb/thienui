@@ -83,12 +83,12 @@
     {
       "id": "no-native-dialogs",
       "rule": "Không alert() / confirm() / prompt() native. Dùng component dialog của hệ.",
-      "why": "Hai lý do, và cả hai đều cứng. (1) Agent KHÔNG NHÌN THẤY dialog native qua browser automation, nên feature dựa vào chúng hay lỗi âm thầm — và một dialog native chặn mọi event tiếp theo, làm cả phiên automation treo. (2) Chúng không nhận style, không nhận theme, không nhận token. DESIGN.md của sakubun đã CẤM điều này bằng chữ nhưng không có check nào; đây là check đó. GIỚI HẠN ĐÃ BIẾT: check là regex theo dòng nên nó không phân biệt được CODE với VĂN XUÔI — viết tên mẫu bị cấm ra nguyên văn trong comment cũng làm cổng đỏ. Kỷ luật thay thế rất rẻ: trong comment thì MÔ TẢ mẫu thay vì viết nó ra. Regex loại trừ KHAI BÁO (`function confirm(`, `const confirm =`): một hàm nội bộ trùng tên với API của browser không phải vi phạm — dù đặt tên như vậy vẫn là ý tồi vì nó che global. Bản đầu bắt nhầm đúng ca đó khi dựng demo của chính ConfirmDialog.",
+      "why": "Hai lý do, và cả hai đều cứng. (1) Agent KHÔNG NHÌN THẤY dialog native qua browser automation, nên feature dựa vào chúng hay lỗi âm thầm — và một dialog native chặn mọi event tiếp theo, làm cả phiên automation treo. (2) Chúng không nhận style, không nhận theme, không nhận token. DESIGN.md của sakubun đã CẤM điều này bằng chữ nhưng không có check nào; đây là check đó. GIỚI HẠN ĐÃ BIẾT: check là regex theo dòng nên nó không phân biệt được CODE với VĂN XUÔI — viết tên mẫu bị cấm ra nguyên văn trong comment cũng làm cổng đỏ. Kỷ luật thay thế rất rẻ: trong comment thì MÔ TẢ mẫu thay vì viết nó ra. Regex loại trừ KHAI BÁO (`function confirm(`, `const confirm =`): một hàm nội bộ trùng tên với API của browser không phải vi phạm — dù đặt tên như vậy vẫn là ý tồi vì nó che global. Bản đầu bắt nhầm đúng ca đó khi dựng demo của chính ConfirmDialog. Không cho khoảng trắng trước `(`: lệnh gọi thật không bao giờ có (Prettier xoá nó), còn văn xuôi thì có — `practice prompt (baseline)` trong comment của sakubun từng làm cổng đỏ.",
       "canonical": "registry/patterns/confirm-dialog.tsx",
       "source": "sakubun docs/DESIGN.md (mục Cấm, chưa từng có check) · thienui 2026-10-04",
       "check": {
         "kind": "forbid",
-        "pattern": "(?:^|[^.\\w])(?<!function )(?<!const )(?<!let )(?<!var )(?:window\\.)?(?:alert|confirm|prompt)\\s*\\("
+        "pattern": "(?:^|[^.\\w])(?<!function )(?<!const )(?<!let )(?<!var )(?:window\\.)?(?:alert|confirm|prompt)\\("
       },
       "allow": {}
     },

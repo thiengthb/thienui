@@ -184,6 +184,16 @@ describe('bộ chạy pattern-lock', () => {
     expect(r.violations.map((v) => v.file)).toEqual(['apps/web/registry/patterns/other.tsx']);
   });
 
+  it('no-native-dialogs bắt lệnh gọi thật, không bắt văn xuôi có ngoặc', () => {
+    const rule = registry.patterns.find((p) => p.id === 'no-native-dialogs');
+    const dir = fixture({
+      'call.tsx': "if (confirm('Xoá?')) go();\nwindow.alert('x');\n",
+      'prose.ts': '// ~7,900-token practice prompt (baseline 2026-10-23).\n// The one MCP v2 prompt (roadmap 3.1)\n',
+    });
+    const r = runCheck(dir, rule);
+    expect(r.violations.map((v) => `${v.file}:${v.line}`)).toEqual(['call.tsx:1', 'call.tsx:2']);
+  });
+
   it('bỏ qua node_modules và dist', () => {
     const dir = fixture({
       'node_modules/pkg/i.tsx': 'const c = "#ff00aa";\n',
