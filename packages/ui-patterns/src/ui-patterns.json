@@ -14,7 +14,7 @@
         "kind": "forbid",
         "pattern": "<svg[\\s>]",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {}
@@ -53,10 +53,10 @@
         "kind": "forbid-import",
         "pattern": "from\\s+['\"]@base-ui/|from\\s+['\"]@base-ui-components/|from\\s+['\"]radix-ui|from\\s+['\"]@radix-ui/|from\\s+['\"]react-aria-components",
         "from": [
-          "apps/**/registry/patterns/**/*.tsx",
-          "apps/**/registry/shells/**/*.tsx",
-          "apps/**/registry/blocks/**/*.tsx",
-          "apps/**/app/**/*.tsx"
+          "**/registry/patterns/**/*.tsx",
+          "**/registry/shells/**/*.tsx",
+          "**/registry/blocks/**/*.tsx",
+          "**/app/**/*.tsx"
         ]
       },
       "allow": {}
@@ -71,11 +71,11 @@
         "kind": "forbid-import",
         "pattern": "from\\s+['\"][^'\"]*_quarantine",
         "from": [
-          "apps/**/registry/base/**/*.tsx",
-          "apps/**/registry/patterns/**/*.tsx",
-          "apps/**/registry/shells/**/*.tsx",
-          "apps/**/registry/blocks/**/*.tsx",
-          "apps/**/app/**/*.tsx"
+          "**/registry/base/**/*.tsx",
+          "**/registry/patterns/**/*.tsx",
+          "**/registry/shells/**/*.tsx",
+          "**/registry/blocks/**/*.tsx",
+          "**/app/**/*.tsx"
         ]
       },
       "allow": {}
@@ -102,7 +102,7 @@
         "kind": "forbid",
         "pattern": "(?:duration|ease|delay)-\\[(?![^\\]]*var\\(--)|(?:transition|animation)(?:-duration|-delay|-timing-function)?\\s*:\\s*[^;]*\\b\\d+(?:\\.\\d+)?m?s\\b|cubic-bezier\\(",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {
@@ -120,7 +120,7 @@
         "kind": "forbid",
         "pattern": "\\b(?:rounded|p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|space-[xy]|text|w|h|size|leading|tracking)-\\[(?![^\\]]*var\\(--)[\\d.]",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {}
@@ -135,7 +135,7 @@
         "kind": "forbid",
         "pattern": "focus:outline-none|focus-visible:outline-none|outline:\\s*none",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {}
@@ -150,12 +150,12 @@
         "kind": "forbid",
         "pattern": "backdrop-(?:blur|filter|saturate)|backdrop-filter\\s*:",
         "files": [
-          "apps/**/registry/base/**/*.tsx",
-          "apps/**/registry/patterns/**/*.tsx",
-          "apps/**/registry/blocks/**/*.tsx"
+          "**/registry/base/**/*.tsx",
+          "**/registry/patterns/**/*.tsx",
+          "**/registry/blocks/**/*.tsx"
         ],
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {}
@@ -170,11 +170,11 @@
         "kind": "forbid",
         "pattern": "<input\\b(?![^>]*type=\"(?:file|hidden|radio|checkbox)\")",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {
-        "apps/*/registry/base/input.tsx": "chính component dùng chung — đây là chỗ <input> trần được phép tồn tại"
+        "**/registry/base/input.tsx": "chính component dùng chung — đây là chỗ <input> trần được phép tồn tại"
       }
     },
     {
@@ -187,14 +187,14 @@
         "kind": "forbid",
         "pattern": "<(?:span|div|button|a|p|li|td|th|section|header|figure|img|input|label|ul|ol|nav)\\b[^>]*\\stitle=\"|<TooltipTrigger\\b",
         "exclude": [
-          "apps/*/registry/base/**",
-          "apps/*/registry/demos/tooltip-demo.tsx"
+          "**/registry/base/**",
+          "**/registry/demos/tooltip-demo.tsx"
         ]
       },
       "allow": {
-        "apps/*/registry/base/tooltip.tsx": "Chính primitive tooltip — đây là chỗ DUY NHẤT được phép dùng TooltipTrigger trực tiếp, vì mọi chỗ khác đi qua <Explain>.",
-        "apps/*/registry/patterns/explain.tsx": "Component duy nhất được bọc primitive tooltip. Mọi lời giải thích trong app đi qua đây, nên hành vi sửa ở một chỗ.",
-        "apps/*/registry/base/sidebar.tsx": "Sidebar của shadcn dùng tooltip để hiện nhãn khi thu gọn — thuộc component gốc, không phải lời giải thích do ta thêm."
+        "**/registry/base/tooltip.tsx": "Chính primitive tooltip — đây là chỗ DUY NHẤT được phép dùng TooltipTrigger trực tiếp, vì mọi chỗ khác đi qua <Explain>.",
+        "**/registry/patterns/explain.tsx": "Component duy nhất được bọc primitive tooltip. Mọi lời giải thích trong app đi qua đây, nên hành vi sửa ở một chỗ.",
+        "**/registry/base/sidebar.tsx": "Sidebar của shadcn dùng tooltip để hiện nhãn khi thu gọn — thuộc component gốc, không phải lời giải thích do ta thêm."
       }
     },
     {
@@ -208,7 +208,7 @@
         "pattern": "<DialogFooter(?:(?!</DialogFooter>)[\\s\\S])*variant=\"destructive\""
       },
       "allow": {
-        "apps/*/registry/patterns/confirm-dialog.tsx": "chính component dùng chung"
+        "**/registry/patterns/confirm-dialog.tsx": "chính component dùng chung"
       }
     },
     {
@@ -429,11 +429,11 @@
         "forbidClass": "^(?:size|w|h|min-w|min-h|max-w|max-h)-",
         "allowClass": "^size-4$",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {
-        "apps/*/registry/shells/bottom-nav.tsx": "Thanh điều hướng dưới trên điện thoại là chỗ DUY NHẤT icon đứng một mình không có chữ đi kèm, nên nó dùng 20px để tự đọc được ở khoảng cách một sải tay. Cỡ đó nằm trong component, chỗ gọi không chọn."
+        "**/registry/shells/bottom-nav.tsx": "Thanh điều hướng dưới trên điện thoại là chỗ DUY NHẤT icon đứng một mình không có chữ đi kèm, nên nó dùng 20px để tự đọc được ở khoảng cách một sải tay. Cỡ đó nằm trong component, chỗ gọi không chọn."
       }
     },
     {
@@ -458,7 +458,7 @@
           "Item"
         ],
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {}
@@ -476,7 +476,7 @@
         ],
         "forbidClass": "^(?:h|size|min-h|max-h|p|px|py|pt|pb|pl|pr|ps|pe)-|^text-(?:xs|sm|base|lg|[2-9]?xl|caption[12]|footnote|subhead|callout|body|title[123]|large-title)$",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {}

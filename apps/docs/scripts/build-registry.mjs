@@ -222,6 +222,34 @@ for (const meta of tokens.meta) {
   });
 }
 
+/**
+ * Bộ cổng (`@thienui/guards` + 37 luật + token đã build) dưới dạng FILE chép vào project tiêu thụ.
+ *
+ * Ba package `@thienui/*` chưa lên npm, và npm không cài được một thư mục con của repo git — nên một
+ * project dùng npm (sakubun) không có đường nào chạy được cổng. Quyết định 2026-10-24 (thien): chép
+ * vào qua registry thay vì publish. Cập nhật luật = `shadcn add @thienui/guards --overwrite`, vẫn là
+ * MỘT lệnh. Khi npm mở thì project đổi sang `pnpm add -D` và xoá `tooling/thienui-guards/`.
+ *
+ * Đọc từ `node_modules/@thienui/*` (symlink workspace) để file chép đi chính là file `pnpm verify`
+ * vừa chạy, không phải một bản sao thứ hai có thể lệch.
+ */
+const GUARDS_DIR = '~/tooling/thienui-guards';
+const guardsFile = (path, target) => ({ path, type: 'registry:file', target: `${GUARDS_DIR}/${target}` });
+items.push({
+  name: 'guards',
+  type: 'registry:item',
+  title: 'guards',
+  description: 'cổng · contrast, gamut, 37 luật UI — chép vào tooling/thienui-guards/',
+  files: [
+    guardsFile('node_modules/@thienui/guards/bin/guards.mjs', 'bin/guards.mjs'),
+    ...['canonical', 'contrast', 'index', 'oklch', 'pattern-lock'].map((n) =>
+      guardsFile(`node_modules/@thienui/guards/src/${n}.mjs`, `src/${n}.mjs`)
+    ),
+    guardsFile('node_modules/@thienui/ui-patterns/src/ui-patterns.json', 'ui-patterns.json'),
+    guardsFile('node_modules/@thienui/tokens/dist/tokens.json', 'tokens.json'),
+  ],
+});
+
 const registry = {
   $schema: 'https://ui.shadcn.com/schema/registry.json',
   name: 'thienui',
@@ -243,12 +271,13 @@ mkdirSync(join(ROOT, 'public/r'), { recursive: true });
  *
  * Ba thứ KHÔNG đếm, và lý do phải là lý do thật chứ không phải "khó demo":
  *   · `theme-*` — theme không phải component; chỗ xem nó là trang /tokens.
+ *   · `guards`  — một CLI, không render gì; kết quả chạy thật của nó đã hiện ở bảng contrast /tokens.
  *
- * Danh sách này chỉ có hai dòng, và nên giữ nó như vậy. `motion-tokens` từng nằm ở đây với lý do
+ * Danh sách này chỉ có ba dòng, và nên giữ nó như vậy. `motion-tokens` từng nằm ở đây với lý do
  * "file dữ liệu sinh tự động" — nhưng nó vẫn là chỗ duy nhất đọc được giá trị thật của tầng cảm
  * giác, nên lý do đó là một cách nói "khó demo" chứ không phải "không demo được".
  */
-const KHONG_CAN_DEMO = new Set(['theme-claude', 'theme-slate']);
+const KHONG_CAN_DEMO = new Set(['theme-claude', 'theme-slate', 'guards']);
 const demoSrc = readFileSync(join(REG, 'demos/index.tsx'), 'utf8');
 const coDemo = new Set([...demoSrc.matchAll(/^\s{2}'?([\w-]+)'?:\s*\{/gm)].map((m) => m[1]));
 const canDemo = items.map((i) => i.name).filter((n) => !KHONG_CAN_DEMO.has(n));

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { readFileSync, mkdtempSync, writeFileSync, mkdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
 import { contrast, solveLightness, outOfGamut } from '../src/oklch.mjs';
 import { checkContrast, checkGamut, POLICY } from '../src/contrast.mjs';
 import { runCheck, runPatternLock } from '../src/pattern-lock.mjs';
@@ -432,5 +433,42 @@ describe('touch-target-44', () => {
   it('ba file vendor thật đều đang mang target-44', () => {
     const r = runCheck(new URL('../../../', import.meta.url).pathname, rule);
     expect(r.violations).toEqual([]);
+  });
+});
+
+describe('project tiêu thụ một-app (registry/ ở gốc repo, guards chép vào tooling/)', () => {
+  const repo = new URL('../../../', import.meta.url).pathname;
+  function consumer(files) {
+    const dir = mkdtempSync(join(tmpdir(), 'thienui-consumer-'));
+    const put = (p, content) => {
+      const full = join(dir, p);
+      mkdirSync(join(full, '..'), { recursive: true });
+      writeFileSync(full, content);
+    };
+    // Đúng bộ file mà registry item `guards` chép đi.
+    const g = 'tooling/thienui-guards';
+    put(`${g}/bin/guards.mjs`, readFileSync(join(repo, 'packages/guards/bin/guards.mjs'), 'utf8'));
+    for (const n of ['canonical', 'contrast', 'index', 'oklch', 'pattern-lock'])
+      put(`${g}/src/${n}.mjs`, readFileSync(join(repo, `packages/guards/src/${n}.mjs`), 'utf8'));
+    put(`${g}/ui-patterns.json`, readFileSync(join(repo, 'packages/ui-patterns/src/ui-patterns.json'), 'utf8'));
+    put(`${g}/tokens.json`, readFileSync(join(repo, 'packages/tokens/dist/tokens.json'), 'utf8'));
+    for (const [p, content] of Object.entries(files)) put(p, content);
+    return dir;
+  }
+  const run = (dir) =>
+    spawnSync(process.execPath, [join(dir, 'tooling/thienui-guards/bin/guards.mjs'), '--root', dir], { encoding: 'utf8' });
+
+  it('bộ guards đã chép tự tìm được token và luật, và xanh trên repo sạch', () => {
+    const r = run(consumer({ 'app/page.tsx': 'export default function P() { return <div className="bg-card" />; }\n' }));
+    expect(r.stderr).toBe('');
+    expect(r.status).toBe(0);
+  });
+
+  it('vendor ở registry/base/ gốc repo được miễn luật văn phong, code ta viết thì không', () => {
+    const bad = 'export const X = () => <div className="rounded-[7px]" />;\n';
+    const dir = consumer({ 'registry/base/x.tsx': bad, 'registry/patterns/y.tsx': bad });
+    const r = runPatternLock(dir, JSON.parse(readFileSync(join(dir, 'tooling/thienui-guards/ui-patterns.json'), 'utf8')));
+    const hit = r.byPattern.find((p) => p.id === 'no-arbitrary-scale-values');
+    expect(hit.violations.map((v) => v.file)).toEqual(['registry/patterns/y.tsx']);
   });
 });

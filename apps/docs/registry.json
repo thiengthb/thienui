@@ -1761,6 +1761,54 @@
           }
         }
       }
+    },
+    {
+      "name": "guards",
+      "type": "registry:item",
+      "title": "guards",
+      "description": "cổng · contrast, gamut, 37 luật UI — chép vào tooling/thienui-guards/",
+      "files": [
+        {
+          "path": "node_modules/@thienui/guards/bin/guards.mjs",
+          "type": "registry:file",
+          "target": "~/tooling/thienui-guards/bin/guards.mjs"
+        },
+        {
+          "path": "node_modules/@thienui/guards/src/canonical.mjs",
+          "type": "registry:file",
+          "target": "~/tooling/thienui-guards/src/canonical.mjs"
+        },
+        {
+          "path": "node_modules/@thienui/guards/src/contrast.mjs",
+          "type": "registry:file",
+          "target": "~/tooling/thienui-guards/src/contrast.mjs"
+        },
+        {
+          "path": "node_modules/@thienui/guards/src/index.mjs",
+          "type": "registry:file",
+          "target": "~/tooling/thienui-guards/src/index.mjs"
+        },
+        {
+          "path": "node_modules/@thienui/guards/src/oklch.mjs",
+          "type": "registry:file",
+          "target": "~/tooling/thienui-guards/src/oklch.mjs"
+        },
+        {
+          "path": "node_modules/@thienui/guards/src/pattern-lock.mjs",
+          "type": "registry:file",
+          "target": "~/tooling/thienui-guards/src/pattern-lock.mjs"
+        },
+        {
+          "path": "node_modules/@thienui/ui-patterns/src/ui-patterns.json",
+          "type": "registry:file",
+          "target": "~/tooling/thienui-guards/ui-patterns.json"
+        },
+        {
+          "path": "node_modules/@thienui/tokens/dist/tokens.json",
+          "type": "registry:file",
+          "target": "~/tooling/thienui-guards/tokens.json"
+        }
+      ]
     }
   ]
 }

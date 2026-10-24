@@ -105,7 +105,9 @@ Người dùng sửa một mẫu UI? Khoá nó **ngay**, đừng đợi lần th
 pnpm dlx shadcn@latest init -t next -b base -p nova
 
 # 2 — tầng quản trị: bắt buộc đồng nhất
-pnpm add -D @thienui/guards @thienui/tokens @thienui/ui-patterns
+#     Ba package @thienui/* CHƯA lên npm. Tới lúc đó, chép chúng vào repo bằng registry item `guards`
+#     (sau bước 3 khi đã khai `registries`); cập nhật luật bằng `--overwrite`:
+pnpm dlx shadcn@latest add @thienui/guards        # -> tooling/thienui-guards/
 
 # 3 — component: code được sao vào repo, bạn sở hữu và được quyền sửa
 #     components.json → "registries": {
@@ -116,7 +118,7 @@ pnpm dlx shadcn@latest add @thienui/theme-claude @thienui/sidebar
 #        vì registryDependencies được SUY từ import của chính file
 
 # 4 — nối cổng vào verify
-#     package.json → "verify": "... && thienui-guards"
+#     package.json → "verify": "... && node tooling/thienui-guards/bin/guards.mjs"
 ```
 
 ## Trang showcase
