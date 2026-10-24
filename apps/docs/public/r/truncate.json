@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "truncate",
+  "title": "truncate",
+  "description": "primitive · truncate",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@thienui/explain"
+  ],
+  "files": [
+    {
+      "path": "registry/base/truncate.tsx",
+      "content": "'use client';\n\nimport { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';\nimport { cn } from 'cn';\nimport { Explain } from '@/registry/patterns/explain';\n\n/**\n * Truncate một dòng, CÓ ĐO: chỉ hiện tooltip khi chữ thật sự tràn.\n *\n * Luật `text-must-truncate` đòi mọi chữ một dòng có thể vượt hộp phải truncate. Nhưng truncate không\n * thôi thì mất nội dung — nên nó đi kèm một lối xem đầy đủ. Và lối đó chỉ được xuất hiện khi CẦN:\n * một tooltip lặp lại đúng chữ đang hiện là nhiễu, và nó dạy người dùng rằng tooltip ở đây vô nghĩa.\n *\n * Đo bằng `scrollWidth > clientWidth` cộng `ResizeObserver`, không bằng cách đếm ký tự: số ký tự vừa\n * một hộp phụ thuộc font, cỡ chữ, và chữ nào — \"mmm\" rộng gấp ba \"iii\" ở cùng số ký tự.\n *\n * Nằm ở tầng `base` chứ không phải `patterns` vì nó là nguyên thuỷ: các pattern khác (bảng, breadcrumb,\n * menu) dựng lên trên nó.\n */\nexport function Truncate({\n  children,\n  full,\n  className,\n  side = 'bottom',\n}: {\n  children: ReactNode;\n  /** Nội dung đầy đủ hiện trong tooltip; mặc định là `children` (dùng khi children là chuỗi). */\n  full?: ReactNode;\n  className?: string;\n  side?: 'top' | 'right' | 'bottom' | 'left';\n}) {\n  const ref = useRef<HTMLSpanElement>(null);\n  const [overflow, setOverflow] = useState(false);\n\n  const check = useCallback(() => {\n    const el = ref.current;\n    if (el) setOverflow(el.scrollWidth > el.clientWidth + 1);\n  }, []);\n\n  useEffect(() => {\n    const el = ref.current;\n    if (!el) return;\n    // Đo TRONG ResizeObserver, không gọi check() thẳng trong thân effect: observer bắn một lần ngay\n    // khi observe, nên lần đo đầu vẫn có — mà không phải setState đồng bộ trong effect.\n    const ro = new ResizeObserver(check);\n    ro.observe(el);\n    return () => ro.disconnect();\n  }, [check, children]);\n\n  const span = (\n    <span ref={ref} className={cn('block min-w-0 truncate', className)}>\n      {children}\n    </span>\n  );\n\n  if (!overflow) return span;\n  return (\n    <Explain text={full ?? children} side={side}>\n      {span}\n    </Explain>\n  );\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

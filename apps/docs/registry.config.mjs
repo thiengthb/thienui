@@ -8,10 +8,14 @@
  * URL phải khớp ở ba nơi, nên nó sống ở đây chứ không rải ra: `registry.json` (homepage),
  * `components.json` (namespace `@thienui`), và README.
  *
- * CHƯA DEPLOY. Đổi `PUBLIC_URL` khi đã chọn domain, rồi `pnpm registry:build` — hoặc đặt biến
- * môi trường `THIENUI_REGISTRY_URL` để ghi đè mà không sửa file.
+ * Quyết định 2026-10-24: phát hành qua RAW GITHUB. `public/r/*.json` được commit, nên file trên `main`
+ * chính là bản phát hành và project tiêu thụ cài được ngay — không cần chọn domain, không cần tài
+ * khoản deploy hay secret. Cái giá: một thay đổi component chỉ tới tay người dùng sau khi đã
+ * `pnpm registry:build` VÀ commit `public/r/`. Khi có domain thật thì đổi `PUBLIC_URL`, hoặc đặt
+ * biến môi trường `THIENUI_REGISTRY_URL` để ghi đè mà không sửa file.
  */
-export const PUBLIC_URL = process.env.THIENUI_REGISTRY_URL ?? 'https://thienui.vercel.app';
+export const PUBLIC_URL =
+  process.env.THIENUI_REGISTRY_URL ?? 'https://raw.githubusercontent.com/thiengthb/thienui/main/apps/docs/public';
 export const DEV_URL = 'http://localhost:4321';
 
 /** Dev thì trỏ localhost để sửa component xong là `shadcn add` lấy được ngay, không cần deploy. */

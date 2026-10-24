@@ -1,7 +1,7 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
   "name": "thienui",
-  "homepage": "https://thienui.vercel.app",
+  "homepage": "https://raw.githubusercontent.com/thiengthb/thienui/main/apps/docs/public",
   "items": [
     {
       "name": "accordion",

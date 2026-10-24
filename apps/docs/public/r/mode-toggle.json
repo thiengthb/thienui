@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "mode-toggle",
+  "title": "mode-toggle",
+  "description": "generic đã ghép · mode-toggle",
+  "dependencies": [
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "@thienui/button"
+  ],
+  "files": [
+    {
+      "path": "registry/patterns/mode-toggle.tsx",
+      "content": "'use client';\n\nimport * as React from 'react';\nimport { Moon, Sun } from 'lucide-react';\nimport { Button } from '@/registry/base/button';\n\n/**\n * Công tắc SÁNG/TỐI.\n *\n * Có mặt vì pha 6 phát hiện một lỗ hổng trọn vẹn: theme sinh ra cả khối `.dark { … }` với 46 token\n * và `@custom-variant dark`, nhưng **không item nào** đặt class `dark` lên `<html>`. Nửa công sức\n * làm bảng màu tối chỉ dùng được nếu người ta tự viết phần còn lại.\n *\n * Và phần khó không phải cái nút — nó là `MODE_SCRIPT`. Nếu chế độ chỉ được áp sau khi React\n * hydrate thì lần sơn ĐẦU TIÊN luôn là theme sai, rồi nháy một nhịp. Không `useEffect` nào sửa\n * được, vì nó chạy sau khi trình duyệt đã vẽ.\n *\n * `useSyncExternalStore` chứ không `useState` + `useEffect`:\n *   · không có nhịp render thừa với giá trị sai\n *   · React 19 báo `set-state-in-effect` cho cách kia\n *   · và nó cho không một thứ: sự kiện `storage` đồng bộ hai tab đang mở\n *\n * Nguồn sự thật là DOM (`<html class=\"dark\">`), không phải một state React. DOM là thứ script\n * trong `<head>` vừa ghi, nên đọc từ đó thì không có hai nguồn để lệch nhau.\n */\nconst KEY = 'thienui-mode';\n\ntype Mode = 'light' | 'dark';\n\nconst subs = new Set<() => void>();\nconst emit = () => subs.forEach((f) => f());\n\nfunction subscribe(cb: () => void) {\n  subs.add(cb);\n  window.addEventListener('storage', emit);\n  return () => {\n    subs.delete(cb);\n    window.removeEventListener('storage', emit);\n  };\n}\n\nconst doc = (): Mode => (document.documentElement.classList.contains('dark') ? 'dark' : 'light');\n\n/** Server không có DOM. Trả `light` để HTML đầu tiên ổn định; `MODE_SCRIPT` sửa trước khi vẽ. */\nconst onServer = (): Mode => 'light';\n\nexport function useMode(): [Mode, (next: Mode) => void] {\n  const mode = React.useSyncExternalStore(subscribe, doc, onServer);\n  const set = React.useCallback((next: Mode) => {\n    document.documentElement.classList.toggle('dark', next === 'dark');\n    try {\n      localStorage.setItem(KEY, next);\n    } catch {\n      // Chế độ riêng tư chặn localStorage. Vẫn đổi được trong tab này, chỉ là không nhớ.\n    }\n    emit();\n  }, []);\n  return [mode, set];\n}\n\nexport function ModeToggle({ className }: { className?: string }) {\n  const [mode, set] = useMode();\n  return (\n    <Button\n      variant=\"ghost\"\n      size=\"icon\"\n      className={className}\n      onClick={() => set(mode === 'dark' ? 'light' : 'dark')}\n      aria-label={mode === 'dark' ? 'Chuyển sang nền sáng' : 'Chuyển sang nền tối'}\n    >\n      {mode === 'dark' ? <Sun /> : <Moon />}\n    </Button>\n  );\n}\n\n/**\n * Đặt vào `<head>` dưới dạng script INLINE, trước mọi thứ khác:\n *\n *   <script dangerouslySetInnerHTML={{ __html: MODE_SCRIPT }} />\n *\n * Và `<html suppressHydrationWarning>` — vì script này sửa class của `<html>` trước khi React so\n * sánh, nên không có nó React sẽ báo lệch hydration ở đúng chỗ ta cố ý làm lệch.\n */\nexport const MODE_SCRIPT = `(function(){try{var m=localStorage.getItem('${KEY}');var d=m?m==='dark':matchMedia('(prefers-color-scheme: dark)').matches;document.documentElement.classList.toggle('dark',d)}catch(e){}})()`;\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}

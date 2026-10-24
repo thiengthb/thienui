@@ -1,0 +1,22 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "stat",
+  "title": "stat",
+  "description": "generic đã ghép · stat",
+  "dependencies": [
+    "cn",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "@thienui/info-tooltip",
+    "@thienui/skeleton"
+  ],
+  "files": [
+    {
+      "path": "registry/patterns/stat.tsx",
+      "content": "import { type LucideIcon } from 'lucide-react';\nimport { type ReactNode } from 'react';\nimport { cn } from 'cn';\nimport { Skeleton } from '@/registry/base/skeleton';\nimport { InfoTooltip } from '@/registry/patterns/info-tooltip';\n\n/**\n * Một ô số liệu (KPI): icon + nhãn một-hai chữ ở trên, con số ở dưới, lời giải thích nằm sau nút (i).\n *\n * Nó tồn tại vì lưới số liệu là chỗ một app lệch cỡ nhanh nhất: mỗi ô do một chỗ gọi tự dựng thì mỗi\n * ô một cỡ icon, một cỡ số, và thường thêm một câu chú thích dưới con số. Ở đây cỡ icon, cỡ số và chỗ\n * đặt lời giải thích do component quyết định, chỗ gọi chỉ đưa DỮ LIỆU vào.\n *\n * Lời giải thích (con số đến từ đâu, đếm cái gì) đi qua `explain` -> `InfoTooltip`, không bao giờ là\n * một dòng chữ dưới số: luật `every-control-explains-itself` đòi nó có mặt, còn người dùng thì đòi\n * trang ít chữ. Nút (i) thoả cả hai.\n *\n * Sáu trạng thái dữ liệu: nhãn dài -> truncate; số rất lớn -> chỗ gọi rút gọn (`1,2k`) vì chỉ nó biết\n * đơn vị; số 0 -> hiện `0`, không ẩn ô; đang tải -> `StatSkeleton` giữ đúng chiều cao.\n */\nexport function Stat({\n  icon: Icon,\n  label,\n  value,\n  explain,\n  className,\n}: {\n  /** Icon từ `lucide-react`. Cỡ do component quyết định — luật `icon-size-scale`. */\n  icon?: LucideIcon;\n  /** Một-hai chữ. Câu dài hơn thì thuộc về `explain`. */\n  label: string;\n  value: ReactNode;\n  /** Con số này đếm cái gì, lấy từ đâu. */\n  explain?: ReactNode;\n  className?: string;\n}) {\n  return (\n    <div data-slot=\"stat\" className={cn('flex min-w-0 flex-col gap-1 rounded-lg border bg-card p-3', className)}>\n      <div className=\"flex min-w-0 items-center gap-1.5 text-muted-foreground\">\n        {Icon ? <Icon className=\"size-4 shrink-0\" aria-hidden /> : null}\n        <span className=\"min-w-0 truncate text-footnote\">{label}</span>\n        {explain ? <InfoTooltip text={explain} label={`Giải thích: ${label}`} className=\"ml-auto\" /> : null}\n      </div>\n      <div className=\"min-w-0 truncate text-title2 font-semibold tabular-nums\">{value}</div>\n    </div>\n  );\n}\n\n/** Khung chờ của `Stat` — cùng padding, cùng hai hàng, để lưới số liệu không nhảy khi dữ liệu về. */\nexport function StatSkeleton({ className }: { className?: string }) {\n  return (\n    <div\n      data-slot=\"stat\"\n      aria-hidden\n      className={cn('flex min-w-0 flex-col gap-1 rounded-lg border bg-card p-3', className)}\n    >\n      <Skeleton className=\"h-5 w-20\" />\n      <Skeleton className=\"h-7 w-14\" />\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}

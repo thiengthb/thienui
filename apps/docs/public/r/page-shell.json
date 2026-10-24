@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "page-shell",
+  "title": "page-shell",
+  "description": "khung app · page-shell",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@thienui/page-chrome"
+  ],
+  "files": [
+    {
+      "path": "registry/shells/page-shell.tsx",
+      "content": "import { type ReactNode } from 'react';\nimport { cn } from 'cn';\nimport {\n  PAGE_DESCRIPTION,\n  PAGE_HEADER_ASIDE,\n  PAGE_HEADER_ROW,\n  PAGE_TITLE,\n  PAGE_ROOT,\n  PAGE_WIDTH,\n  type PageWidth,\n} from '@/registry/shells/page-chrome';\n\n/**\n * Vỏ trang mà MỌI route dùng — nguồn sự thật duy nhất cho nhịp dọc của trang.\n *\n * `AppShell` chỉ sở hữu bề rộng ngang và padding hai bên. Trước khi có component này, ở sakubun mỗi\n * trang tự dựng `py-8 space-y-6` + max-width + breadcrumb của riêng nó, và chúng trôi: vài trang\n * không có breadcrumb, max-width rải từ `2xl` tới `5xl` một cách ngẫu nhiên.\n *\n * Là SERVER component (nó chỉ dựng khung), nên nó rơi thẳng vào một server page không cần `use client`.\n *\n * Trang có tab truyền `<TabsList>` qua `headerAside` — quy ước là tab nằm CẠNH breadcrumb trên một\n * hàng. Mô tả trang KHÔNG phải một đoạn văn ở đây; nó sống trong lời giải thích của chính crumb.\n *\n * `@container/page` để thân trang phản ứng theo bề rộng CỦA NÓ: cùng một trang có thể nằm cạnh một\n * sidebar mở hoặc đóng, và viewport không nói được gì về chuyện đó.\n */\nexport function PageShell({\n  children,\n  title,\n  description,\n  breadcrumb,\n  headerAside,\n  width = 'full',\n  className,\n}: {\n  children: ReactNode;\n  /**\n   * `<h1>` của trang. Thiếu prop này là lỗ hổng pha 6 bắt được: một \"page shell\" không có chỗ đặt\n   * tiêu đề thì mỗi trang tự gõ lại chuỗi class của riêng nó, và chúng lệch — kể cả trong app của\n   * chính thienui, nơi ba trang gõ `text-title1 font-semibold tracking-tight` và trang thứ tư\n   * dùng `text-large-title`.\n   */\n  title?: ReactNode;\n  /** Một dòng nói trang này LÀM GÌ. Không phải chỗ nhắc lại tiêu đề bằng từ khác. */\n  description?: ReactNode;\n  /** Vệt breadcrumb. Trang nào cũng nên có — nó là thứ nói người dùng đang ở đâu. */\n  breadcrumb?: ReactNode;\n  /** Dựng bên phải hàng breadcrumb — một `<TabsList>` và/hoặc một nút hành động của trang. */\n  headerAside?: ReactNode;\n  width?: PageWidth;\n  className?: string;\n}) {\n  return (\n    <div className={cn('@container/page', PAGE_ROOT, PAGE_WIDTH[width], className)}>\n      {breadcrumb ? <div className={PAGE_HEADER_ROW}>{breadcrumb}</div> : null}\n      {title || headerAside ? (\n        /* `items-start` đè `items-center` của hàng chung: khối tiêu đề cao hai dòng khi có mô tả,\n           nên căn giữa sẽ kéo nút hành động xuống lưng chừng. */\n        <div className={cn(PAGE_HEADER_ROW, 'items-start')}>\n          {title ? (\n            <div className=\"flex min-w-0 flex-col gap-1\">\n              <h1 className={PAGE_TITLE}>{title}</h1>\n              {description ? <p className={PAGE_DESCRIPTION}>{description}</p> : null}\n            </div>\n          ) : null}\n          {headerAside ? <div className={PAGE_HEADER_ASIDE}>{headerAside}</div> : null}\n        </div>\n      ) : null}\n      {children}\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}

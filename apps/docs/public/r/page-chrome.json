@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "page-chrome",
+  "title": "page-chrome",
+  "description": "khung app · page-chrome",
+  "files": [
+    {
+      "path": "registry/shells/page-chrome.ts",
+      "content": "/**\n * Phần khung mà `PageShell` và `PageSkeleton` DÙNG CHUNG.\n *\n * Ở sakubun hai component này là hai file độc lập chép class của nhau, cộng một bài e2e giữ chúng\n * bằng nhau. Bài e2e đó ra đời vì chúng ĐÃ lệch: placeholder của thanh trên di động bị thiếu hẳn,\n * nên dưới `md` breadcrumb bắt đầu ở mép trái rồi nhảy ~41px sang phải đúng lúc nội dung thật tới —\n * mỗi lần điều hướng, trên mọi trang.\n *\n * Ở đây phần chung được TÁCH RA thay vì được kiểm. Một bài test bắt được lệch sau khi nó xảy ra; một\n * hằng số dùng chung thì làm lệch không xảy ra được. Luật `skeleton-mirrors-its-page` vẫn còn vì nó\n * nói về cả phần THÂN trang — chỗ mỗi route tự dựng skeleton của mình.\n */\n\nexport type PageWidth = 'full' | 'wide' | 'narrow' | 'form';\n\n/** `full` thừa hưởng bề rộng của shell (trang dày dữ liệu). Các bậc hẹp hơn căn giữa nội dung đọc. */\nexport const PAGE_WIDTH: Record<PageWidth, string> = {\n  full: '',\n  wide: 'mx-auto max-w-5xl',\n  narrow: 'mx-auto max-w-3xl',\n  form: 'mx-auto max-w-2xl',\n};\n\n/** Hàng ngoài cùng của trang: padding dọc và nhịp dọc. */\nexport const PAGE_ROOT = 'flex flex-col gap-6 pt-6 pb-6';\n\n/**\n * HÀNG HEADER — hàng duy nhất tồn tại trên MỌI trang, nên mọi khác biệt ở đây hiện ra thành một cú\n * nhảy ở MỌI lần điều hướng. Đây là chuỗi class mà cả trang thật lẫn skeleton đều dùng.\n */\nexport const PAGE_HEADER_ROW = 'flex min-h-8 flex-wrap items-center gap-x-3 gap-y-2';\n\n/** Phần aside của header: ghim phải chỉ khi hẹp; từ `@md` trở lên nó nằm trong luồng. */\nexport const PAGE_HEADER_ASIDE = '@max-md/page:ml-auto';\n\n/**\n * TIÊU ĐỀ TRANG. Gom ở đây vì đây đúng là chỗ trôi dạt mạnh nhất, và pha 6 bắt được nó trôi ngay\n * trong app của chính thienui: `text-title1 font-semibold tracking-tight` được gõ lại ở ba file,\n * còn file thứ tư dùng `text-large-title` — không ai cố ý, và không ai thấy.\n */\nexport const PAGE_TITLE = 'text-title1 font-semibold tracking-tight text-balance';\n\n/** Dòng mô tả dưới tiêu đề. `max-w-prose` vì đây là chữ để ĐỌC, không phải nhãn. */\nexport const PAGE_DESCRIPTION = 'max-w-prose text-subhead text-muted-foreground';\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}

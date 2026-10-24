@@ -1,0 +1,17 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "pressable",
+  "title": "pressable",
+  "description": "generic đã ghép · pressable",
+  "registryDependencies": [
+    "@thienui/motion"
+  ],
+  "files": [
+    {
+      "path": "registry/patterns/pressable.tsx",
+      "content": "'use client';\n\nimport * as React from 'react';\nimport { usePressDepth } from '@/registry/lib/motion';\n\n/**\n * Thêm PRESS DEPTH cho một control bất kỳ, không phải sửa chính control đó.\n *\n * Đây là câu trả lời cho một căng thẳng có thật trong kiến trúc này. `@seamui` giải bài cảm giác\n * bằng cách SỞ HỮU component: mỗi nút, mỗi toggle là bản của họ, có press depth dựng sẵn bên trong.\n * Ở đây thì `registry/base/**` là RANH GIỚI VENDOR — `shadcn add` ghi đè nó, nên mọi sửa đổi trong\n * đó sẽ bị xoá ở lần cập nhật sau, âm thầm, trong khi test vẫn xanh.\n *\n * Hai lựa chọn đều có giá:\n *   · nhận bộ component của seam  -> hai bộ primitive song song, và tầng base không còn là một\n *   · thêm cảm giác từ BÊN NGOÀI  -> một lớp bọc nữa trong cây, và không phải prop nào cũng xuyên qua\n *\n * Chọn cái thứ hai, vì cái giá của nó là cục bộ và nhìn thấy được, còn cái giá của cái thứ nhất thì\n * phát tác dần: lần sau `shadcn add` một component mới, nó sẽ không có cảm giác, và không ai nhớ ra.\n *\n * `asChild` ở đây không chèn phần tử DOM nào — nó clone con và GỘP props. Nên con phải là một phần\n * tử nhận được event handler (một DOM element, hoặc component spread props xuống, như mọi component\n * của shadcn).\n *\n * KHÔNG dùng cho item trong composite của Base UI (Toolbar, ToggleGroup, Tabs, Menubar): chúng đăng\n * ký qua ref và một lớp bọc sẽ phá đăng ký. Ở đó gọi thẳng `usePressDepth` trong prop `render`.\n */\nexport function Pressable({\n  children,\n  disabled = false,\n}: {\n  /** Một phần tử duy nhất, nhận được pointer/keyboard handler. */\n  children: React.ReactElement;\n  disabled?: boolean;\n}) {\n  const withPress = usePressDepth(disabled);\n\n  // `children.props` là `unknown` với React 19 types; ép về dạng props mà merger cần.\n  const childProps = (children.props ?? {}) as Record<string, unknown>;\n  return React.cloneElement(children, withPress(childProps));\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}

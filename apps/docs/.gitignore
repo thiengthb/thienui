@@ -38,7 +38,7 @@ pnpm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Đầu ra của `shadcn build` — sinh lại bởi `pnpm registry:build` ở mỗi lần build.
-/public/r/
+# `public/r/` (đầu ra của `shadcn build`) được COMMIT: project tiêu thụ cài thẳng từ raw GitHub,
+# nên file trên `main` chính là bản phát hành. Xem registry.config.mjs.
 # Sinh tự động từ cây thư mục registry/ bởi scripts/build-registry.mjs.
 /registry.json

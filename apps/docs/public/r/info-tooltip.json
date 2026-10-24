@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "info-tooltip",
+  "title": "info-tooltip",
+  "description": "generic đã ghép · info-tooltip",
+  "dependencies": [
+    "cn",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "@thienui/explain"
+  ],
+  "files": [
+    {
+      "path": "registry/patterns/info-tooltip.tsx",
+      "content": "'use client';\n\nimport { type ReactNode } from 'react';\nimport { Info } from 'lucide-react';\nimport { cn } from 'cn';\nimport { Explain } from '@/registry/patterns/explain';\n\n/**\n * Nút (i) THÊM VÀO bên cạnh một thứ, để giải thích thứ đó.\n *\n * Anh em với `Explain`, và ranh giới giữa hai cái là: `Explain` khi CÓ phần tử để bọc,\n * `InfoTooltip` khi KHÔNG có — ví dụ lời giải thích nói về cả một mục, hoặc về một nhãn cột mà bọc\n * vào sẽ làm cả cột có gạch chân.\n *\n * Nó là một `<button>` thật chứ không phải một `<span>` có icon, và đó không phải chi tiết nhỏ: một\n * span không nhận được focus bàn phím, nên lời giải thích sẽ không tồn tại với người không dùng\n * chuột. `type=\"button\"` để nó không submit form khi nằm trong một form.\n *\n * Vùng chạm phủ 44px qua `.target-44` (trong `@thienui/tokens/base.css`) mà KHÔNG phóng to phần nhìn\n * thấy — hit-area overflow. Một nút 16px là một nút trượt tay trên điện thoại.\n */\nexport function InfoTooltip({\n  text,\n  label = 'Giải thích',\n  side = 'top',\n  className,\n}: {\n  text: ReactNode;\n  /** Tên cho trình đọc màn hình. Nút chỉ-icon BẮT BUỘC có. */\n  label?: string;\n  side?: 'top' | 'right' | 'bottom' | 'left';\n  className?: string;\n}) {\n  if (!text) return null;\n  return (\n    <Explain text={text} side={side}>\n      <button\n        type=\"button\"\n        aria-label={label}\n        className={cn(\n          'target-44 inline-grid size-4 shrink-0 place-items-center rounded-full text-muted-foreground',\n          'hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring',\n          className\n        )}\n      >\n        <Info className=\"size-4\" aria-hidden />\n      </button>\n    </Explain>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}

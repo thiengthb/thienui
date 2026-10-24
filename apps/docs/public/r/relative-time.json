@@ -1,0 +1,20 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "relative-time",
+  "title": "relative-time",
+  "description": "generic đã ghép · relative-time",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@thienui/explain"
+  ],
+  "files": [
+    {
+      "path": "registry/patterns/relative-time.tsx",
+      "content": "'use client';\n\nimport { cn } from 'cn';\nimport { Explain } from '@/registry/patterns/explain';\n\n/**\n * Mốc thời gian tương đối (\"3 giờ trước\") với thời điểm chính xác hiện khi hover/focus.\n *\n * Hai thứ ở đây đáng chú ý hơn vẻ ngoài của nó.\n *\n * MỘT — `suppressHydrationWarning`. Chữ tương đối phụ thuộc đồng hồ, nên server và client gần như\n * luôn tính ra khác nhau vài giây. Đó KHÔNG phải markup cũ, nên cảnh báo hydration ở đây là tiếng ồn.\n * Nhưng chỉ tắt ở ĐÚNG phần tử mang chữ thời gian — tắt ở cấp cao hơn sẽ giấu luôn những lệch thật.\n *\n * HAI — lời giải thích đi qua `Explain`, không qua `title=`. Thời điểm chính xác là thông tin người\n * dùng thật sự cần (một mục \"3 ngày trước\" đến hạn lúc nào?), và với `title=` thì nó không tồn tại\n * trên điện thoại.\n *\n * Hàm định dạng được TRUYỀN VÀO chứ không nhúng sẵn: ở sakubun chúng gọi `lib/format` với múi giờ\n * Việt Nam và tiếng Việt. Một hệ thiết kế dùng chung không được tự quyết ngôn ngữ và múi giờ cho\n * project tiêu thụ.\n */\nexport function RelativeTime({\n  value,\n  format,\n  exact,\n  className,\n  tabular = false,\n}: {\n  value: string | number | Date;\n  /** Chữ tương đối: \"3 giờ trước\" / \"còn 2 ngày\". */\n  format: (date: Date) => string;\n  /** Thời điểm chính xác hiện trong tooltip. */\n  exact: (date: Date) => string;\n  className?: string;\n  /** Bật khi các mốc này xếp thành CỘT — chữ số rộng bằng nhau mới thẳng hàng. */\n  tabular?: boolean;\n}) {\n  const date = new Date(value);\n  return (\n    <Explain text={exact(date)}>\n      <span className={cn('cursor-default', tabular && 'tabular-nums', className)} suppressHydrationWarning>\n        {format(date)}\n      </span>\n    </Explain>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}

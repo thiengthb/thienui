@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "motion-tokens",
+  "title": "motion-tokens",
+  "description": "thư viện dùng chung · motion-tokens",
+  "files": [
+    {
+      "path": "registry/lib/motion-tokens.ts",
+      "content": "// SINH TỰ ĐỘNG bởi scripts/build-registry.mjs từ @thienui/tokens — ĐỪNG SỬA TAY.\n// Chạy lại: pnpm registry:gen\nexport const primitive = {\n  \"motion.duration.instant\": \"0ms\",\n  \"motion.duration.fast\": \"120ms\",\n  \"motion.duration.base\": \"200ms\",\n  \"motion.duration.slow\": \"320ms\",\n  \"motion.duration.deliberate\": \"480ms\",\n  \"motion.easing.standard\": \"0.2,0.8,0.2,1\",\n  \"motion.easing.enter\": \"0.05,0.7,0.1,1\",\n  \"motion.easing.exit\": \"0.3,0,0.8,0.15\",\n  \"motion.easing.overshoot\": \"0.2,1.4,0.4,1\",\n  \"motion.easing.decelerate\": \"0.32,0.72,0,1\",\n  \"motion.spring.seam.press\": \"[object Object]\",\n  \"motion.spring.seam.snappy\": \"[object Object]\",\n  \"motion.spring.seam.surface\": \"[object Object]\",\n  \"motion.spring.seam.bouncy\": \"[object Object]\",\n  \"motion.spring.brisk.press\": \"[object Object]\",\n  \"motion.spring.brisk.snappy\": \"[object Object]\",\n  \"motion.spring.brisk.surface\": \"[object Object]\",\n  \"motion.spring.brisk.bouncy\": \"[object Object]\",\n  \"motion.spring.relaxed.press\": \"[object Object]\",\n  \"motion.spring.relaxed.snappy\": \"[object Object]\",\n  \"motion.spring.relaxed.surface\": \"[object Object]\",\n  \"motion.spring.relaxed.bouncy\": \"[object Object]\",\n  \"motion.spring.playful.press\": \"[object Object]\",\n  \"motion.spring.playful.snappy\": \"[object Object]\",\n  \"motion.spring.playful.surface\": \"[object Object]\",\n  \"motion.spring.playful.bouncy\": \"[object Object]\",\n  \"motion.stagger.tight\": \"30ms\",\n  \"motion.stagger.base\": \"50ms\",\n} as const;\n",
+      "type": "registry:lib"
+    }
+  ],
+  "type": "registry:lib"
+}

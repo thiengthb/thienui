@@ -1,0 +1,19 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "confirm-dialog",
+  "title": "confirm-dialog",
+  "description": "generic đã ghép · confirm-dialog",
+  "registryDependencies": [
+    "@thienui/button",
+    "@thienui/dialog",
+    "@thienui/spinner"
+  ],
+  "files": [
+    {
+      "path": "registry/patterns/confirm-dialog.tsx",
+      "content": "'use client';\n\nimport { type ReactNode } from 'react';\nimport { Button } from '@/registry/base/button';\nimport { Spinner } from '@/registry/base/spinner';\nimport {\n  Dialog,\n  DialogContent,\n  DialogDescription,\n  DialogFooter,\n  DialogHeader,\n  DialogTitle,\n} from '@/registry/base/dialog';\n\n/**\n * Hộp xác nhận cho hành động PHÁ HOẠI / không hoàn tác được.\n *\n * Luật `destructive-confirm-uses-dialog` bắt mọi lần xoá, ban, thu hồi đi qua đây. Lý do không phải\n * là gọn code: một dialog tự dựng sẽ thiếu một trong các thứ — focus trap, Esc để đóng, focus trả về\n * chỗ cũ, nhãn nói rõ hậu quả, trạng thái loading lúc đang xoá. Mỗi thứ thiếu là một đường để người\n * dùng xoá mất dữ liệu họ không định xoá. Ở sakubun nó được rút ra từ 3 bản dựng tay lặp lại cùng\n * một khung (bulk-delete, ban, revoke-token).\n *\n * TRIGGER và trạng thái `open` ở lại với người gọi — mỗi chỗ điều khiển `open` một kiểu (một boolean,\n * hay một memo của mục đang chọn) — nên component này chỉ sở hữu thân modal và hai cái nút.\n *\n * `pending` khoá MỌI ĐƯỜNG RA, không chỉ nút xác nhận: bấm \"Huỷ\" giữa chừng một thao tác đã gửi đi sẽ\n * đóng modal trong khi việc vẫn đang chạy, và người dùng mất chỗ duy nhất để biết kết quả.\n */\nexport function ConfirmDialog({\n  open,\n  onOpenChange,\n  title,\n  description,\n  confirmLabel,\n  onConfirm,\n  pending = false,\n  children,\n  cancelLabel = 'Huỷ',\n}: {\n  open: boolean;\n  onOpenChange: (open: boolean) => void;\n  title: ReactNode;\n  /** Nói rõ HẬU QUẢ, không chỉ hỏi \"bạn có chắc không\". */\n  description: ReactNode;\n  confirmLabel: string;\n  onConfirm: () => void;\n  pending?: boolean;\n  /** Trường nhập nằm trong hộp xác nhận (ví dụ lý do ban), đặt giữa mô tả và footer. */\n  children?: ReactNode;\n  cancelLabel?: string;\n}) {\n  return (\n    <Dialog\n      open={open}\n      /*\n       * Trong lúc `pending`, BỎ QUA mọi yêu cầu đóng. Khoá hai cái nút là chưa đủ: pha 6 đo được\n       * rằng hộp vẫn đóng được bằng **Esc**, bằng **nút ×**, và bằng **bấm ra ngoài** — ba đường,\n       * mỗi đường gây đúng cái hậu quả mà việc khoá nút dựng lên để chặn.\n       *\n       * Chặn ở đây chứ không chặn ở từng chỗ: cả ba đều đi qua `onOpenChange`, nên một cửa là đủ,\n       * và một cửa thì không quên được đường thứ tư.\n       */\n      onOpenChange={(next) => {\n        if (pending && !next) return;\n        onOpenChange(next);\n      }}\n    >\n      {/* Nút × biến mất đúng lúc hai nút kia xám đi — để cả hộp ĐỌC RA là đang bận, thay vì để lại\n          một control bấm vào không có gì xảy ra. */}\n      <DialogContent showCloseButton={!pending}>\n        <DialogHeader>\n          <DialogTitle>{title}</DialogTitle>\n          <DialogDescription>{description}</DialogDescription>\n        </DialogHeader>\n        {children}\n        <DialogFooter>\n          <Button variant=\"ghost\" onClick={() => onOpenChange(false)} disabled={pending}>\n            {cancelLabel}\n          </Button>\n          <Button variant=\"destructive\" onClick={onConfirm} disabled={pending} aria-busy={pending}>\n            {pending ? <Spinner data-icon=\"inline-start\" /> : null}\n            {confirmLabel}\n          </Button>\n        </DialogFooter>\n      </DialogContent>\n    </Dialog>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}
