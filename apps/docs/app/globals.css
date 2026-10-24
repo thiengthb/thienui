@@ -12,7 +12,12 @@
 @layer base {
   html {
     font-family: var(--font-sans);
-    /* 17pt = sàn dễ đọc của Apple. Web mặc định 16px nằm DƯỚI sàn đó. */
-    font-size: 17px;
+  }
+  /* 17pt = sàn dễ đọc của Apple, cho chữ để ĐỌC. Đặt trên body bằng token `text-body`, KHÔNG đặt
+   * `font-size: 17px` trên html: thang token tính bằng rem trên gốc 16px, nên gốc 17px phóng mọi thứ
+   * thêm 6% (nút h-8 thành 34px, text-body thành 18px). Nút, tab, nhãn tự mang text-sm nên giữ 14px. */
+  body {
+    font-size: var(--p-type-body);
+    line-height: var(--p-leading-body);
   }
 }
