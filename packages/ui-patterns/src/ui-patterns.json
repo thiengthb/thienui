@@ -415,6 +415,69 @@
         "pattern": "max-@[a-z0-9]+(/[a-z-]+)?:"
       },
       "allow": {}
+    },
+    {
+      "id": "icon-size-scale",
+      "rule": "Icon lucide trong code ta viết chỉ có MỘT cỡ: `size-4` (16px), hoặc không ghi cỡ khi nằm trong component đã tự định cỡ. Không `size-3`, `size-3.5`, `size-5`, `size-6`, `size-10`, không `h-*`/`w-*` trên icon. Cần hình lớn cho trạng thái rỗng hay trang lỗi thì đi qua `<EmptyState>`.",
+      "why": "sakubun đo được 9 cỡ icon khác nhau (12 đến 40px) trên cùng một app, và người dùng thấy ngay: 'chỗ icon to, chỗ icon nhỏ, không đồng nhất'. Không cỡ nào trong đó sai riêng lẻ — mỗi chỗ chọn một cỡ trông hợp với nó lúc viết — nên không review nào bắt được, chỉ một cổng đếm toàn repo mới bắt được. Bản mẫu desktop phóng icon lên cỡ điện thoại cũng hỏng theo đúng cách này: icon to để dễ bấm là nhầm hai việc, vì vùng bấm đã có `.target-44` lo mà không cần phóng to phần nhìn. Một cỡ duy nhất thì nhịp thị giác đều, và đổi cả hệ chỉ ở một chỗ. PHẠM VI: không áp cho `registry/base/**` — vendor tự định cỡ icon bên trong component của nó (nút `xs` 12px, `sm` 14px), và đó chính là chỗ cỡ được phép quyết định. GIỚI HẠN ĐÃ BIẾT: bộ chạy nhận diện icon qua tên import từ `lucide-react` và qua hậu tố `Icon` (`const Icon = item.icon`); một icon gán vào biến tên khác thì lọt.",
+      "canonical": "apps/docs/registry/base/button.tsx",
+      "source": "thien · 2026-10-24 (bản mẫu sakubun: icon desktop quá to, cỡ icon lẫn lộn)",
+      "check": {
+        "kind": "jsx-class",
+        "tagsFrom": "lucide-react",
+        "tagSuffix": "Icon",
+        "forbidClass": "^(?:size|w|h|min-w|min-h|max-w|max-h)-",
+        "allowClass": "^size-4$",
+        "exclude": [
+          "apps/*/registry/base/**"
+        ]
+      },
+      "allow": {}
+    },
+    {
+      "id": "no-icon-size-in-components",
+      "rule": "Icon nằm trong `Button`, `Badge`, `Toggle`, `ToggleGroupItem`, `TabsTrigger`, `DropdownMenuItem`, `SelectItem`, `Item` KHÔNG ghi cỡ. Component cha định cỡ icon theo `size` của chính nó.",
+      "why": "`Button` gán cỡ icon qua `[&_svg:not([class*='size-'])]` — 16px ở cỡ mặc định, 14px ở `sm`, 12px ở `xs`. Chỉ cần ghi `size-4` lên icon là selector đó bỏ qua nó: nút `sm` 28px mang icon 16px, to hơn chữ đi cùng, và đổi `size` của nút không còn đổi được icon. sakubun có 39 chỗ như vậy; phần lớn là `size-4` thừa, vô hại cho tới ngày nút đó đổi sang `sm`. PHẠM VI: không áp cho `registry/base/**` — vendor tự định cỡ icon bên trong component của nó (nút `xs` 12px, `sm` 14px), và đó chính là chỗ cỡ được phép quyết định.",
+      "canonical": "apps/docs/registry/base/button.tsx",
+      "source": "thien · 2026-10-24",
+      "check": {
+        "kind": "jsx-class",
+        "tagsFrom": "lucide-react",
+        "tagSuffix": "Icon",
+        "forbidClass": "^(?:size|w|h|min-w|min-h|max-w|max-h)-",
+        "inside": [
+          "Button",
+          "Badge",
+          "Toggle",
+          "ToggleGroupItem",
+          "TabsTrigger",
+          "DropdownMenuItem",
+          "SelectItem",
+          "Item"
+        ],
+        "exclude": [
+          "apps/*/registry/base/**"
+        ]
+      },
+      "allow": {}
+    },
+    {
+      "id": "button-size-by-prop",
+      "rule": "Cỡ của `Button` chỉ chọn qua prop `size` (`xs` · `sm` · `default` · `lg` · `icon-*`). Không ghi đè chiều cao, padding hay cỡ chữ qua `className` (`h-14`, `size-8`, `px-6`, `text-base`). Bề rộng (`w-full`), lề ngoài và vị trí thì được.",
+      "why": "Ghi đè cỡ qua `className` là cách một app có năm chiều cao nút (sakubun: 28, 32, 36, 40, 48px) dù thang chỉ có bốn — và là cách nút desktop to bằng nút điện thoại: chỗ gọi phóng to để dễ bấm trên máy cảm ứng, rồi cùng nút đó hiện y nguyên trên màn hình lớn. Dễ bấm là việc của `.target-44` (vùng bấm 44px, phần nhìn giữ nguyên). Khi cỡ chỉ đến từ `size`, đổi thang nút là sửa một file vendor, và mọi nút trong app đi theo. PHẠM VI: không áp cho `registry/base/**` — vendor tự định cỡ icon bên trong component của nó (nút `xs` 12px, `sm` 14px), và đó chính là chỗ cỡ được phép quyết định.",
+      "canonical": "apps/docs/registry/base/button.tsx",
+      "source": "thien · 2026-10-24",
+      "check": {
+        "kind": "jsx-class",
+        "tags": [
+          "Button"
+        ],
+        "forbidClass": "^(?:h|size|min-h|max-h|p|px|py|pt|pb|pl|pr|ps|pe)-|^text-(?:xs|sm|base|lg|[2-9]?xl|caption[12]|footnote|subhead|callout|body|title[123]|large-title)$",
+        "exclude": [
+          "apps/*/registry/base/**"
+        ]
+      },
+      "allow": {}
     }
   ]
 }

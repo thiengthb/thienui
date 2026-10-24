@@ -95,7 +95,7 @@ export function ContrastTable({
                 </td>
                 <td className="p-2.5 text-right tabular-nums">{r.ratio.toFixed(2)}</td>
                 <td className="p-2.5 text-right tabular-nums text-muted-foreground">
-                  {r.floor ? r.floor.toFixed(1) : <Minus className="ml-auto size-3" aria-label="không có sàn" />}
+                  {r.floor ? r.floor.toFixed(1) : <Minus className="ml-auto size-4" aria-label="không có sàn" />}
                 </td>
                 <td className="p-2.5">
                   <span

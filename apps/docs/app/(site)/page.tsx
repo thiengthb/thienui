@@ -85,7 +85,7 @@ pnpm add -D @thienui/guards @thienui/tokens @thienui/ui-patterns
 pnpm dlx shadcn@latest add @thienui/theme-claude @thienui/sidebar`}</code>
         </pre>
         <p className="max-w-prose text-footnote text-muted-foreground">
-          Lệnh thứ hai là chỗ 32 luật UI và cổng contrast tự gắn vào <code>pnpm test</code> của project mới.
+          Lệnh thứ hai là chỗ 36 luật UI và cổng contrast tự gắn vào <code>pnpm test</code> của project mới.
           Bạn không phải nhắc lại luật nào — và agent cũng không, vì hook hiện toàn bộ luật trước lần ghi UI
           đầu tiên của mỗi phiên.
         </p>

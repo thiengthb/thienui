@@ -53,7 +53,7 @@ pnpm dev         # trang docs, cổng 4321
 
 ## Khi viết UI
 
-1. **Hook sẽ hiện 32 luật** trước lần ghi `.tsx`/`.css` đầu tiên của phiên. Đọc nó.
+1. **Hook sẽ hiện 36 luật** trước lần ghi `.tsx`/`.css` đầu tiên của phiên. Đọc nó.
 2. **Màu, khoảng cách, bán kính, cỡ chữ, thời lượng, easing đều lấy từ token.** Giá trị tuỳ ý chỉ
    được phép khi nó *trỏ token*: `rounded-[min(var(--radius-md),12px)]` được, `text-[0.8rem]` không.
 3. **Primitive (`@base-ui/react`) chỉ được import trong `registry/base/**`.** Luật
@@ -71,7 +71,7 @@ Khoá nó **ngay lần đầu**, đừng đợi lần thứ hai: skill `/ui-patt
 `.claude/skills/ui-pattern-lock/SKILL.md`.
 
 Luôn thử biến luật thành `check` máy chạy được trước khi hạ xuống `manual`. `sakubun` có 13/21 luật
-manual và đó là chỗ các luật âm thầm bị bỏ. Ở đây tỉ lệ là 14 máy / 18 người — mỗi lần một luật manual
+manual và đó là chỗ các luật âm thầm bị bỏ. Ở đây tỉ lệ là 18 máy / 18 người — mỗi lần một luật manual
 bị phạm là một lần nên thử lại xem có cách nào cưỡng chế được.
 
 ## Khi vay component từ registry ngoài

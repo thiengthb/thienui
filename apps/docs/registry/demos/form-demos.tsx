@@ -316,7 +316,7 @@ export function CalendarDemo() {
   return (
     <div className="flex flex-col gap-3">
       <p className="text-caption1 text-muted-foreground">
-        <CalendarDays className="inline size-3.5 align-text-bottom" /> Locale quyết định thứ bắt đầu
+        <CalendarDays className="inline size-4 align-text-bottom" /> Locale quyết định thứ bắt đầu
         tuần và cách đọc ngày. Để mặc định tiếng Anh là lịch bắt đầu từ Chủ nhật — sai với phần lớn
         người dùng Việt.
       </p>

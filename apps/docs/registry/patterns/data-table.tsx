@@ -228,7 +228,7 @@ export function DataTable<T extends RowData>({
                           onClick={header.column.getToggleSortingHandler()}
                           // Trình đọc màn hình cần biết CHIỀU sắp xếp, không chỉ biết nút sắp xếp được.
                           aria-label={`Sắp xếp theo cột này${dir ? `, đang ${dir === 'asc' ? 'tăng' : 'giảm'}` : ''}`}
-                          className="-ml-2 h-7"
+                          className="-ml-2"
                         >
                           {flexRender(header.column.columnDef.header, header.getContext())}
                           {dir === 'asc' ? (

@@ -134,7 +134,7 @@ describe('registry luật UI', () => {
   });
 
   it('check.kind chỉ nằm trong tập bộ chạy hiểu được', () => {
-    const known = new Set(['forbid', 'require', 'forbid-import', 'require-with', 'manual']);
+    const known = new Set(['forbid', 'require', 'forbid-import', 'require-with', 'jsx-class', 'manual']);
     for (const p of registry.patterns) expect(known.has(p.check.kind), `${p.id}: ${p.check.kind}`).toBe(true);
   });
 });
@@ -297,5 +297,114 @@ describe('bộ chạy pattern-lock', () => {
       .map((p) => `${p.id}: ${p.violations.map((v) => v.file + ':' + v.line).join(', ')}`)
       .join('\n');
     expect(msg).toBe('');
+  });
+});
+
+describe('bộ chạy jsx-class', () => {
+  function fixture(files) {
+    const dir = mkdtempSync(join(tmpdir(), 'thienui-jsx-'));
+    for (const [p, content] of Object.entries(files)) {
+      const full = join(dir, p);
+      mkdirSync(join(full, '..'), { recursive: true });
+      writeFileSync(full, content);
+    }
+    return dir;
+  }
+  const byId = (id) => registry.patterns.find((p) => p.id === id);
+  const lines = (r) => r.violations.map((v) => `${v.file}:${v.line}`);
+
+  it('icon-size-scale bắt icon import tên trần, cả khi thẻ trải nhiều dòng', () => {
+    const dir = fixture({
+      'a.tsx': [
+        "import { Search, Image as ImageIcon } from 'lucide-react';",
+        'export const A = () => (',
+        '  <div>',
+        '    <Search className="size-4" />',
+        '    <Search',
+        '      aria-hidden',
+        '      className="size-6 text-muted-foreground"',
+        '    />',
+        '    <ImageIcon className="h-5 w-5" />',
+        '  </div>',
+        ');',
+      ].join('\n'),
+    });
+    expect(lines(runCheck(dir, byId('icon-size-scale')))).toEqual(['a.tsx:5', 'a.tsx:9']);
+  });
+
+  it('icon-size-scale bắt biến icon đặt tên *Icon và bỏ tiền tố biến thể', () => {
+    const dir = fixture({
+      'a.tsx': 'export const A = ({ item }) => { const Icon = item.icon; return <Icon className="md:size-5" />; };\n',
+      'b.tsx': 'export const B = ({ Icon }) => <Icon className={cn("size-4", "[&_path]:stroke-2")} />;\n',
+    });
+    expect(lines(runCheck(dir, byId('icon-size-scale')))).toEqual(['a.tsx:1']);
+  });
+
+  it('icon-size-scale không đụng tới thẻ không phải icon', () => {
+    const dir = fixture({
+      'a.tsx': "import { X } from 'lucide-react';\nexport const A = () => <Card className=\"size-10\"><X className=\"size-4\" /></Card>;\n",
+    });
+    expect(lines(runCheck(dir, byId('icon-size-scale')))).toEqual([]);
+  });
+
+  it('no-icon-size-in-components chỉ bắt icon NẰM TRONG component tự định cỡ', () => {
+    const dir = fixture({
+      'a.tsx': [
+        "import { Plus } from 'lucide-react';",
+        'export const A = () => (',
+        '  <div>',
+        '    <Plus className="size-4" />',
+        '    <Button size="sm" onClick={() => go(1 > 0)}>',
+        '      <Plus className="size-4" />',
+        '      Thêm',
+        '    </Button>',
+        '    <Button size="icon" aria-label="Thêm"><Plus /></Button>',
+        '    <Button asChild />',
+        '    <Plus className="size-4" />',
+        '  </div>',
+        ');',
+      ].join('\n'),
+    });
+    expect(lines(runCheck(dir, byId('no-icon-size-in-components')))).toEqual(['a.tsx:6']);
+  });
+
+  it('no-icon-size-in-components không coi generic TypeScript là thẻ mở', () => {
+    const dir = fixture({
+      'a.tsx': "import { Plus } from 'lucide-react';\nconst [x] = useState<Item>(null);\nexport const A = () => <div><Plus className=\"size-4\" /></div>;\n",
+    });
+    expect(lines(runCheck(dir, byId('no-icon-size-in-components')))).toEqual([]);
+  });
+
+  it('no-icon-size-in-components không nhầm ButtonGroup với Button', () => {
+    const dir = fixture({
+      'a.tsx': "import { Plus } from 'lucide-react';\nexport const A = () => <ButtonGroup><Plus className=\"size-4\" /></ButtonGroup>;\n",
+    });
+    expect(lines(runCheck(dir, byId('no-icon-size-in-components')))).toEqual([]);
+  });
+
+  it('button-size-by-prop cấm ghi đè cỡ nhưng cho bề rộng, lề và màu chữ', () => {
+    const dir = fixture({
+      'a.tsx': [
+        'export const A = () => (',
+        '  <>',
+        '    <Button className="h-14 text-base">To</Button>',
+        '    <Button size="icon" className="absolute right-0.5 size-8">x</Button>',
+        '    <Button size="lg" className="w-full -ml-2 text-muted-foreground">Ổn</Button>',
+        '  </>',
+        ');',
+      ].join('\n'),
+    });
+    const r = runCheck(dir, byId('button-size-by-prop'));
+    expect(lines(r)).toEqual(['a.tsx:3', 'a.tsx:4']);
+    expect(r.violations[0].excerpt).toMatch(/h-14 text-base/);
+  });
+
+  it('ba luật cỡ không áp trong registry/base/', () => {
+    const dir = fixture({
+      'apps/docs/registry/base/x.tsx':
+        "import { Plus } from 'lucide-react';\nexport const X = () => <Button className=\"h-7\"><Plus className=\"size-3\" /></Button>;\n",
+    });
+    for (const id of ['icon-size-scale', 'no-icon-size-in-components', 'button-size-by-prop'])
+      expect(lines(runCheck(dir, byId(id))), id).toEqual([]);
   });
 });

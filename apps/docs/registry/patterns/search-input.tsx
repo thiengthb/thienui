@@ -121,7 +121,7 @@ export function SearchInput({
             variant="ghost"
             size="icon"
             aria-label={clearLabel}
-            className="absolute top-1/2 right-0.5 size-8 -translate-y-1/2 text-muted-foreground"
+            className="absolute top-1/2 right-0.5 -translate-y-1/2 text-muted-foreground"
             onClick={() => doi('')}
           >
             <X />

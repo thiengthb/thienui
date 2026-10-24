@@ -1,4 +1,4 @@
-export type CheckKind = 'forbid' | 'require' | 'forbid-import' | 'require-with' | 'manual';
+export type CheckKind = 'forbid' | 'require' | 'forbid-import' | 'require-with' | 'jsx-class' | 'manual';
 
 export type Check = {
   kind: CheckKind;
@@ -11,6 +11,18 @@ export type Check = {
   exclude?: string[];
   /** Chỉ cho `forbid-import`: glob của các file ĐƯỢC quét. */
   from?: string[];
+  /** Chỉ cho `jsx-class`: tên thẻ cần kiểm. */
+  tags?: string[];
+  /** Chỉ cho `jsx-class`: mọi tên import từ module này đều là thẻ cần kiểm. */
+  tagsFrom?: string;
+  /** Chỉ cho `jsx-class`: tên thẻ kết thúc bằng hậu tố này cũng được kiểm. */
+  tagSuffix?: string;
+  /** Chỉ cho `jsx-class`: regex token class bị cấm, đã bỏ tiền tố biến thể. */
+  forbidClass?: string;
+  /** Chỉ cho `jsx-class`: regex token class được miễn dù khớp `forbidClass`. */
+  allowClass?: string;
+  /** Chỉ cho `jsx-class`: chỉ tính khi thẻ nằm trong một trong các thẻ cha này. */
+  inside?: string[];
 };
 
 export type Pattern = {
