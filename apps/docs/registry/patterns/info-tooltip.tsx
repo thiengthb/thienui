@@ -43,7 +43,7 @@ export function InfoTooltip({
           className
         )}
       >
-        <Info className="size-3.5" aria-hidden />
+        <Info className="size-4" aria-hidden />
       </button>
     </Explain>
   );
