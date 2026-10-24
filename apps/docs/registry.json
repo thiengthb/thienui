@@ -1432,18 +1432,27 @@
           "--container-prose": "68ch",
           "--container-narrow": "48ch",
           "--container-wide": "84ch",
-          "--radius-base": "0.625rem",
-          "--radius-sm": "0.375rem",
-          "--radius-md": "0.5rem",
-          "--radius-lg": "0.625rem",
-          "--radius-xl": "0.875rem",
-          "--radius-2xl": "1.125rem",
+          "--radius-base": "0.25rem",
+          "--radius-control": "0.25rem",
+          "--radius-card": "0.5rem",
+          "--radius-sm": "0.25rem",
+          "--radius-md": "0.25rem",
+          "--radius-lg": "0.25rem",
+          "--radius-xl": "0.5rem",
+          "--radius-2xl": "0.5rem",
           "--radius-full": "9999px",
           "--ease-standard": "cubic-bezier(0.2, 0.8, 0.2, 1)",
           "--ease-enter": "cubic-bezier(0.05, 0.7, 0.1, 1)",
           "--ease-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
           "--ease-overshoot": "cubic-bezier(0.2, 1.4, 0.4, 1)",
-          "--ease-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)"
+          "--ease-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)",
+          "--spacing-control": "var(--control-h)",
+          "--spacing-control-x": "var(--control-px)",
+          "--spacing-gutter": "var(--page-gutter)",
+          "--spacing-page-top": "var(--page-top)",
+          "--shadow-lift": "var(--lift)",
+          "--shadow-lift-primary": "var(--lift-primary)",
+          "--container-page": "72rem"
         },
         "light": {
           "background": "oklch(0.982 0.005 95)",
@@ -1454,6 +1463,7 @@
           "popover-foreground": "oklch(0.191 0.002 107)",
           "primary": "oklch(0.672 0.131 39)",
           "primary-foreground": "oklch(0.191 0.002 107)",
+          "press": "oklch(0.550 0.120 39)",
           "secondary": "oklch(0.9485 0.011 95)",
           "secondary-foreground": "oklch(0.191 0.002 107)",
           "muted": "oklch(0.9485 0.011 95)",
@@ -1502,6 +1512,7 @@
           "popover-foreground": "oklch(0.982 0.005 95)",
           "primary": "oklch(0.672 0.131 39)",
           "primary-foreground": "oklch(0.191 0.002 107)",
+          "press": "oklch(0.500 0.110 39)",
           "secondary": "oklch(0.325 0.004 107)",
           "secondary-foreground": "oklch(0.982 0.005 95)",
           "muted": "oklch(0.325 0.004 107)",
@@ -1553,7 +1564,22 @@
           "--p-motion-easing-enter": "cubic-bezier(0.05, 0.7, 0.1, 1)",
           "--p-motion-easing-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
           "--p-motion-easing-overshoot": "cubic-bezier(0.2, 1.4, 0.4, 1)",
-          "--p-motion-easing-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)"
+          "--p-motion-easing-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)",
+          "--control-h": "2.25rem",
+          "--control-px": "0.75rem",
+          "--page-gutter": "1rem",
+          "--page-top": "1.5rem",
+          "--edge": "2px",
+          "--lift": "0 2px 0 var(--border)",
+          "--lift-primary": "0 2px 0 var(--press)"
+        },
+        "@media (min-width: 48rem)": {
+          ":root": {
+            "--control-h": "1.75rem",
+            "--control-px": "0.625rem",
+            "--page-gutter": "2rem",
+            "--page-top": "2.5rem"
+          }
         },
         "@layer base": {
           ".target-44": {
@@ -1616,18 +1642,27 @@
           "--container-prose": "68ch",
           "--container-narrow": "48ch",
           "--container-wide": "84ch",
-          "--radius-base": "0.625rem",
-          "--radius-sm": "0.375rem",
-          "--radius-md": "0.5rem",
-          "--radius-lg": "0.625rem",
-          "--radius-xl": "0.875rem",
-          "--radius-2xl": "1.125rem",
+          "--radius-base": "0.25rem",
+          "--radius-control": "0.25rem",
+          "--radius-card": "0.5rem",
+          "--radius-sm": "0.25rem",
+          "--radius-md": "0.25rem",
+          "--radius-lg": "0.25rem",
+          "--radius-xl": "0.5rem",
+          "--radius-2xl": "0.5rem",
           "--radius-full": "9999px",
           "--ease-standard": "cubic-bezier(0.2, 0.8, 0.2, 1)",
           "--ease-enter": "cubic-bezier(0.05, 0.7, 0.1, 1)",
           "--ease-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
           "--ease-overshoot": "cubic-bezier(0.2, 1.4, 0.4, 1)",
-          "--ease-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)"
+          "--ease-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)",
+          "--spacing-control": "var(--control-h)",
+          "--spacing-control-x": "var(--control-px)",
+          "--spacing-gutter": "var(--page-gutter)",
+          "--spacing-page-top": "var(--page-top)",
+          "--shadow-lift": "var(--lift)",
+          "--shadow-lift-primary": "var(--lift-primary)",
+          "--container-page": "72rem"
         },
         "light": {
           "background": "oklch(0.988 0.003 255)",
@@ -1638,6 +1673,7 @@
           "popover-foreground": "oklch(0.196 0.008 255)",
           "primary": "oklch(0.590 0.088 185)",
           "primary-foreground": "oklch(0.196 0.008 255)",
+          "press": "oklch(0.470 0.080 185)",
           "secondary": "oklch(0.952 0.008 255)",
           "secondary-foreground": "oklch(0.196 0.008 255)",
           "muted": "oklch(0.952 0.008 255)",
@@ -1686,6 +1722,7 @@
           "popover-foreground": "oklch(0.980 0.004 255)",
           "primary": "oklch(0.650 0.085 185)",
           "primary-foreground": "oklch(0.196 0.008 255)",
+          "press": "oklch(0.480 0.075 185)",
           "secondary": "oklch(0.292 0.011 255)",
           "secondary-foreground": "oklch(0.980 0.004 255)",
           "muted": "oklch(0.292 0.011 255)",
@@ -1737,7 +1774,22 @@
           "--p-motion-easing-enter": "cubic-bezier(0.05, 0.7, 0.1, 1)",
           "--p-motion-easing-exit": "cubic-bezier(0.3, 0, 0.8, 0.15)",
           "--p-motion-easing-overshoot": "cubic-bezier(0.2, 1.4, 0.4, 1)",
-          "--p-motion-easing-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)"
+          "--p-motion-easing-decelerate": "cubic-bezier(0.32, 0.72, 0, 1)",
+          "--control-h": "2.25rem",
+          "--control-px": "0.75rem",
+          "--page-gutter": "1rem",
+          "--page-top": "1.5rem",
+          "--edge": "2px",
+          "--lift": "0 2px 0 var(--border)",
+          "--lift-primary": "0 2px 0 var(--press)"
+        },
+        "@media (min-width: 48rem)": {
+          ":root": {
+            "--control-h": "1.75rem",
+            "--control-px": "0.625rem",
+            "--page-gutter": "2rem",
+            "--page-top": "2.5rem"
+          }
         },
         "@layer base": {
           ".target-44": {

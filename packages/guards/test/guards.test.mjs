@@ -495,3 +495,41 @@ describe('project tiêu thụ một-app (registry/ ở gốc repo, guards chép 
     expect(hit.violations.map((v) => v.file)).toEqual(['registry/patterns/y.tsx']);
   });
 });
+
+describe('quy chuẩn UI 2026-10-24 (thien duyệt bằng trang mẫu)', () => {
+  const P = tokens.primitive;
+  const theme = JSON.parse(
+    readFileSync(new URL('../../../apps/docs/public/r/theme-claude.json', import.meta.url), 'utf8'),
+  );
+
+  it('độ bo chỉ có hai mức, 4px và 8px, cộng tròn hẳn', () => {
+    const levels = new Set(
+      Object.entries(P)
+        .filter(([k]) => k.startsWith('radius.') && k !== 'radius.full')
+        .map(([, v]) => v),
+    );
+    expect([...levels].sort()).toEqual(['0.25rem', '0.5rem']);
+    expect(P['radius.control']).toBe('0.25rem');
+    expect(P['radius.card']).toBe('0.5rem');
+  });
+
+  it('nút 36px trên điện thoại, 28px trên laptop', () => {
+    expect(P['control.height.phone']).toBe('2.25rem');
+    expect(P['control.height.desktop']).toBe('1.75rem');
+  });
+
+  it('mọi theme × mode có màu press cho bóng đáy nút chính', () => {
+    for (const t of Object.values(tokens.themes))
+      for (const mode of ['light', 'dark']) expect(t[mode].press).toMatch(/^oklch\(/);
+  });
+
+  it('theme registry mang cỡ nút theo màn hình tới project tiêu thụ', () => {
+    const css = theme.css;
+    expect(css[':root']['--control-h']).toBe(P['control.height.phone']);
+    expect(css[`@media (min-width: ${P['layout.breakpoint.desktop']})`][':root']['--control-h']).toBe(
+      P['control.height.desktop'],
+    );
+    expect(theme.cssVars.theme['--spacing-control']).toBe('var(--control-h)');
+    expect(css[':root']['--lift-primary']).toContain('var(--press)');
+  });
+});
