@@ -432,7 +432,9 @@
           "apps/*/registry/base/**"
         ]
       },
-      "allow": {}
+      "allow": {
+        "apps/*/registry/shells/bottom-nav.tsx": "Thanh điều hướng dưới trên điện thoại là chỗ DUY NHẤT icon đứng một mình không có chữ đi kèm, nên nó dùng 20px để tự đọc được ở khoảng cách một sải tay. Cỡ đó nằm trong component, chỗ gọi không chọn."
+      }
     },
     {
       "id": "no-icon-size-in-components",

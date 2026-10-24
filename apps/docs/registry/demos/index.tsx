@@ -67,6 +67,7 @@ import {
   AppShellDemo, AppSidebarDemo, BulkActionDemo, ExplainDemo, PageChromeDemo, PageSkeletonDemo,
   PressableDemo,
 } from '@/registry/demos/shell-extra-demos';
+import { BottomNavDemo, StatDemo } from '@/registry/demos/stat-nav-demos';
 
 export type StateName = 'default' | 'hover' | 'focus-visible' | 'active' | 'disabled' | 'loading';
 
@@ -281,6 +282,8 @@ export const DEMOS: Record<string, DemoSpec> = {
   'app-sidebar': { custom: AppSidebarDemo, note: 'Badge nằm cạnh nhãn chứ không chồng lên icon: chồng lên icon thì khi sidebar thu còn icon, con số che mất chính thứ nó đang đếm.' },
   'page-skeleton': { custom: PageSkeletonDemo, note: 'Skeleton tồn tại để GIỮ layout, không phải để báo đang tải. Các cờ hasAside / hasBreadcrumb / hasDescription không phải tuỳ chọn thẩm mỹ — chúng phải khớp với trang thật.' },
   'motion-tokens': { custom: MotionTokensDemo, note: 'File DỮ LIỆU sinh tự động, không phải component — nhưng vẫn là chỗ duy nhất đọc được giá trị THẬT của tầng cảm giác dưới dạng số. Nó tồn tại vì spring là SỐ, thứ CSS không mang được, và vì khai một dependency npm chưa publish làm `shadcn add` chết cả lô ở project ngoài.' },
+  stat: { custom: StatDemo, note: 'Cỡ icon, cỡ số và chỗ đặt lời giải thích do component quyết định. Một lưới số liệu dựng tay là nơi app lệch cỡ nhanh nhất.' },
+  'bottom-nav': { custom: BottomNavDemo, note: 'Cùng kiểu `NavItem` với AppSidebar, để hai thanh điều hướng đọc chung một danh sách mục. Ẩn từ `md`, nơi sidebar thay chỗ.' },
   'page-chrome': { custom: PageChromeDemo, note: 'Không có component nào ở đây, chỉ là chuỗi class — và đó là cả ý nghĩa của nó. PageShell và PageSkeleton IMPORT chung chúng thay vì chép nhau; ở sakubun chép nhau rồi lệch 41px.' },
 };
 

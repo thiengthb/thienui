@@ -1252,6 +1252,26 @@
       ]
     },
     {
+      "name": "stat",
+      "type": "registry:component",
+      "title": "stat",
+      "description": "generic đã ghép · stat",
+      "dependencies": [
+        "cn",
+        "lucide-react"
+      ],
+      "registryDependencies": [
+        "@thienui/info-tooltip",
+        "@thienui/skeleton"
+      ],
+      "files": [
+        {
+          "path": "registry/patterns/stat.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
       "name": "tab-select",
       "type": "registry:component",
       "title": "tab-select",
@@ -1303,6 +1323,24 @@
       "files": [
         {
           "path": "registry/shells/app-sidebar.tsx",
+          "type": "registry:component"
+        }
+      ]
+    },
+    {
+      "name": "bottom-nav",
+      "type": "registry:component",
+      "title": "bottom-nav",
+      "description": "khung app · bottom-nav",
+      "dependencies": [
+        "cn"
+      ],
+      "registryDependencies": [
+        "@thienui/app-sidebar"
+      ],
+      "files": [
+        {
+          "path": "registry/shells/bottom-nav.tsx",
           "type": "registry:component"
         }
       ]
