@@ -105,15 +105,20 @@ Người dùng sửa một mẫu UI? Khoá nó **ngay**, đừng đợi lần th
 pnpm dlx shadcn@latest init -t next -b base -p nova
 
 # 2 — tầng quản trị: bắt buộc đồng nhất
-pnpm add -D @thienui/guards @thienui/tokens @thienui/ui-patterns
+#     Ba package @thienui/* CHƯA lên npm. Tới lúc đó, chép chúng vào repo bằng registry item `guards`
+#     (sau bước 3 khi đã khai `registries`); cập nhật luật bằng `--overwrite`:
+pnpm dlx shadcn@latest add @thienui/guards        # -> tooling/thienui-guards/
 
 # 3 — component: code được sao vào repo, bạn sở hữu và được quyền sửa
+#     components.json → "registries": {
+#       "@thienui": "https://raw.githubusercontent.com/thiengthb/thienui/main/apps/docs/public/r/{name}.json"
+#     }
 pnpm dlx shadcn@latest add @thienui/theme-claude @thienui/sidebar
 #     -> kéo theo button · input · separator · sheet · skeleton · tooltip + hook,
 #        vì registryDependencies được SUY từ import của chính file
 
 # 4 — nối cổng vào verify
-#     package.json → "verify": "... && thienui-guards"
+#     package.json → "verify": "... && node tooling/thienui-guards/bin/guards.mjs"
 ```
 
 ## Trang showcase
@@ -240,7 +245,7 @@ Các namespace đã khai sẵn trong `components.json` (đã lọc sức khoẻ 
 | `data-table` lên TanStack v9 (sửa quyết định sai ở pha 4) | ✅ pha 5 |
 | Cổng thứ tư: canonical phải có thật | ✅ 37/37 luật trỏ đúng |
 | Demo: 18/76 item — còn component compound chưa có | ⬜ nợ đã biết |
-| Deploy registry (URL ở `registry.config.mjs`) | ⬜ chưa chọn domain |
+| Phát hành registry (URL ở `registry.config.mjs`) | ✅ raw GitHub, `public/r/` được commit |
 | Fumadocs cho docs văn xuôi | ⬜ pha 3b |
 | Registry **công khai**, cài được từ project ngoài | ✅ đã kiểm end-to-end |
 | Thu hoạch `patterns/` + `shells/` từ sakubun | ⬜ pha 4 |
@@ -271,8 +276,8 @@ tự ngồi lên thienui:
 
 **Chưa sửa, cố ý:**
 
-- **MS-01 — registry chưa deploy.** Cần chọn domain. Đây là việc *chặn*: không có nó thì hệ này chưa
-  tồn tại với ai ngoài máy này.
+- **MS-01 — registry chưa deploy.** Đã gỡ chặn 2026-10-24 bằng raw GitHub: `public/r/` được commit và
+  `@thienui` trỏ vào `raw.githubusercontent.com`. Ba package `@thienui/*` thì vẫn chưa lên npm.
 - **MS-12 — chưa có pattern bảng-thành-thẻ khi hẹp.** `DataTable` ở 390px chỉ còn cách cuộn ngang,
   nên màn hình đếm của kiemke phải tự viết danh sách và mất theo cả sáu trạng thái dữ liệu đã làm
   sẵn. Đây là một component mới, không phải một bản vá.

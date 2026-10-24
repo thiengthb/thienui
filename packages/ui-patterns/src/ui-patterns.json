@@ -14,7 +14,7 @@
         "kind": "forbid",
         "pattern": "<svg[\\s>]",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {}
@@ -53,10 +53,10 @@
         "kind": "forbid-import",
         "pattern": "from\\s+['\"]@base-ui/|from\\s+['\"]@base-ui-components/|from\\s+['\"]radix-ui|from\\s+['\"]@radix-ui/|from\\s+['\"]react-aria-components",
         "from": [
-          "apps/**/registry/patterns/**/*.tsx",
-          "apps/**/registry/shells/**/*.tsx",
-          "apps/**/registry/blocks/**/*.tsx",
-          "apps/**/app/**/*.tsx"
+          "**/registry/patterns/**/*.tsx",
+          "**/registry/shells/**/*.tsx",
+          "**/registry/blocks/**/*.tsx",
+          "**/app/**/*.tsx"
         ]
       },
       "allow": {}
@@ -71,11 +71,11 @@
         "kind": "forbid-import",
         "pattern": "from\\s+['\"][^'\"]*_quarantine",
         "from": [
-          "apps/**/registry/base/**/*.tsx",
-          "apps/**/registry/patterns/**/*.tsx",
-          "apps/**/registry/shells/**/*.tsx",
-          "apps/**/registry/blocks/**/*.tsx",
-          "apps/**/app/**/*.tsx"
+          "**/registry/base/**/*.tsx",
+          "**/registry/patterns/**/*.tsx",
+          "**/registry/shells/**/*.tsx",
+          "**/registry/blocks/**/*.tsx",
+          "**/app/**/*.tsx"
         ]
       },
       "allow": {}
@@ -83,26 +83,26 @@
     {
       "id": "no-native-dialogs",
       "rule": "Không alert() / confirm() / prompt() native. Dùng component dialog của hệ.",
-      "why": "Hai lý do, và cả hai đều cứng. (1) Agent KHÔNG NHÌN THẤY dialog native qua browser automation, nên feature dựa vào chúng hay lỗi âm thầm — và một dialog native chặn mọi event tiếp theo, làm cả phiên automation treo. (2) Chúng không nhận style, không nhận theme, không nhận token. DESIGN.md của sakubun đã CẤM điều này bằng chữ nhưng không có check nào; đây là check đó. GIỚI HẠN ĐÃ BIẾT: check là regex theo dòng nên nó không phân biệt được CODE với VĂN XUÔI — viết tên mẫu bị cấm ra nguyên văn trong comment cũng làm cổng đỏ. Kỷ luật thay thế rất rẻ: trong comment thì MÔ TẢ mẫu thay vì viết nó ra. Regex loại trừ KHAI BÁO (`function confirm(`, `const confirm =`): một hàm nội bộ trùng tên với API của browser không phải vi phạm — dù đặt tên như vậy vẫn là ý tồi vì nó che global. Bản đầu bắt nhầm đúng ca đó khi dựng demo của chính ConfirmDialog.",
+      "why": "Hai lý do, và cả hai đều cứng. (1) Agent KHÔNG NHÌN THẤY dialog native qua browser automation, nên feature dựa vào chúng hay lỗi âm thầm — và một dialog native chặn mọi event tiếp theo, làm cả phiên automation treo. (2) Chúng không nhận style, không nhận theme, không nhận token. DESIGN.md của sakubun đã CẤM điều này bằng chữ nhưng không có check nào; đây là check đó. GIỚI HẠN ĐÃ BIẾT: check là regex theo dòng nên nó không phân biệt được CODE với VĂN XUÔI — viết tên mẫu bị cấm ra nguyên văn trong comment cũng làm cổng đỏ. Kỷ luật thay thế rất rẻ: trong comment thì MÔ TẢ mẫu thay vì viết nó ra. Regex loại trừ KHAI BÁO (`function confirm(`, `const confirm =`): một hàm nội bộ trùng tên với API của browser không phải vi phạm — dù đặt tên như vậy vẫn là ý tồi vì nó che global. Bản đầu bắt nhầm đúng ca đó khi dựng demo của chính ConfirmDialog. Không cho khoảng trắng trước `(`: lệnh gọi thật không bao giờ có (Prettier xoá nó), còn văn xuôi thì có — `practice prompt (baseline)` trong comment của sakubun từng làm cổng đỏ.",
       "canonical": "registry/patterns/confirm-dialog.tsx",
       "source": "sakubun docs/DESIGN.md (mục Cấm, chưa từng có check) · thienui 2026-10-04",
       "check": {
         "kind": "forbid",
-        "pattern": "(?:^|[^.\\w])(?<!function )(?<!const )(?<!let )(?<!var )(?:window\\.)?(?:alert|confirm|prompt)\\s*\\("
+        "pattern": "(?:^|[^.\\w])(?<!function )(?<!const )(?<!let )(?<!var )(?:window\\.)?(?:alert|confirm|prompt)\\("
       },
       "allow": {}
     },
     {
       "id": "no-raw-durations",
       "rule": "Thời lượng và easing lấy từ token motion. Không literal trần: duration-[0.35s], transition: 180ms, cubic-bezier(...) viết tay. Giá trị tuỳ ý CÓ trỏ token thì được — duration-[calc(var(--drawer-swipe-strength)*400ms)].",
-      "why": "DESIGN.md của sakubun KHAI duration_fast:120 / base:200 / easing cubic-bezier(.2,.8,.2,1), rồi globals.css rải 180ms, 0.7s, 1.4s, cubic-bezier(.2,.9,.25,1) tại chỗ — bản khai và thực tế lệch nhau mà không gì phát hiện. Regex phải phân biệt BA thứ: literal trần (`duration-[0.35s]` — chặn), giá trị tuỳ ý trỏ token (`duration-[calc(var(--x)*400ms)]` — cho qua), và class thang của Tailwind (`duration-300` — tạm cho qua, xem luật `tailwind-motion-scale-is-not-ours`). Hệ quả không phải thẩm mỹ: chuyển động không cùng nhịp đọc ra là giao diện rời rạc, và không thể điều chỉnh toàn hệ bằng một chỗ. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không.",
+      "why": "DESIGN.md của sakubun KHAI duration_fast:120 / base:200 / easing cubic-bezier(.2,.8,.2,1), rồi globals.css rải 180ms, 0.7s, 1.4s, cubic-bezier(.2,.9,.25,1) tại chỗ — bản khai và thực tế lệch nhau mà không gì phát hiện. Regex phải phân biệt BA thứ: literal trần (`duration-[0.35s]` — chặn), giá trị tuỳ ý trỏ token (`duration-[calc(var(--x)*400ms)]` — cho qua), và class thang của Tailwind (`duration-300` — tạm cho qua, xem luật `tailwind-motion-scale-is-not-ours`). Dòng KHAI một custom property (`--ease-standard: cubic-bezier(...)`) là nơi token được định nghĩa, không phải nơi dùng, nên không bị bắt: item theme của registry chép đúng những dòng đó vào globals.css của project tiêu thụ. Hệ quả không phải thẩm mỹ: chuyển động không cùng nhịp đọc ra là giao diện rời rạc, và không thể điều chỉnh toàn hệ bằng một chỗ. PHẠM VI: luật này KHÔNG áp cho `registry/base/**`. Lý do không phải là nhân nhượng: `base/` là code vendor được `shadcn add` kéo lại từ upstream, và lệnh đó GHI ĐÈ file — bản `text-[0.8rem]`→`text-footnote` tôi sửa trong button.tsx đã bị chính nó xoá ở lô thêm component tiếp theo. Một cổng mà fix của nó bị một lệnh thường ngày hoàn tác là một cổng sẽ bị bỏ qua. Luật MÀU thì vẫn áp khắp nơi kể cả base/, và 55 file vendor qua hết — vì màu là thứ quyết định theme có chạy không, còn văn phong thì không.",
       "canonical": "packages/tokens/src/scale.json",
       "source": "thienui · 2026-10-04",
       "check": {
         "kind": "forbid",
-        "pattern": "(?:duration|ease|delay)-\\[(?![^\\]]*var\\(--)|(?:transition|animation)(?:-duration|-delay|-timing-function)?\\s*:\\s*[^;]*\\b\\d+(?:\\.\\d+)?m?s\\b|cubic-bezier\\(",
+        "pattern": "(?:duration|ease|delay)-\\[(?![^\\]]*var\\(--)|(?:transition|animation)(?:-duration|-delay|-timing-function)?\\s*:\\s*[^;]*\\b\\d+(?:\\.\\d+)?m?s\\b|(?<!^\\s*--[\\w-]+\\s*:\\s*)cubic-bezier\\(",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {
@@ -120,7 +120,7 @@
         "kind": "forbid",
         "pattern": "\\b(?:rounded|p|px|py|pt|pb|pl|pr|m|mx|my|mt|mb|ml|mr|gap|space-[xy]|text|w|h|size|leading|tracking)-\\[(?![^\\]]*var\\(--)[\\d.]",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {}
@@ -135,7 +135,7 @@
         "kind": "forbid",
         "pattern": "focus:outline-none|focus-visible:outline-none|outline:\\s*none",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {}
@@ -150,12 +150,12 @@
         "kind": "forbid",
         "pattern": "backdrop-(?:blur|filter|saturate)|backdrop-filter\\s*:",
         "files": [
-          "apps/**/registry/base/**/*.tsx",
-          "apps/**/registry/patterns/**/*.tsx",
-          "apps/**/registry/blocks/**/*.tsx"
+          "**/registry/base/**/*.tsx",
+          "**/registry/patterns/**/*.tsx",
+          "**/registry/blocks/**/*.tsx"
         ],
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {}
@@ -170,11 +170,11 @@
         "kind": "forbid",
         "pattern": "<input\\b(?![^>]*type=\"(?:file|hidden|radio|checkbox)\")",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {
-        "apps/*/registry/base/input.tsx": "chính component dùng chung — đây là chỗ <input> trần được phép tồn tại"
+        "**/registry/base/input.tsx": "chính component dùng chung — đây là chỗ <input> trần được phép tồn tại"
       }
     },
     {
@@ -187,14 +187,14 @@
         "kind": "forbid",
         "pattern": "<(?:span|div|button|a|p|li|td|th|section|header|figure|img|input|label|ul|ol|nav)\\b[^>]*\\stitle=\"|<TooltipTrigger\\b",
         "exclude": [
-          "apps/*/registry/base/**",
-          "apps/*/registry/demos/tooltip-demo.tsx"
+          "**/registry/base/**",
+          "**/registry/demos/tooltip-demo.tsx"
         ]
       },
       "allow": {
-        "apps/*/registry/base/tooltip.tsx": "Chính primitive tooltip — đây là chỗ DUY NHẤT được phép dùng TooltipTrigger trực tiếp, vì mọi chỗ khác đi qua <Explain>.",
-        "apps/*/registry/patterns/explain.tsx": "Component duy nhất được bọc primitive tooltip. Mọi lời giải thích trong app đi qua đây, nên hành vi sửa ở một chỗ.",
-        "apps/*/registry/base/sidebar.tsx": "Sidebar của shadcn dùng tooltip để hiện nhãn khi thu gọn — thuộc component gốc, không phải lời giải thích do ta thêm."
+        "**/registry/base/tooltip.tsx": "Chính primitive tooltip — đây là chỗ DUY NHẤT được phép dùng TooltipTrigger trực tiếp, vì mọi chỗ khác đi qua <Explain>.",
+        "**/registry/patterns/explain.tsx": "Component duy nhất được bọc primitive tooltip. Mọi lời giải thích trong app đi qua đây, nên hành vi sửa ở một chỗ.",
+        "**/registry/base/sidebar.tsx": "Sidebar của shadcn dùng tooltip để hiện nhãn khi thu gọn — thuộc component gốc, không phải lời giải thích do ta thêm."
       }
     },
     {
@@ -208,7 +208,7 @@
         "pattern": "<DialogFooter(?:(?!</DialogFooter>)[\\s\\S])*variant=\"destructive\""
       },
       "allow": {
-        "apps/*/registry/patterns/confirm-dialog.tsx": "chính component dùng chung"
+        "**/registry/patterns/confirm-dialog.tsx": "chính component dùng chung"
       }
     },
     {
@@ -429,11 +429,11 @@
         "forbidClass": "^(?:size|w|h|min-w|min-h|max-w|max-h)-",
         "allowClass": "^size-4$",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {
-        "apps/*/registry/shells/bottom-nav.tsx": "Thanh điều hướng dưới trên điện thoại là chỗ DUY NHẤT icon đứng một mình không có chữ đi kèm, nên nó dùng 20px để tự đọc được ở khoảng cách một sải tay. Cỡ đó nằm trong component, chỗ gọi không chọn."
+        "**/registry/shells/bottom-nav.tsx": "Thanh điều hướng dưới trên điện thoại là chỗ DUY NHẤT icon đứng một mình không có chữ đi kèm, nên nó dùng 20px để tự đọc được ở khoảng cách một sải tay. Cỡ đó nằm trong component, chỗ gọi không chọn."
       }
     },
     {
@@ -458,7 +458,7 @@
           "Item"
         ],
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {}
@@ -476,7 +476,7 @@
         ],
         "forbidClass": "^(?:h|size|min-h|max-h|p|px|py|pt|pb|pl|pr|ps|pe)-|^text-(?:xs|sm|base|lg|[2-9]?xl|caption[12]|footnote|subhead|callout|body|title[123]|large-title)$",
         "exclude": [
-          "apps/*/registry/base/**"
+          "**/registry/base/**"
         ]
       },
       "allow": {}

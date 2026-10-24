@@ -47,19 +47,25 @@ function fail(msg) {
 
 const tokensPath = locate(flag('tokens'), [
   'node_modules/@thienui/tokens/dist/tokens.json',
+  'tooling/thienui-guards/tokens.json',
   'packages/tokens/dist/tokens.json',
   '../tokens/dist/tokens.json',
 ], 'tokens.json');
 
 const patternsPath = locate(flag('patterns'), [
   'node_modules/@thienui/ui-patterns/src/ui-patterns.json',
+  'tooling/thienui-guards/ui-patterns.json',
   'packages/ui-patterns/src/ui-patterns.json',
   '../ui-patterns/src/ui-patterns.json',
   'docs/ui-patterns.json',
 ], 'ui-patterns.json');
 
-/** Luật là của chính repo này (thienui), hay đến từ node_modules (project tiêu thụ)? */
-const ownsRegistry = !patternsPath.split(/[\\/]/).includes('node_modules');
+/**
+ * Luật là của chính repo này (thienui), hay ĐƯỢC PHÁT tới project tiêu thụ — qua node_modules (npm)
+ * hoặc qua `tooling/thienui-guards/` (registry item `guards` chép vào)?
+ */
+const parts = patternsPath.split(/[\\/]/);
+const ownsRegistry = !parts.includes('node_modules') && !parts.includes('thienui-guards');
 
 const tokens = JSON.parse(readFileSync(tokensPath, 'utf8'));
 const registry = JSON.parse(readFileSync(patternsPath, 'utf8'));
@@ -112,7 +118,7 @@ for (const p of pl.byPattern) {
 
 /* ───────── cổng 4: canonical phải có thật ───────── */
 // Cổng này kiểm REGISTRY LUẬT, không kiểm repo đang quét: `canonical` là đường dẫn bên trong thienui.
-// Ở project tiêu thụ (luật đến từ node_modules) mọi con trỏ đều "không tồn tại" theo định nghĩa, và
+// Ở project tiêu thụ (luật đến từ node_modules hoặc tooling/thienui-guards/) mọi con trỏ đều "không tồn tại" theo định nghĩa, và
 // một cổng đỏ vì lý do người tiêu thụ không sửa được sẽ dạy họ tắt cổng. Registry được kiểm ở CI
 // của chính thienui; ở đây `canonical` chỉ in ra như con trỏ vào mã nguồn thienui.
 const can = ownsRegistry ? checkCanonicals(root, registry) : { pass: true, skipped: true };

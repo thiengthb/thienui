@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "fit-rows",
+  "title": "fit-rows",
+  "description": "primitive · fit-rows",
+  "files": [
+    {
+      "path": "registry/base/fit-rows.ts",
+      "content": "/**\n * Toán thuần cho phân trang VỪA MÀN HÌNH — bao nhiêu mục nằm được dưới một mép trên cho trước mà\n * không đẩy trang vượt quá viewport (thứ sinh ra thanh cuộn và đẩy thanh phân trang xuống dưới màn).\n *\n * Giữ KHÔNG DOM và tách riêng để test được. Phần đo DOM thật nằm ở `use-fit-rows.ts`.\n */\nexport interface FitInput {\n  /** Chiều cao viewport dùng được (window.innerHeight). */\n  viewportHeight: number;\n  /** Khoảng cách từ đỉnh viewport tới chỗ hàng đầu tiên bắt đầu. */\n  rowsTop: number;\n  /** Phần chrome phải chừa dưới hàng cuối: người gọi đo `footer.bottom − rows.bottom`, nên nó gồm cả\n   *  khoảng hở phía trên footer, thanh cuộn ngang của bảng, và chính footer. */\n  footerHeight: number;\n  /** Bước của MỘT hàng (px). Với bảng là chiều cao hàng trung bình; với grid là chiều cao hàng card\n   *  đã cộng row-gap. */\n  rowHeight: number;\n  /** Số card mỗi hàng với grid (1 với bảng). */\n  itemsPerRow?: number;\n  /** Phần chừa CÒN LẠI chưa nằm trong `footerHeight` — thường chỉ là padding dưới của trang. Giữ nhỏ;\n   *  thiên về vừa THIẾU một hàng (vô hại) tốt hơn thừa một hàng (gây cuộn). */\n  bottomGap?: number;\n  min?: number;\n  max?: number;\n}\n\n/**\n *   available = viewport − rowsTop − footer − bottomGap\n *   rows      = floor(available / rowHeight)   (ít nhất 1)\n *   items     = rows × itemsPerRow, kẹp vào [min, max]\n *\n * Điểm mấu chốt là chừa chiều cao footer ĐO ĐƯỢC, không phải đoán — để thanh phân trang không bao\n * giờ rơi xuống dưới màn hình.\n */\nexport function fitItemCount({\n  viewportHeight,\n  rowsTop,\n  footerHeight,\n  rowHeight,\n  itemsPerRow = 1,\n  bottomGap = 48,\n  min = 5,\n  max = 100,\n}: FitInput): number {\n  const perRow = Math.max(1, Math.floor(itemsPerRow));\n  const pitch = Math.max(1, rowHeight);\n  const available = viewportHeight - rowsTop - footerHeight - bottomGap;\n  const rows = Math.max(1, Math.floor(available / pitch));\n  const items = rows * perRow;\n  const lo = Math.max(1, min);\n  return Math.min(max, Math.max(lo, items));\n}\n",
+      "type": "registry:ui"
+    }
+  ],
+  "type": "registry:ui"
+}

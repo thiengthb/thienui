@@ -33,8 +33,9 @@ pnpm dev         # trang docs, cổng 4321
   `EUNSUPPORTEDPROTOCOL`. Khai tường minh là xong.
 - **`registry/base/**` là RANH GIỚI VENDOR.** `shadcn add` ghi đè nó. 7 luật văn phong đã `exclude`
   khỏi đây; luật màu thì vẫn áp. Patch có chủ ý phải ghi vào `docs/vendor-patches.md`.
-- **Địa chỉ registry công khai sống ở `apps/docs/registry.config.mjs`**, một chỗ duy nhất. Chưa deploy —
-  đổi `PUBLIC_URL` hoặc đặt `THIENUI_REGISTRY_URL`.
+- **Địa chỉ registry công khai sống ở `apps/docs/registry.config.mjs`**, một chỗ duy nhất. Phát hành qua
+  raw GitHub: `apps/docs/public/r/` được COMMIT, nên sửa component xong phải `pnpm verify` (có
+  `registry:build`) rồi commit cả `public/r/`. Quên bước đó thì project tiêu thụ vẫn cài bản cũ, im lặng.
 
 ## Trang showcase (apps/docs)
 

@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "empty-state",
+  "title": "empty-state",
+  "description": "generic đã ghép · empty-state",
+  "dependencies": [
+    "cn",
+    "lucide-react"
+  ],
+  "registryDependencies": [
+    "@thienui/empty"
+  ],
+  "files": [
+    {
+      "path": "registry/patterns/empty-state.tsx",
+      "content": "import { Inbox, SearchX, type LucideIcon } from 'lucide-react';\nimport { type ReactNode } from 'react';\nimport { cn } from 'cn';\nimport {\n  Empty,\n  EmptyContent,\n  EmptyDescription,\n  EmptyHeader,\n  EmptyMedia,\n  EmptyTitle,\n} from '@/registry/base/empty';\n\n/**\n * MỘT dáng \"chưa có gì\" cho mọi chỗ, để app đọc ra như một hệ thống.\n *\n * Dựng TRÊN `Empty` của shadcn chứ không dựng lại từ đầu — luật `reuse-before-build`. Bản ở sakubun\n * ra đời trước khi shadcn có `Empty`, nên nó tự vẽ cả khung; port thẳng sẽ là mang theo một bản sao\n * của thứ tầng dưới đã có. Thứ pattern này thêm vào là QUY ƯỚC: hai icon mang hai nghĩa khác nhau,\n * và một API phẳng để chỗ gọi không phải ghép 5 phần mỗi lần.\n *\n * Hai quy ước icon, và phân biệt chúng là việc quan trọng hơn vẻ ngoài:\n *  - `Inbox` (mặc định) — CHƯA CÓ dữ liệu. Trang nên giấu luôn thanh công cụ: không có gì để lọc.\n *  - `SearchX`          — CÓ dữ liệu nhưng bộ lọc hiện tại không khớp gì. Trang phải GIỮ thanh công\n *                         cụ, nếu không người dùng mắc kẹt: không thấy gì và cũng không có đường xoá\n *                         bộ lọc đang gây ra điều đó.\n *\n * `action` là chỗ cho bước tiếp theo. Một empty state không nói được bước tiếp theo thì nó chỉ đang\n * thông báo thất bại.\n */\nexport function EmptyState({\n  icon: Icon = Inbox,\n  title,\n  description,\n  action,\n  className,\n  children,\n}: {\n  /** `Inbox` = chưa có gì · `SearchX` = lọc không khớp · `null` = empty gọn trong card, không icon. */\n  icon?: LucideIcon | null;\n  title?: string;\n  description?: ReactNode;\n  /** Bước tiếp theo — nút tạo, nút nhập, nút xoá bộ lọc. */\n  action?: ReactNode;\n  className?: string;\n  children?: ReactNode;\n}) {\n  return (\n    <Empty className={cn('rounded-lg border border-dashed', className)}>\n      <EmptyHeader>\n        {Icon ? (\n          <EmptyMedia variant=\"icon\">\n            <Icon aria-hidden />\n          </EmptyMedia>\n        ) : null}\n        {title ? <EmptyTitle>{title}</EmptyTitle> : null}\n        {description ? <EmptyDescription>{description}</EmptyDescription> : null}\n      </EmptyHeader>\n      {children ? <EmptyContent>{children}</EmptyContent> : null}\n      {action ? <EmptyContent>{action}</EmptyContent> : null}\n    </Empty>\n  );\n}\n\n/** Empty cho trạng thái \"lọc không khớp\" — giữ nguyên thanh công cụ ở trang gọi. */\nexport function NoMatchState({\n  onClear,\n  className,\n}: {\n  /** Nút xoá bộ lọc. BẮT BUỘC có đường thoát, nếu không người dùng mắc kẹt. */\n  onClear?: ReactNode;\n  className?: string;\n}) {\n  return (\n    <EmptyState\n      icon={SearchX}\n      title=\"Không có kết quả khớp\"\n      description=\"Bộ lọc hiện tại không khớp mục nào. Thử nới bộ lọc hoặc xoá nó.\"\n      action={onClear}\n      className={className}\n    />\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}

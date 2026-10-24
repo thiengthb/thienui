@@ -22,7 +22,7 @@
   "menuColor": "default",
   "menuAccent": "subtle",
   "registries": {
-    "@thienui": "https://thienui.vercel.app/r/{name}.json",
+    "@thienui": "https://raw.githubusercontent.com/thiengthb/thienui/main/apps/docs/public/r/{name}.json",
     "@seamui": "https://seamui.dev/r/{name}.json",
     "@kibo-ui": "https://www.kibo-ui.com/r/{name}.json",
     "@niko-table": "https://niko-table.com/r/{name}.json",

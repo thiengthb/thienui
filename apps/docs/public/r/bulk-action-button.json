@@ -1,0 +1,21 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "bulk-action-button",
+  "title": "bulk-action-button",
+  "description": "generic đã ghép · bulk-action-button",
+  "dependencies": [
+    "cn"
+  ],
+  "registryDependencies": [
+    "@thienui/button",
+    "@thienui/explain"
+  ],
+  "files": [
+    {
+      "path": "registry/patterns/bulk-action-button.tsx",
+      "content": "'use client';\n\nimport { type ReactNode } from 'react';\nimport { cn } from 'cn';\nimport { Button } from '@/registry/base/button';\nimport { Explain } from '@/registry/patterns/explain';\n\n/**\n * Một hành động trên NHIỀU DÒNG ĐÃ CHỌN: nút chỉ-icon, tên nằm trong tooltip, `aria-label` luôn có.\n *\n * Luật `bulk-actions-icon-dock`. Lý do là về LAYOUT, không về thẩm mỹ: hành động bulk xuất hiện và\n * biến mất theo lựa chọn, nên nếu chúng là nút có chữ thì bảng nhảy mỗi lần chọn/bỏ chọn một dòng —\n * và nó nhảy đúng lúc con trỏ đang ở đó. Dock chỉ-icon ở vị trí cố định giữ layout yên.\n *\n * `aria-label` KHÔNG phải tuỳ chọn và không được thay bằng tooltip: tooltip của `Explain` hiện khi\n * hover/focus, nhưng trình đọc màn hình cần một tên ngay cả khi không có cả hai.\n */\nexport function BulkActionButton({\n  icon,\n  label,\n  onClick,\n  disabled,\n  variant = 'ghost',\n  className,\n}: {\n  icon: ReactNode;\n  /** Vừa là tooltip, vừa là accessible name. Một chuỗi, hai việc — nên chúng không lệch nhau được. */\n  label: string;\n  onClick?: () => void;\n  disabled?: boolean;\n  variant?: 'ghost' | 'destructive' | 'secondary';\n  className?: string;\n}) {\n  return (\n    <Explain text={label} side=\"left\">\n      <Button\n        variant={variant}\n        size=\"icon-sm\"\n        aria-label={label}\n        onClick={onClick}\n        disabled={disabled}\n        className={cn('target-44', className)}\n      >\n        {icon}\n      </Button>\n    </Explain>\n  );\n}\n\n/**\n * Dock dọc chứa các `BulkActionButton`.\n *\n * Nó nổi ở mép phải, giữa chiều cao — không nằm trong luồng của bảng. Lý do: nếu nó chiếm chỗ trong\n * luồng thì bảng co lại mỗi khi có lựa chọn, và đó đúng là cái nhảy mà luật này sinh ra để tránh.\n *\n * `position: fixed` ở đây có một cái bẫy đã ghi lại ở sakubun: BẤT KỲ `transform` nào trên một tổ\n * tiên sẽ tạo containing block mới và dock sẽ neo sai — và nếu trang đang cuộn thì lệch rất xa chứ\n * không phải vài pixel. Đó là lý do hiệu ứng chuyển trang ở đó chỉ dùng `opacity`.\n */\nexport function BulkActionDock({\n  count,\n  children,\n  className,\n}: {\n  /** Số dòng đang chọn. Dock tự ẩn khi bằng 0. */\n  count: number;\n  children: ReactNode;\n  className?: string;\n}) {\n  if (count <= 0) return null;\n  return (\n    <div\n      role=\"toolbar\"\n      aria-label={`${count} mục đang chọn`}\n      aria-orientation=\"vertical\"\n      className={cn(\n        'fixed top-1/2 right-3 z-40 flex -translate-y-1/2 flex-col items-center gap-1',\n        'rounded-full border bg-popover p-1.5 shadow-3',\n        className\n      )}\n    >\n      <span className=\"px-1 pt-0.5 text-caption2 tabular-nums text-muted-foreground\">{count}</span>\n      {children}\n    </div>\n  );\n}\n",
+      "type": "registry:component"
+    }
+  ],
+  "type": "registry:component"
+}
