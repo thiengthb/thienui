@@ -10,10 +10,17 @@
  * ghi UI đầu tiên của mỗi phiên. Một luật chỉ có chữ thì là một lời nhắc; có `check` thì là một cổng.
  */
 import { readFileSync, globSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { basename, resolve } from 'node:path';
 
 const DEFAULT_SCOPE = ['**/*.tsx', '**/*.ts', '**/*.jsx', '**/*.js', '**/*.css'];
 const IGNORE = ['**/node_modules/**', '**/dist/**', '**/.next/**', '**/.turbo/**', '**/*.d.ts'];
+/**
+ * Thư mục KHÔNG BAO GIỜ đi vào. `IGNORE` lọc từng file SAU khi glob đã duyệt cả cây; ở một app Next có
+ * `node_modules` và `.next` thì phần duyệt đó chiếm gần hết thời gian (đo trên sakubun: 46 giây cho
+ * một lượt, 1 giây khi cắt nhánh). Cắt ở đây là để cổng đủ nhanh để chạy trong `npm test`.
+ */
+const SKIP_DIRS = new Set(['node_modules', 'dist', '.next', '.turbo', '.git']);
+const skipDir = (p) => SKIP_DIRS.has(basename(typeof p === 'string' ? p : p.name));
 
 /**
  * Khớp glob tối giản cho danh sách loại trừ.
@@ -43,7 +50,7 @@ function matchSimple(pattern, path) {
 function filesFor(root, scope, exclude = []) {
   const out = new Set();
   for (const pat of scope) {
-    for (const f of globSync(pat, { cwd: root })) {
+    for (const f of globSync(pat, { cwd: root, exclude: skipDir })) {
       if (IGNORE.some((i) => matchSimple(i, f))) continue;
       if (exclude.some((e) => matchSimple(e, f))) continue;
       out.add(f);

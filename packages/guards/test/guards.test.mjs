@@ -198,6 +198,8 @@ describe('bộ chạy pattern-lock', () => {
     const dir = fixture({
       'node_modules/pkg/i.tsx': 'const c = "#ff00aa";\n',
       'dist/out.tsx': 'const c = "#ff00aa";\n',
+      '.next/server/page.tsx': 'const c = "#ff00aa";\n',
+      'src/node_modules/deep/x.tsx': 'const c = "#ff00aa";\n',
       'src/real.tsx': 'const c = "#ff00aa";\n',
     });
     const r = runCheck(dir, { id: 't', check: { kind: 'forbid', pattern: '#[0-9a-fA-F]{6}\\b' } });
